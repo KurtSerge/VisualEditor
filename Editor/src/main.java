@@ -1,5 +1,7 @@
 import java.util.List;
 
+import EditorFramework.SyntaxTree;
+import EditorFramework.SyntaxTreeElement;
 import GenericTree.GenericTreeNode;
 
 
