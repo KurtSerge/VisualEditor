@@ -1,5 +1,8 @@
 package EditorFramework;
 
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
 import java.util.Map;
 
 import javax.swing.JPanel;
@@ -26,6 +29,14 @@ public abstract class MonospaceConstructEditor extends ConstructEditor {
 	
 	@Override
 	public JPanel getPanel() {
+		// this panel will be a function of sub-panels
+		// J.setLayoutManager(this);
+		return null;
+	}
+	
+	@Override
+	public Dimension getSize() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 	
@@ -36,5 +47,36 @@ public abstract class MonospaceConstructEditor extends ConstructEditor {
 		// Done by searching SyntaxTree, checking Jpanel BoundingBoxes in panelMap
 		// If row/col falls in boundingbox, check lower level bound boxes until the lowest is found
 		 return null;
+	}
+	
+
+	@Override
+	public void addLayoutComponent(String name, Component comp) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void layoutContainer(Container parent) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Dimension minimumLayoutSize(Container parent) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Dimension preferredLayoutSize(Container parent) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void removeLayoutComponent(Component comp) {
+		// TODO Auto-generated method stub
+		
 	}
 }
