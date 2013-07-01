@@ -3,6 +3,7 @@ package EditorFramework;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.LayoutManager;
 import java.util.Map;
 
 import javax.swing.JPanel;
@@ -10,7 +11,7 @@ import javax.swing.JPanel;
 import org.w3c.dom.css.Rect;
 
 
-public abstract class MonospaceConstructEditor extends ConstructEditor {	
+public abstract class MonospaceConstructEditor extends ConstructEditor implements LayoutManager {	
 	// Maps UI info to each syntax node
 	private Map<SyntaxTreeElement, JPanel> panelMap;
 	private String screenText;
@@ -28,7 +29,7 @@ public abstract class MonospaceConstructEditor extends ConstructEditor {
 	}
 	
 	@Override
-	public JPanel getPanel() {
+	public Component getComponent() {
 		// this panel will be a function of sub-panels
 		// J.setLayoutManager(this);
 		return null;

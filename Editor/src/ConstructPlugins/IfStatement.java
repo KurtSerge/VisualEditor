@@ -16,7 +16,7 @@ public class IfStatement extends MonospaceConstructEditor {
 	}
 	
 	@Override
-	public  JPanel getPanel() {
+	public  Component getComponent() {
 		return null;
 	}
 
