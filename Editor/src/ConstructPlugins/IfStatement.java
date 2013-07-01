@@ -1,16 +1,18 @@
 package ConstructPlugins;
 
+import javax.swing.JPanel;
+
 import EditorFramework.MonospaceConstructEditor;
 
 public class IfStatement extends MonospaceConstructEditor {
 	@Override
-	public String toScreenText() {
+	protected String toScreenText() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
 	@Override
-	public int getNumLeaves() {
-		return 2;
+	public  JPanel getPanel() {
+		return null;
 	}
 }

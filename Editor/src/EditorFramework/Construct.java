@@ -16,5 +16,6 @@ public abstract class Construct {
 		return false;
 	}
 	
+	// Defined @ URI
 	public abstract int getNumLeaves();
 }

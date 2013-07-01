@@ -1,6 +1,8 @@
-package EditorFramework;
+package ConstructPlugins;
 
 import java.util.Map;
+
+import EditorFramework.Construct;
 
 
 public class ConstructFactory {
