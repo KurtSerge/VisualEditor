@@ -1,15 +1,20 @@
 package EditorFramework;
 
-public class Construct {
-	protected SyntaxTree syntaxTree;
+import javax.swing.JPanel;
+
+
+public abstract class Construct {
+	// Every construct is the top level of some syntax tree
+	private SyntaxTree root;
 	
-	// XML is temp, but what better way to load syntaxTree now?
-	public boolean LoadSyntaxTreeXML(String xmlfile) {
-		return false;
+	// Set root node.  Could be loaded from XML, or selected from some larger pre-loaded tree
+	public final void SetSyntaxRoot(SyntaxTreeElement node) {
+		root.setRoot(node);
 	}
 	
 	public boolean ValidateSyntaxTree(SyntaxTreeElement top) {
 		return false;
 	}
+	
+	public abstract int getNumLeaves();
 }
-

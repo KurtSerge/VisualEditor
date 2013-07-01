@@ -4,6 +4,5 @@ import java.util.List;
 
 public class SyntaxTreeElement  {
 	public String literal;
-	public boolean isLiteral;
-	public String URI;
+	public String URI; // class name, in this case
 }
