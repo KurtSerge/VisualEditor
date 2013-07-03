@@ -8,10 +8,10 @@ import java.io.File;
 
 public class XMLTest {
 	
-	private static void printChildren(Element root) {
+	public static void printChildren(Element root) {
 		printChildren(root, 0);
 	}
-	private static void printChildren(Element root, int depth) {
+	public static void printChildren(Element root, int depth) {
 		NodeList children =	root.getChildNodes();
 		
 		// Print all direct children
@@ -34,7 +34,7 @@ public class XMLTest {
 		}
 	}
 	
-	private static Document getXMLDocument(String filename) {
+	public static Document getXMLDocument(String filename) {
 		File fXmlFile = new File(filename);
 		Document doc = null;
 		try {

@@ -9,7 +9,7 @@ import java.util.Map;
 import javax.swing.JPanel;
 
 
-public abstract class MonospaceConstructEditor extends ConstructEditor implements LayoutManager {	
+public class MonospaceConstructEditor extends ConstructEditor implements LayoutManager {	
 	// Maps UI info to each syntax node
 	private Map<SyntaxTreeElement, JPanel> panelMap;
 	private String screenText;
@@ -42,7 +42,9 @@ public abstract class MonospaceConstructEditor extends ConstructEditor implement
 		return null;
 	}
 	
-	protected abstract String toScreenText();
+	protected String toScreenText() {
+		return null;
+	}
 	
 	public final SyntaxTreeElement getElementAt(int row, int col) {
 		// Return the lowest level SyntaxTreeElement at a row/col position.  
