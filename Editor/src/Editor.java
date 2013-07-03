@@ -8,6 +8,7 @@ import javax.swing.JTextArea;
 
 public class Editor  {
     public static void main(String[] args) {
+    	
 	    // Text area
 	    JTextArea textArea = new JTextArea("toScreenText", 30, 50);
 	    Font monofont = new Font("Courier New", Font.PLAIN, 12);
@@ -25,5 +26,8 @@ public class Editor  {
 	    frame.add(scrollPane);
 	    frame.pack();
 	    frame.setVisible(true);
+	    
+    	
+    	
     }
 }

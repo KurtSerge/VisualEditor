@@ -1,0 +1,9 @@
+<Construct URI="builtin://if">
+<Construct URI="builtin://call">
+	<Construct URI="builtin://==">
+		<Construct URI="file://3rd" />
+	</Construct>
+	<Construct URI="file://myproj/x" />
+	<Construct URI="builtin://int_literal" literal="5" />
+</Construct>
+</Construct>

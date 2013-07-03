@@ -1,10 +1,7 @@
 package ConstructPlugins;
 
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
-
-import javax.swing.JPanel;
 
 import EditorFramework.Construct;
 import EditorFramework.MonospaceConstructEditor;

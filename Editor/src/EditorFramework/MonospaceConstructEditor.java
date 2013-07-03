@@ -8,8 +8,6 @@ import java.util.Map;
 
 import javax.swing.JPanel;
 
-import org.w3c.dom.css.Rect;
-
 
 public abstract class MonospaceConstructEditor extends ConstructEditor implements LayoutManager {	
 	// Maps UI info to each syntax node

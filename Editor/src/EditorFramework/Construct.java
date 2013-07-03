@@ -1,8 +1,5 @@
 package EditorFramework;
 
-import javax.swing.JPanel;
-
-
 public abstract class Construct {
 	// Every construct is the top level of some syntax tree
 	private SyntaxTree root;

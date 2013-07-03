@@ -1,5 +1,4 @@
 package EditorFramework;
-import java.util.List;
 
 
 public class SyntaxTreeElement  {

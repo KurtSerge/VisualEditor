@@ -1,6 +1,5 @@
 package EditorFramework;
 
-
 import java.util.Map;
 
 
@@ -18,6 +17,3 @@ public class ConstructEditorFactory {
 		return null;
 	}
 }
-
-
-	
