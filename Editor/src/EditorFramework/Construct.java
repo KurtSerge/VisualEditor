@@ -12,7 +12,7 @@ public class Construct {
 	
 	// Set root node.  Could be loaded from XML, or selected from some larger pre-loaded tree
 	public final void setSyntaxRoot(GenericTreeNode<SyntaxTreeElement> node) {
-		//root.setRoot(node);
+		root.setRoot(node);
 	}
 	
 	public boolean validateSyntaxTree(GenericTreeNode<SyntaxTreeElement> top) {
