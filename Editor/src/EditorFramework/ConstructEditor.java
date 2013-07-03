@@ -7,8 +7,11 @@ import java.awt.LayoutManager;
 import javax.swing.JPanel;
 
 public abstract class ConstructEditor  {
-	Construct construct;
-	LayoutManager layout;
+	final Construct construct;
 	public abstract Component getComponent();
 	public abstract Dimension getSize();
+	
+	ConstructEditor(Construct construct) {
+		this.construct = construct;
+	}
 }

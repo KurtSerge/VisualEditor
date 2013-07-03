@@ -9,7 +9,7 @@ public abstract class Construct {
 	
 	// Set root node.  Could be loaded from XML, or selected from some larger pre-loaded tree
 	public final void SetSyntaxRoot(SyntaxTreeElement node) {
-		root.setRoot(node);
+		//root.setRoot(node);
 	}
 	
 	public boolean ValidateSyntaxTree(SyntaxTreeElement top) {

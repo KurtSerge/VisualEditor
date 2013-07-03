@@ -13,6 +13,8 @@ public class ConstructEditorFactory {
 
 	public ConstructEditor createConstructEditor(String URI, Construct construct)
 	{
+		// URI can be null, will return default Editor (monospace)
+		// Add preferences for default editor later
 		return null;
 	}
 }

@@ -15,7 +15,10 @@ public abstract class MonospaceConstructEditor extends ConstructEditor implement
 	// Maps UI info to each syntax node
 	private Map<SyntaxTreeElement, JPanel> panelMap;
 	private String screenText;
-	
+
+	public MonospaceConstructEditor(Construct construct) {
+		super(construct);
+	}
 	
 	// Return the empty string.  i.e. ... in if(...){...}
 	public final String getEmptyString() {
