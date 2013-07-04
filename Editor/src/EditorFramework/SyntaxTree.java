@@ -7,6 +7,24 @@ public class SyntaxTree extends GenericTree<SyntaxTreeElement> {
 	
 	
 	public GenericTreeNode<SyntaxTreeElement> findURI(String URI) {
+		/*
+        GenericTreeNode<T> returnNode = null;
+        int i = 0;
+
+        if (currentNode.getData().equals(dataToFind)) {
+            returnNode = currentNode;
+        }
+
+        else if(currentNode.hasChildren()) {
+            i = 0;
+            while(returnNode == null && i < currentNode.getNumberOfChildren()) {
+                returnNode = auxiliaryFind(currentNode.getChildAt(i), dataToFind);
+                i++;
+            }
+        }
+
+        return returnNode;*/
+        
 		return null;
 	}
 }

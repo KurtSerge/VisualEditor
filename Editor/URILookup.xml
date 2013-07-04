@@ -1,0 +1,4 @@
+<URILookup>
+	<URI common_name="builtin://if" class="ConstructPlugins.IfStatement" />
+	<URI common_name="builtin://call" class="ConstructPlugins.Call" />
+</URILookup>

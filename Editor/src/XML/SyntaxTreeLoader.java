@@ -1,4 +1,4 @@
-package EditorFramework;
+package XML;
 
 import java.io.File;
 import java.util.List;
@@ -11,9 +11,14 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import EditorFramework.SyntaxTreeElement;
 import GenericTree.GenericTreeNode;
 
-public class SyntaxTreeLoader {
+public class SyntaxTreeLoader extends Loader {
+	// Attributres
+	private static String skURI = "URI";
+	private static String skLiteral = "literal";
+	
 	private final GenericTreeNode<SyntaxTreeElement> syntaxTree;
 	private final Document xmlDoc;
 	
@@ -24,8 +29,8 @@ public class SyntaxTreeLoader {
 				Element root = xmlDoc.getDocumentElement();
 				syntaxTree = new GenericTreeNode<SyntaxTreeElement>();
 				SyntaxTreeElement data = new SyntaxTreeElement();
-				data.URI = root.getAttribute("URI");
-				data.literal = root.getAttribute("literal");
+				data.URI = root.getAttribute(skURI);
+				data.literal = root.getAttribute(skLiteral);
 				syntaxTree.setData(data);
 		    	
 				addChildrenToTree(root, syntaxTree);
@@ -46,8 +51,8 @@ public class SyntaxTreeLoader {
 				// setup new node
 				Element current = (Element)node;
 				SyntaxTreeElement data = new SyntaxTreeElement();
-				data.URI = current.getAttribute("URI");
-				data.literal = current.getAttribute("literal");
+				data.URI = current.getAttribute(skURI);
+				data.literal = current.getAttribute(skLiteral);
 				// Add new node
 				GenericTreeNode<SyntaxTreeElement> newNode = new GenericTreeNode<SyntaxTreeElement>();
 				newNode.setData(data);
@@ -58,21 +63,6 @@ public class SyntaxTreeLoader {
 		}
 	}
 	
-	private Document getXMLDocument(String filename) {
-		File fXmlFile = new File(filename);
-		Document doc = null;
-		try {
-			DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-			doc = dBuilder.parse(fXmlFile);
-			doc.getDocumentElement().normalize();
-		}
-		catch(Exception e) {
-			e.printStackTrace();
-		}
-		return doc;
-	}
-
 	// Print SyntaxTreeElement, debug
 	public void printTree() {
 		printTree(syntaxTree);
@@ -112,11 +102,11 @@ public class SyntaxTreeLoader {
 				Element current = (Element)node;
 				System.out.print("\tNode Name: " + current.getNodeName());
 				System.out.print(", Level: " + depth);
-				System.out.print(", URI:" + current.getAttribute("URI"));
+				System.out.print(", URI:" + current.getAttribute(skURI));
 				
-				String lit = current.getAttribute("literal");
+				String lit = current.getAttribute(skLiteral);
 				if(lit.length() != 0) {
-					System.out.print("\tliteral: " + current.getAttribute("literal"));
+					System.out.print("\tliteral: " + lit);
 				}
 				System.out.println("");
 				
