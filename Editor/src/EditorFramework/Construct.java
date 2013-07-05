@@ -4,18 +4,18 @@ import GenericTree.GenericTreeNode;
 
 public abstract class Construct {
 	// Every construct is the top level of some syntax tree
+	// Note, can get parent/child via "node"
 	protected final GenericTreeNode<SyntaxTreeElement> node;
 	
-	public Construct(GenericTreeNode<SyntaxTreeElement> node) {
+	protected Construct(GenericTreeNode<SyntaxTreeElement> node) {
 		this.node = node;
 		//FIXME: 
 	}
 	
-	// Set root node.  Could be loaded from XML, or selected from some larger pre-loaded tree
-	public final void setSyntaxRoot() {
-		// FIXME
-		//root.setRoot(node);
-	}
+	// Set root node.  
+	//public final void setSyntaxRoot(GenericTreeNode<SyntaxTreeElement> node) {
+	//	this.node = node;
+	//}
 	
 	public abstract boolean validateSyntaxTree();
 

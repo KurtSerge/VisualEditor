@@ -11,10 +11,12 @@ import org.w3c.dom.NodeList;
 
 public class URIConfig {
 	private final Document xmlDoc;
-	private final Map<String, String> classNameMap; // Map of class name to URI's common name <URI, class>
+	private final Map<String, String> classEditorMap; // Map of class name to URI's common name <URI, editor class>
+	private final Map<String, String> classConstructMap; // <URI, construct class>
 	
 	public URIConfig(String filename) {
-		classNameMap = new HashMap<String, String>();
+		classEditorMap = new HashMap<String, String>();
+		classConstructMap = new HashMap<String, String>();
 		xmlDoc = Loader.getXMLDocument(filename);
 		if(xmlDoc != null) {
 			NodeList list = xmlDoc.getElementsByTagName("URI");
@@ -23,14 +25,20 @@ public class URIConfig {
 				if (node.getNodeType() == Node.ELEMENT_NODE) {
 					Element element = (Element) node;
 					String common = element.getAttribute("common_name");
-					String classname = element.getAttribute("class");
-					classNameMap.put(common, classname);
+					String editName = element.getAttribute("editor_class");
+					String conName = element.getAttribute("lang_class");
+					classEditorMap.put(common, editName);
+					classConstructMap.put(common, conName);
 				}
 			}
 		}
 	}
 	
-	public String getClassName(String uri) {
-		return classNameMap.get(uri);
+	public String getEditorClassName(String uri) {
+		return classEditorMap.get(uri);
+	}
+	
+	public String getConstructClassName(String uri) {
+		return classConstructMap.get(uri);
 	}
 }

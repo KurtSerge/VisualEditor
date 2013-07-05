@@ -7,7 +7,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import EditorFramework.ConstructEditorFactory;
+
+import EditorFramework.ConstructFactory;
 import EditorFramework.SyntaxTreeElement;
 import GenericTree.GenericTreeNode;
 
@@ -20,7 +21,7 @@ public class SyntaxTreeLoader {
 
 
 	
-	public static GenericTreeNode<SyntaxTreeElement> loadSyntaxTree(String filename, String configFilename, boolean printXML) {
+	public static GenericTreeNode<SyntaxTreeElement> loadSyntaxTree(String filename, boolean printXML, ConstructFactory factory) {
 		GenericTreeNode<SyntaxTreeElement> syntaxTree = null;
 		Document xmlDoc = null;
 		xmlDoc = Loader.getXMLDocument(filename);
@@ -34,6 +35,7 @@ public class SyntaxTreeLoader {
 			SyntaxTreeElement data = new SyntaxTreeElement();
 			data.URI = root.getAttribute(skURI);
 			data.literal = root.getAttribute(skLiteral);
+			data.construct = factory.createConstruct(data.URI, syntaxTree);
 			syntaxTree.setData(data);
 	
 			addChildrenToTree(root, syntaxTree);
@@ -74,7 +76,7 @@ public class SyntaxTreeLoader {
     	List<GenericTreeNode<SyntaxTreeElement>> children = root.getChildren();
     	for(int i = 0; i < children.size(); i++) {
     		GenericTreeNode<SyntaxTreeElement> child = children.get(i);
-    		System.out.print("URI=" + child.getData().URI);
+    		System.out.print("\tURI=" + child.getData().URI);
     		if(child.getData().literal.length() != 0) {
     			System.out.print(", " + child.getData().literal);
     		}
