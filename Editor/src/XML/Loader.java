@@ -8,7 +8,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 
 public class Loader {
-	protected Document getXMLDocument(String filename) {
+	public static Document getXMLDocument(String filename) {
 		File fXmlFile = new File(filename);
 		Document doc = null;
 		try {

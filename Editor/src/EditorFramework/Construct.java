@@ -2,25 +2,23 @@ package EditorFramework;
 
 import GenericTree.GenericTreeNode;
 
-public class Construct {
+public abstract class Construct {
 	// Every construct is the top level of some syntax tree
-	private SyntaxTree root;
+	protected final GenericTreeNode<SyntaxTreeElement> node;
 	
-	public Construct(String URI) {
+	public Construct(GenericTreeNode<SyntaxTreeElement> node) {
+		this.node = node;
 		//FIXME: 
 	}
 	
 	// Set root node.  Could be loaded from XML, or selected from some larger pre-loaded tree
-	public final void setSyntaxRoot(GenericTreeNode<SyntaxTreeElement> node) {
-		root.setRoot(node);
+	public final void setSyntaxRoot() {
+		// FIXME
+		//root.setRoot(node);
 	}
 	
-	public boolean validateSyntaxTree(GenericTreeNode<SyntaxTreeElement> top) {
-		return false;
-	}
+	public abstract boolean validateSyntaxTree();
+
 	
-	// Defined @ URI
-	public int getNumLeaves() {
-		return 0;
-	}
+	public abstract String toPlainText();
 }

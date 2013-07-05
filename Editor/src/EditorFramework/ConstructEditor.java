@@ -2,9 +2,13 @@ package EditorFramework;
 
 import java.awt.Component;
 import java.awt.Dimension;
+import java.util.Map;
 
 public abstract class ConstructEditor  {
-	final Construct construct;
+	protected Construct construct;
+	
+	public static Map<Construct, ConstructEditor> constructManager;
+	
 	public abstract Component getComponent();
 	public abstract Dimension getSize();
 	

@@ -9,13 +9,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 
-public class URIConfig extends Loader {
+public class URIConfig {
 	private final Document xmlDoc;
 	private final Map<String, String> classNameMap; // Map of class name to URI's common name <URI, class>
 	
 	public URIConfig(String filename) {
 		classNameMap = new HashMap<String, String>();
-		xmlDoc = getXMLDocument(filename);
+		xmlDoc = Loader.getXMLDocument(filename);
 		if(xmlDoc != null) {
 			NodeList list = xmlDoc.getElementsByTagName("URI");
 			for(int i = 0; i < list.getLength(); i++) {

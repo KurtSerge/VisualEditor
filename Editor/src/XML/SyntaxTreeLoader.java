@@ -1,47 +1,53 @@
 package XML;
 
-import java.io.File;
 import java.util.List;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import EditorFramework.ConstructEditorFactory;
 import EditorFramework.SyntaxTreeElement;
 import GenericTree.GenericTreeNode;
 
-public class SyntaxTreeLoader extends Loader {
-	// Attributres
+public class SyntaxTreeLoader {
+	// Attributes
 	private static String skURI = "URI";
 	private static String skLiteral = "literal";
 	
-	private final GenericTreeNode<SyntaxTreeElement> syntaxTree;
-	private final Document xmlDoc;
+
+
+
 	
-	public SyntaxTreeLoader(String filename) {
-			xmlDoc = getXMLDocument(filename);
-			if(xmlDoc != null) {
-				// Add root to tree
-				Element root = xmlDoc.getDocumentElement();
-				syntaxTree = new GenericTreeNode<SyntaxTreeElement>();
-				SyntaxTreeElement data = new SyntaxTreeElement();
-				data.URI = root.getAttribute(skURI);
-				data.literal = root.getAttribute(skLiteral);
-				syntaxTree.setData(data);
-		    	
-				addChildrenToTree(root, syntaxTree);
-			}
-			else {
-				syntaxTree = null;
-			}
+	public static GenericTreeNode<SyntaxTreeElement> loadSyntaxTree(String filename, String configFilename, boolean printXML) {
+		GenericTreeNode<SyntaxTreeElement> syntaxTree = null;
+		Document xmlDoc = null;
+		xmlDoc = Loader.getXMLDocument(filename);
+		if(printXML == true) {
+			printXML(xmlDoc);
+		}
+		if(xmlDoc != null) {
+			// Add root to tree
+			Element root = xmlDoc.getDocumentElement();
+			syntaxTree = new GenericTreeNode<SyntaxTreeElement>();
+			SyntaxTreeElement data = new SyntaxTreeElement();
+			data.URI = root.getAttribute(skURI);
+			data.literal = root.getAttribute(skLiteral);
+			syntaxTree.setData(data);
+	
+			addChildrenToTree(root, syntaxTree);
+		}
+		else {
+			syntaxTree = null;
+		}
+		
+		return syntaxTree;
 	}
 	
+	
 	// Recursively add children to the syntaxTree
-	private void addChildrenToTree(Element root, GenericTreeNode<SyntaxTreeElement> topnode) {
+	private static void addChildrenToTree(Element root, GenericTreeNode<SyntaxTreeElement> topnode) {
 		NodeList children =	root.getChildNodes();
 		
 		// Load nodes into tree
@@ -64,10 +70,7 @@ public class SyntaxTreeLoader extends Loader {
 	}
 	
 	// Print SyntaxTreeElement, debug
-	public void printTree() {
-		printTree(syntaxTree);
-	}
-	private void printTree(GenericTreeNode<SyntaxTreeElement> root) {
+	public static void printTree(GenericTreeNode<SyntaxTreeElement> root) {
     	List<GenericTreeNode<SyntaxTreeElement>> children = root.getChildren();
     	for(int i = 0; i < children.size(); i++) {
     		GenericTreeNode<SyntaxTreeElement> child = children.get(i);
@@ -80,20 +83,12 @@ public class SyntaxTreeLoader extends Loader {
     	}
 	}
 	
-	
-	public GenericTreeNode<SyntaxTreeElement> getSyntaxTree() {
-		return syntaxTree;
-	}
-	
 	// Print XML file, for debug
-	public void printXML() {
-		Element root = xmlDoc.getDocumentElement();
+	public static void printXML(Document doc) {
+		Element root = doc.getDocumentElement();
 		printChildren(root, 0);
 	}
-	private void printChildren(Element root) {
-		printChildren(root, 0);
-	}
-	private void printChildren(Element root, int depth) {
+	private static void printChildren(Element root, int depth) {
 		NodeList children =	root.getChildNodes();
 		// Print all direct children
 		for(int i = 0; i < children.getLength(); i++) {
