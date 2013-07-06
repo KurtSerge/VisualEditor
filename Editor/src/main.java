@@ -1,4 +1,7 @@
 
+
+import java.awt.Component;
+
 import javax.swing.JFrame;
 
 import XML.SyntaxTreeLoader;
@@ -26,7 +29,8 @@ public class main extends JFrame {
     	ConstructEditor edit = factory.createConstructEditor("builtin://if", root.getData().construct);
 
     	
-		this.add(edit.getComponent());
+    	Component comp = edit.getComponent();
+		this.add(comp);
 
 		this.pack();
 		this.setSize(800, 600);
