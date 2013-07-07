@@ -137,6 +137,9 @@ public class Application extends JFrame implements KeyListener
 		public void SelectFirstChildConstruct() {
 			if(selected == null)
 				return;
+			if(selected.construct.children.size() == 0)
+				return;
+			
 			Construct child = selected.construct.children.get(0);
 			if(child == null)
 				return;
@@ -156,6 +159,9 @@ public class Application extends JFrame implements KeyListener
 			if(selectIndex >= parent.children.size()) {
 				selectIndex = 0;
 			}	
+			else if(selectIndex < 0) {
+				selectIndex = parent.children.size()-1;
+			}
 			Construct newSelect = parent.children.get(selectIndex);
 			if(newSelect == null)
 				return;
