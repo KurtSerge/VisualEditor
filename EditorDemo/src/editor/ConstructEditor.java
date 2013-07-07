@@ -3,6 +3,7 @@ package editor;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.lang.ref.WeakReference;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +20,7 @@ public abstract class ConstructEditor
 	@Override
 	protected void finalize()
 	{
+		// What happens if someone calls get() for a strong pointer while we are in the finalizer??
 		editorsByConstructs.remove(construct);
 	}
 	
@@ -28,9 +30,14 @@ public abstract class ConstructEditor
 	public void update()
 	{
 		if(construct.parent != null)
-			editorsByConstructs.get(construct.parent).get().update();
+		{
+			ConstructEditor parent_editor = editorsByConstructs.get(construct.parent).get();
+			
+			if(parent_editor != null)
+				parent_editor.update();
+		}
 	}
 	
 	protected static Map<Construct, WeakReference<ConstructEditor> > editorsByConstructs =
-			new HashMap<Construct, WeakReference<ConstructEditor> >();
+			Collections.synchronizedMap(new HashMap<Construct, WeakReference<ConstructEditor> >());
 }

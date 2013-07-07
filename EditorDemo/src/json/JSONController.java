@@ -4,6 +4,8 @@ package json;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -17,6 +19,8 @@ import editor.MonospaceConstructEditor;
 
 public class JSONController
 {
+	public static ArrayList<ConstructEditor> editors;
+	
 	// TODO: This belongs in a utility function elsewhere
 	static public ConstructEditor editors_from_constructs(Construct top)
 	{
@@ -24,6 +28,10 @@ public class JSONController
 			editors_from_constructs(child);
 		
 		MonospaceConstructEditor my_editor = new MonospaceConstructEditor(top);
+		
+		if(editors == null)
+			editors = new ArrayList<ConstructEditor>();
+		editors.add(my_editor);
 		
 		return my_editor;
 	}

@@ -64,7 +64,12 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 			
 			for(Construct child : construct.children)
 			{
-				Component child_component = editorsByConstructs.get(child).get().get_component();
+				ConstructEditor parent_editor = editorsByConstructs.get(child).get();
+				
+				if(parent_editor == null)
+					continue;
+				
+				Component child_component = parent_editor.get_component();
 				
 				if(!text_area_components.contains(child_component))
 					text_area.add(child_component);
@@ -107,6 +112,10 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 			while((nextChildBegins = screen_text.indexOf(child_string, lastChildEnd)) >= 0)
 			{
 				ConstructEditor child = editorsByConstructs.get(construct.children.get(childIndex)).get();
+				
+				if(child == null)
+					continue;
+				
 				Dimension child_size = child.get_size();
 				
 				int nWidth = (int)Math.ceil(((double)child_size.width) / ((double)metrics.stringWidth(" ")));
@@ -234,6 +243,10 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 			while((nextChildBegins = screen_text.indexOf(child_string, lastChildEnd)) >= 0)
 			{
 				ConstructEditor child = editorsByConstructs.get(construct.children.get(childIndex)).get();
+				
+				if(child == null)
+					continue;
+				
 				Dimension child_size = child.get_size();
 				
 				int nWidth = (int)Math.ceil(((double)child_size.width) / ((double)metrics.stringWidth(" ")));
