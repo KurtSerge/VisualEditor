@@ -38,10 +38,10 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		// Easy way to check out the layout
 		//text_area.setBackground(color_for_int(construct.nesting_level()));
 		
-		if(construct.children.size() == 0)
-			text_area.setBackground(new Color(0,0,0,0));
-		else
+		if(construct.parent == null)
 			text_area.setBackground(new Color(255,255,255,255));
+		else
+			text_area.setBackground(new Color(0,0,0,0));
 		
 		text_area.getDocument().addDocumentListener(this);
 		SwingUtilities.invokeLater(new Runnable(){

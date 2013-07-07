@@ -35,6 +35,7 @@ public class Application extends JFrame implements KeyListener
 		this.setSize(800, 600);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
+		this.setBackground(Color.white);
 		
 		try {
 			jsonDocumentConstruct2 = JSONController.load_json(new FileInputStream("test2.json"));
