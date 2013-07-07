@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Random;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -74,7 +75,7 @@ public class Application extends JFrame implements KeyListener
 		*/
 		
 		this.add(JSONController.editors_from_constructs(jsonDocumentConstruct2).get_component());
-
+		
 		selector = new EditSelection(this, JSONController.editors);
 		
 		this.pack();
@@ -164,10 +165,14 @@ public class Application extends JFrame implements KeyListener
 		}
 		
 		public void Select(ConstructEditor sel) {
-			if(selected != null)
-				selected.get_component().setBackground(Color.white);
+			if(selected != null)   {
+				selected.get_component().setBackground(new Color(0,0,0,0));
+			}
 			sel.get_component().setBackground(Color.red);
 			selected = sel;
+			frame.repaint();
+			
+			
 			// FIXME: I just want to draw a rect with top-most zorder!
 			//Component draw = new JTextArea();
 			//draw.setBackground(Color.red);
