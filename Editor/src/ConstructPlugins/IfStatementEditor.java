@@ -12,7 +12,7 @@ public class IfStatementEditor extends MonospaceConstructEditor {
 	}
 
 	@Override
-	protected String toScreenText() {
+	public String toScreenText() {
 		// #node# can be any editor
 		return "if(#node#)\n{#node#}";
 	}

@@ -19,6 +19,7 @@ public abstract class ConstructEditor  {
 	
 	public abstract Component getComponent();
 	public abstract Dimension getSize();
+	public abstract String toScreenText();
 	
 	public void update() {
 		Construct parent = construct.node.getParent().getData().construct;
