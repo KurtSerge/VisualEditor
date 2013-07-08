@@ -13,14 +13,18 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.BorderFactory;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
+import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 
 public class MonospaceConstructEditor extends ConstructEditor implements LayoutManager, DocumentListener
 {
+	private static boolean skDebug_ShowBorders = false;
+	
 	Color color_for_int(int x)
 	{
 		return ((x%2)==0) ? Color.WHITE : Color.RED;
@@ -152,6 +156,10 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 	
 	@Override
 	public Component get_component() {
+		if(skDebug_ShowBorders) {
+			Border border = BorderFactory.createLineBorder(Color.BLACK);
+			text_area.setBorder(border);
+		}
 		return text_area;
 	}
 
@@ -173,7 +181,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		FontMetrics metrics = Toolkit.getDefaultToolkit().getFontMetrics(font);
 		
 		String my_text = my_text();
-		
+
 		int max_line_width = 0;
 		
 		int next_newline = -1;

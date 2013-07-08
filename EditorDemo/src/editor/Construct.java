@@ -30,4 +30,19 @@ public abstract class Construct
 	
 	public String literal = null;
 	public List<Construct> children = new LinkedList<Construct>();
+	
+	
+	public void debugPrint() {
+		debugPrintNode(this, 0);
+	}
+	public void debugPrintNode(Construct con, int depth) {
+		for(int i = 0; i < depth; i++)
+			System.out.print("\t");
+		String nodeStr = "Type:" + con.type + ", Literal:" + con.literal + ", Children:" + con.children.size();
+		System.out.println(nodeStr);
+		
+		for(Construct child : con.children) {
+			debugPrintNode(child, depth+1);
+		}
+	}
 }

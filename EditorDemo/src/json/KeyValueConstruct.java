@@ -27,7 +27,18 @@ public class KeyValueConstruct extends Construct {
 	public String screen_text()
 	{
 		assert(children.size() == 2);
-		return " $(node): $(node)";
+		
+		StringBuilder builder = new StringBuilder();
+		// key
+		builder.append("$(node):");
+		// new line for object values
+		Construct c = children.get(1);
+		if(c.type.toString() == "object")
+			builder.append("\n");
+		// value
+		builder.append(" $(node)");
+
+		return builder.toString();
 	}
 
 	

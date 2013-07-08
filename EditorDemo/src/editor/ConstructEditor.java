@@ -31,7 +31,11 @@ public abstract class ConstructEditor
 	{
 		if(construct.parent != null)
 		{
-			ConstructEditor parent_editor = editorsByConstructs.get(construct.parent).get();
+			WeakReference<ConstructEditor> ret =  editorsByConstructs.get(construct.parent);
+			// FIXME: Why is this ever null??
+			if(ret == null)
+				return;
+			ConstructEditor parent_editor = ret.get();
 			
 			if(parent_editor != null)
 				parent_editor.update();

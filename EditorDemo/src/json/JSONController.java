@@ -47,16 +47,16 @@ public class JSONController
 			for(String key : keys)
 			{
 				Object child = ((JSONObject)object).get(key);
-				if(child.getClass() == String.class) {
+				//if(child.getClass() == String.class) {
 						json.KeyValueConstruct key_value_construct = new json.KeyValueConstruct(object_construct);
 						key_value_construct.children.add(construct_for_json(key, key_value_construct));
 						key_value_construct.children.add(construct_for_json(child, key_value_construct));
 						object_construct.children.add(key_value_construct);
-				}
-				else {
-					object_construct.children.add(construct_for_json(key, object_construct));
-					object_construct.children.add(construct_for_json(child, object_construct));
-				}
+				//}
+				//else {
+				//	object_construct.children.add(construct_for_json(key, object_construct));
+				//	object_construct.children.add(construct_for_json(child, object_construct));
+				//}
 			}
 			
 			return object_construct;

@@ -28,20 +28,18 @@ public class ObjectConstruct extends Construct {
 		
 		for(int index = 0;index<children.size();index++)
 		{	
+			
 			Construct c = children.get(index);
-			if(c.type.equals("string") == false) { //FIXME: Why do objects have these children strings??
-				if(c.type.equals("object"))
-					builder.append(" $(node): \n  $(node)");
-				else if(c.type.equals("key_value_pair")) 
-					builder.append(" $(node)");
-				else
-					builder.append(" $(node): $(node)");
-	
-				if(index != (children.size() - 1))
-					builder.append(", ");
-				
-				builder.append("\n");
-			}
+			// "string?"
+			if(c.type.equals("object") || (c.type.equals("key_value_pair")))
+				builder.append(" $(node)");
+			else
+				assert(1==0);
+			
+			if(index < children.size() - 1)
+				builder.append(", ");
+			
+			builder.append("\n");
 		}
 		
 		builder.append("}");

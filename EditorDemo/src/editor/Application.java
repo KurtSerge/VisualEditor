@@ -38,8 +38,10 @@ public class Application extends JFrame implements KeyListener
 		this.setBackground(Color.white);
 		
 		try {
+			//jsonDocumentConstruct2 = JSONController.load_json(new FileInputStream("commaTest.json"));
 			jsonDocumentConstruct2 = JSONController.load_json(new FileInputStream("test2.json"));
-		//	jsonDocumentConstruct2 = LispController.load_json(new FileInputStream("/Users/shmeebegek/temp/test.json"));
+			jsonDocumentConstruct2.debugPrint();
+
 			
 			
 			
@@ -178,14 +180,6 @@ public class Application extends JFrame implements KeyListener
 			sel.get_component().setBackground(Color.red);
 			selected = sel;
 			frame.repaint();
-			
-			
-			// FIXME: I just want to draw a rect with top-most zorder!
-			//Component draw = new JTextArea();
-			//draw.setBackground(Color.red);
-			//draw.setBounds(0, 0, 40, 40);
-			//this.add(draw);
-			//this.setComponentZOrder(draw, 0);
 		}
 	}
 	
