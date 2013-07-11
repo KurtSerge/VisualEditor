@@ -15,6 +15,8 @@ import javax.swing.JTextArea;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import org.json.JSONObject;
+
 import json.JSONController;
 import json.ObjectConstruct;
 import json.StringConstruct;
@@ -38,9 +40,10 @@ public class Application extends JFrame implements KeyListener
 		this.setBackground(Color.white);
 		
 		try {
+			jsonDocumentConstruct2 = JSONController.load_json(new FileInputStream("testNum.json"));
 			//jsonDocumentConstruct2 = JSONController.load_json(new FileInputStream("commaTest.json"));
-			jsonDocumentConstruct2 = JSONController.load_json(new FileInputStream("test2.json"));
-			jsonDocumentConstruct2.debugPrint();
+			//jsonDocumentConstruct2 = JSONController.load_json(new FileInputStream("test2.json"));
+			//jsonDocumentConstruct2.debugPrint();
 
 			
 			
@@ -202,6 +205,17 @@ public class Application extends JFrame implements KeyListener
 			break;
 		case KeyEvent.VK_DOWN:
 			selector.SelectFirstChildConstruct();
+			break;
+		case KeyEvent.VK_A:
+			JSONObject obj=new JSONObject();
+			obj.put("name","foo");
+			Construct ret = JSONController.add_key_value_pair(obj, jsonDocumentConstruct2);
+			//Construct ce = JSONController.construct_for_json(obj, jsonDocumentConstruct2);
+			//jsonDocumentConstruct2.children.add(ce);
+			JSONController.editors_from_constructs(ret);
+
+			jsonDocumentConstruct2.debugPrint();
+
 			break;
 		default:
 			break;

@@ -41,5 +41,11 @@ public class KeyValueConstruct extends Construct {
 		return builder.toString();
 	}
 
+	@Override
+	public boolean validate() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	
 }

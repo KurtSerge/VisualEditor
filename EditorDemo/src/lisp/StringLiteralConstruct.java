@@ -16,4 +16,10 @@ public class StringLiteralConstruct extends Construct
 		return null;
 	}
 
+	@Override
+	public boolean validate() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

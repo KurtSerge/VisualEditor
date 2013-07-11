@@ -1,6 +1,7 @@
 package editor;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 
 public abstract class Construct
@@ -13,6 +14,7 @@ public abstract class Construct
 	
 	public final String type;
 	public final Construct parent;
+	public UUID workspace; // Each construct will have user-defined rules for formatting.  example: a function with too many parameters goes onto a new line
 
 	/**
 	 * @return null if the literal should be used instead
@@ -45,4 +47,6 @@ public abstract class Construct
 			debugPrintNode(child, depth+1);
 		}
 	}
+	
+	public abstract boolean validate();
 }

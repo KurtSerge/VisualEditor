@@ -18,4 +18,10 @@ public class StringConstruct extends Construct {
 		return "\"$(node)\"";
 	}
 
+	@Override
+	public boolean validate() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

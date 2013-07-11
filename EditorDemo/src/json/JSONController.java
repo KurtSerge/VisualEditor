@@ -36,6 +36,23 @@ public class JSONController
 		return my_editor;
 	}
 
+	static public Construct add_key_value_pair(JSONObject object, Construct parent) {
+		String[] keys = JSONObject.getNames((JSONObject)object);
+		json.KeyValueConstruct key_value_construct = null;
+		
+		for(String key : keys)
+		{
+			Object child = ((JSONObject)object).get(key);
+
+			key_value_construct = new json.KeyValueConstruct(parent);
+			key_value_construct.children.add(construct_for_json(key, key_value_construct));
+			key_value_construct.children.add(construct_for_json(child, key_value_construct));
+			parent.children.add(key_value_construct);
+		}
+		
+		return key_value_construct;
+	}
+	
 	static public Construct construct_for_json(Object object, Construct parent)
 	{
 		if(object.getClass().equals(JSONObject.class))
@@ -47,16 +64,11 @@ public class JSONController
 			for(String key : keys)
 			{
 				Object child = ((JSONObject)object).get(key);
-				//if(child.getClass() == String.class) {
-						json.KeyValueConstruct key_value_construct = new json.KeyValueConstruct(object_construct);
-						key_value_construct.children.add(construct_for_json(key, key_value_construct));
-						key_value_construct.children.add(construct_for_json(child, key_value_construct));
-						object_construct.children.add(key_value_construct);
-				//}
-				//else {
-				//	object_construct.children.add(construct_for_json(key, object_construct));
-				//	object_construct.children.add(construct_for_json(child, object_construct));
-				//}
+
+				json.KeyValueConstruct key_value_construct = new json.KeyValueConstruct(object_construct);
+				key_value_construct.children.add(construct_for_json(key, key_value_construct));
+				key_value_construct.children.add(construct_for_json(child, key_value_construct));
+				object_construct.children.add(key_value_construct);
 			}
 			
 			return object_construct;
@@ -87,6 +99,34 @@ public class JSONController
 			string_construct.children.add(string_literal_construct);
 			
 			return string_construct;
+		}
+		if(object.getClass().equals(Double.class))
+		{
+			String json_string = object.toString();
+			json.FloatConstruct float_construct = new json.FloatConstruct(parent, json_string);
+
+			return float_construct;
+		}
+		if(object.getClass().equals(Integer.class))
+		{
+			String json_string = object.toString();
+			json.IntegerConstruct integer_construct = new json.IntegerConstruct(parent, json_string);
+
+			return integer_construct;
+		}
+		if(object.getClass().equals(Boolean.class))
+		{
+			String json_string = object.toString();
+			json.BooleanConstruct boolean_construct = new json.BooleanConstruct(parent, json_string);
+
+			return boolean_construct;
+		}
+		if(object==(org.json.JSONObject.NULL))
+		{
+			String json_string = object.toString();
+			json.NullConstruct null_construct = new json.NullConstruct(parent, json_string);
+
+			return null_construct;
 		}
 		else
 			throw new RuntimeException("Unknown JSON type, this should never happen");

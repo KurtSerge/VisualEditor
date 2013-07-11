@@ -19,6 +19,5 @@ public abstract class Construct {
 	
 	public abstract boolean validateSyntaxTree();
 
-	
 	public abstract String toPlainText();
 }
