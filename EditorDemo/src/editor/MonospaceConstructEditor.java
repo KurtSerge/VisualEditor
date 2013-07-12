@@ -5,6 +5,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.Graphics;
 import java.awt.LayoutManager;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -58,8 +59,15 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		});
 	}
 
-	private JTextArea text_area = new JTextArea();
+	private TransparentTextArea text_area = new TransparentTextArea();
 	private static Font font = new Font("Monospaced",Font.PLAIN, 12);
+	public class TransparentTextArea extends JTextArea {
+        @Override
+        protected void paintComponent( Graphics g ) {
+			super.paintComponent(g);
+			this.getParent().repaint();
+		}
+	}
 	
 	public void update()
 	{

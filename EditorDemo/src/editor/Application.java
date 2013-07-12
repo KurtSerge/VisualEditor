@@ -61,6 +61,7 @@ public class Application extends JFrame
         		switch(e.getKeyCode()) {
 	        		case KeyEvent.VK_I:
 	        			insert_pressed = true;
+	        			repaint();
 	        			break;
 	        		case KeyEvent.VK_RIGHT:
 	        			selector.SelectAdjacentConstruct(true);
@@ -75,6 +76,7 @@ public class Application extends JFrame
 	        			selector.SelectFirstChildConstruct();
 	        			break;
 	        		case KeyEvent.VK_A:
+	        			// FIXME:
 	        			JSONObject obj=new JSONObject();
 	        			obj.put("name","foo");
 	        			Construct ret = JSONController.add_key_value_pair(obj, jsonDocumentConstruct2);

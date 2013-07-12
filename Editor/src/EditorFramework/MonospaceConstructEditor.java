@@ -7,6 +7,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.Graphics;
 import java.awt.LayoutManager;
 import java.awt.Toolkit;
 import java.util.HashSet;
@@ -27,6 +28,8 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 	private String screenText;
 	private JTextArea text_area = new JTextArea();
 	private static Font font = new Font("Monospaced",Font.PLAIN, 12);
+	
+	
 	
 	public MonospaceConstructEditor(Construct construct) {
 		super(construct);
@@ -208,5 +211,4 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		// TODO Auto-generated method stub
 		
 	}
-	
 }
