@@ -1,6 +1,8 @@
 package editor;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -25,11 +27,73 @@ import lisp.LispController;
 
 
 
-public class Application extends JFrame implements KeyListener
+public class Application extends JFrame
 {
 	// Demo
 	private Construct  jsonDocumentConstruct2 = null;
 	private EditSelection selector = null;
+	
+    private class MyDispatcher implements KeyEventDispatcher {
+    	boolean insert_pressed;
+    	
+        @Override
+        public boolean dispatchKeyEvent(KeyEvent e) {
+            if (e.getID() == KeyEvent.KEY_PRESSED) {
+        		if(selector.selected == null) {
+        			selector.SelectRandom();
+        			return false;
+        		}
+        		
+        		// Check for combo key presses, such as "i + o"
+        		switch(e.getKeyCode()) {
+	        		case KeyEvent.VK_O: {
+	        			if(insert_pressed==true) {
+	        				int i = 0;
+	        				i = 5;
+	        			}
+	        			break;
+	        		}
+        		}
+        		
+        		// Reset first key press
+        		insert_pressed = false;
+        		
+        		switch(e.getKeyCode()) {
+	        		case KeyEvent.VK_I:
+	        			insert_pressed = true;
+	        			break;
+	        		case KeyEvent.VK_RIGHT:
+	        			selector.SelectAdjacentConstruct(true);
+	        			break;
+	        		case KeyEvent.VK_LEFT:
+	        			selector.SelectAdjacentConstruct(false);
+	        			break;			
+	        		case KeyEvent.VK_UP:
+	        			selector.SelectParentConstruct();
+	        			break;
+	        		case KeyEvent.VK_DOWN:
+	        			selector.SelectFirstChildConstruct();
+	        			break;
+	        		case KeyEvent.VK_A:
+	        			JSONObject obj=new JSONObject();
+	        			obj.put("name","foo");
+	        			Construct ret = JSONController.add_key_value_pair(obj, jsonDocumentConstruct2);
+	        			JSONController.editors_from_constructs(ret);
+	
+	        			jsonDocumentConstruct2.debugPrint();
+	
+	        			break;
+	        		default:
+	        			break;
+        		}
+            } else if (e.getID() == KeyEvent.KEY_RELEASED) {
+                //System.out.println("2test2");
+            } else if (e.getID() == KeyEvent.KEY_TYPED) {
+                //System.out.println("3test3");
+            }
+            return false;
+        }
+    }
 	
 	Application()
 	{
@@ -87,7 +151,9 @@ public class Application extends JFrame implements KeyListener
 		this.pack();
 		this.setSize(800, 600);
 		
-		this.addKeyListener(this);
+		
+		KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+        manager.addKeyEventDispatcher(new MyDispatcher());
 	}
 
 	/**
@@ -185,51 +251,4 @@ public class Application extends JFrame implements KeyListener
 			frame.repaint();
 		}
 	}
-	
-	@Override
-	public void keyPressed(KeyEvent arg0) {
-		if(selector.selected == null) {
-			selector.SelectRandom();
-			return;
-		}
-		
-		switch(arg0.getKeyCode()) {
-		case KeyEvent.VK_RIGHT:
-			selector.SelectAdjacentConstruct(true);
-			break;
-		case KeyEvent.VK_LEFT:
-			selector.SelectAdjacentConstruct(false);
-			break;			
-		case KeyEvent.VK_UP:
-			selector.SelectParentConstruct();
-			break;
-		case KeyEvent.VK_DOWN:
-			selector.SelectFirstChildConstruct();
-			break;
-		case KeyEvent.VK_A:
-			JSONObject obj=new JSONObject();
-			obj.put("name","foo");
-			Construct ret = JSONController.add_key_value_pair(obj, jsonDocumentConstruct2);
-			//Construct ce = JSONController.construct_for_json(obj, jsonDocumentConstruct2);
-			//jsonDocumentConstruct2.children.add(ce);
-			JSONController.editors_from_constructs(ret);
-
-			jsonDocumentConstruct2.debugPrint();
-
-			break;
-		default:
-			break;
-		}
-	}
-
-	@Override
-	public void keyReleased(KeyEvent arg0) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void keyTyped(KeyEvent arg0) {
-		// TODO Auto-generated method stub
-	}
-
 }
