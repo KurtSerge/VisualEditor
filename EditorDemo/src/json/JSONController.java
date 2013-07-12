@@ -37,6 +37,10 @@ public class JSONController
 	}
 
 	static public Construct add_key_value_pair(JSONObject object, Construct parent) {
+		// Key-value pairs are members of objects// TODO: should be in KeyValueConstrcut()
+		if(parent.getClass() != ObjectConstruct.class)
+			return null;
+		
 		String[] keys = JSONObject.getNames((JSONObject)object);
 		json.KeyValueConstruct key_value_construct = null;
 		
@@ -60,15 +64,16 @@ public class JSONController
 			json.ObjectConstruct object_construct = new json.ObjectConstruct(parent);
 			
 			String[] keys = JSONObject.getNames((JSONObject)object);
-			
-			for(String key : keys)
-			{
-				Object child = ((JSONObject)object).get(key);
-
-				json.KeyValueConstruct key_value_construct = new json.KeyValueConstruct(object_construct);
-				key_value_construct.children.add(construct_for_json(key, key_value_construct));
-				key_value_construct.children.add(construct_for_json(child, key_value_construct));
-				object_construct.children.add(key_value_construct);
+			if(keys != null) {
+				for(String key : keys)
+				{
+					Object child = ((JSONObject)object).get(key);
+	
+					json.KeyValueConstruct key_value_construct = new json.KeyValueConstruct(object_construct);
+					key_value_construct.children.add(construct_for_json(key, key_value_construct));
+					key_value_construct.children.add(construct_for_json(child, key_value_construct));
+					object_construct.children.add(key_value_construct);
+				}
 			}
 			
 			return object_construct;

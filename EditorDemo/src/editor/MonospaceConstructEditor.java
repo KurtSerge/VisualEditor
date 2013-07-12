@@ -31,9 +31,35 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		return ((x%2)==0) ? Color.WHITE : Color.RED;
 	}
 	
+	private JTextArea text_area;
+	private static Font font = new Font("Monospaced",Font.PLAIN, 12);
+	public class TransparentTextArea extends JTextArea {
+		public TransparentTextArea() {
+			super();
+			setBackground(new Color(0,0,0,0));
+		}
+		
+        @Override
+        protected void paintComponent( Graphics g ) {
+			super.paintComponent(g);
+			this.getParent().repaint();
+		}
+	}
+	
 	public MonospaceConstructEditor(Construct construct)
 	{
 		super(construct);
+		
+		text_area = new TransparentTextArea();
+		
+		if(construct.parent == null)  {
+			text_area = new JTextArea();
+			text_area.setBackground(new Color(255,255,255,255));
+		}
+		else
+			text_area = new TransparentTextArea();
+		
+		
 		text_area.setFont(font);
 		text_area.setLayout(this);
 		
@@ -43,10 +69,10 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		// Easy way to check out the layout
 		//text_area.setBackground(color_for_int(construct.nesting_level()));
 		
-		if(construct.parent == null)
-			text_area.setBackground(new Color(255,255,255,255));
-		else
-			text_area.setBackground(new Color(0,0,0,0));
+		//if(construct.parent == null)
+		//	text_area.setBackground(new Color(255,255,255,255));
+		//else
+		//	text_area.setBackground(new Color(0,0,0,0));
 		
 		text_area.getDocument().addDocumentListener(this);
 		SwingUtilities.invokeLater(new Runnable(){
@@ -57,16 +83,6 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 			}
 			
 		});
-	}
-
-	private TransparentTextArea text_area = new TransparentTextArea();
-	private static Font font = new Font("Monospaced",Font.PLAIN, 12);
-	public class TransparentTextArea extends JTextArea {
-        @Override
-        protected void paintComponent( Graphics g ) {
-			super.paintComponent(g);
-			this.getParent().repaint();
-		}
 	}
 	
 	public void update()

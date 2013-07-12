@@ -20,6 +20,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import org.json.JSONObject;
 
 import json.JSONController;
+import json.KeyValueConstruct;
 import json.ObjectConstruct;
 import json.StringConstruct;
 import json.StringLiteralConstruct;
@@ -39,22 +40,28 @@ public class Application extends JFrame
         @Override
         public boolean dispatchKeyEvent(KeyEvent e) {
             if (e.getID() == KeyEvent.KEY_PRESSED) {
-        		if(selector.selected == null) {
-        			selector.SelectRandom();
-        			return false;
-        		}
-        		
+            	
         		// Check for combo key presses, such as "i + o"
-        		switch(e.getKeyCode()) {
-	        		case KeyEvent.VK_O: {
-	        			if(insert_pressed==true) {
-	        				int i = 0;
-	        				i = 5;
-	        			}
-	        			break;
+    			if(insert_pressed==true) {
+	        		switch(e.getKeyCode()) {
+	        			// Insert KV pair
+		        		case KeyEvent.VK_K: {
+		        			JSONObject obj=new JSONObject();
+		        			obj.put("?temp","?temp");// TODO: second string should actually be ? placeholder... can be object OR string
+		        			Construct ret = JSONController.add_key_value_pair(obj, selector.getSelected());
+		        			if(ret != null)
+		        				JSONController.editors_from_constructs(ret);
+		        			break;
+		        		}
+		        		case KeyEvent.VK_O: {
+		        			JSONObject obj=new JSONObject();
+		        			obj.put("?temp",new JSONObject());// TODO: second string should actually be ? placeholder... can be object OR string
+		        			Construct ret = JSONController.add_key_value_pair(obj, selector.getSelected());
+		        			if(ret != null)
+		        				JSONController.editors_from_constructs(ret);
+		        		}
 	        		}
-        		}
-        		
+    			}
         		// Reset first key press
         		insert_pressed = false;
         		
@@ -76,6 +83,7 @@ public class Application extends JFrame
 	        			selector.SelectFirstChildConstruct();
 	        			break;
 	        		case KeyEvent.VK_A:
+	        			/*
 	        			// FIXME:
 	        			JSONObject obj=new JSONObject();
 	        			obj.put("name","foo");
@@ -83,7 +91,7 @@ public class Application extends JFrame
 	        			JSONController.editors_from_constructs(ret);
 	
 	        			jsonDocumentConstruct2.debugPrint();
-	
+	        			 */
 	        			break;
 	        		default:
 	        			break;
@@ -105,22 +113,18 @@ public class Application extends JFrame
 		this.setVisible(true);
 		this.setBackground(Color.white);
 		
+		
 		try {
 			jsonDocumentConstruct2 = JSONController.load_json(new FileInputStream("testNum.json"));
 			//jsonDocumentConstruct2 = JSONController.load_json(new FileInputStream("commaTest.json"));
 			//jsonDocumentConstruct2 = JSONController.load_json(new FileInputStream("test2.json"));
 			//jsonDocumentConstruct2.debugPrint();
-
-			
-			
-			
 		} catch (FileNotFoundException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 			return;
 		}
 		
-	
+
 		/*
 		// TODO: Load from file
 		Construct jsonDocumentConstruct = new ObjectConstruct(null);
@@ -149,6 +153,7 @@ public class Application extends JFrame
 		this.add(JSONController.editors_from_constructs(jsonDocumentConstruct2).get_component());
 		
 		selector = new EditSelection(this, JSONController.editors);
+		selector.SelectRandom();
 		
 		this.pack();
 		this.setSize(800, 600);
@@ -186,6 +191,10 @@ public class Application extends JFrame
 		private final JFrame frame;
 		private final List<ConstructEditor> editors;
 		private ConstructEditor selected = null;
+		
+		public Construct getSelected() {
+			return selected.construct;
+		}
 		
 		public EditSelection(JFrame frame, List<ConstructEditor> editors) {
 			this.frame = frame;
