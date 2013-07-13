@@ -34,7 +34,7 @@ public class Application extends JFrame
 	private Construct  jsonDocumentConstruct2 = null;
 	private EditSelection selector = null;
 	
-    private class MyDispatcher implements KeyEventDispatcher {
+    private class MyDispatcher implements KeyListener {
     	boolean insert_pressed;
     	boolean delete_pressed;
     	private final JFrame frame;
@@ -43,8 +43,8 @@ public class Application extends JFrame
     		this.frame = frame;
     	}
     	
-        @Override
-        public boolean dispatchKeyEvent(KeyEvent e) {
+		@Override
+		public void keyPressed(KeyEvent e) {
             if (e.getID() == KeyEvent.KEY_PRESSED) {
             	
         		// Check for combo key presses, such as "i + o"
@@ -82,7 +82,6 @@ public class Application extends JFrame
 		        			deleteMeEditor.RemoveComponents();
 		        			
 		        			// FIXME: how to delete construct?
-		        			  frame.revalidate();  
 		        			  frame.validate();  
 		        			  frame.repaint();  
 		        			
@@ -106,15 +105,19 @@ public class Application extends JFrame
 	        			repaint();
 	        			break;
 	        		case KeyEvent.VK_RIGHT:
+	        			System.out.println("Right");
 	        			selector.SelectAdjacentConstruct(true);
 	        			break;
 	        		case KeyEvent.VK_LEFT:
+	        			System.out.println("Left");
 	        			selector.SelectAdjacentConstruct(false);
 	        			break;			
 	        		case KeyEvent.VK_UP:
+	        			System.out.println("Up");
 	        			selector.SelectParentConstruct();
 	        			break;
 	        		case KeyEvent.VK_DOWN:
+	        			System.out.println("Down");
 	        			selector.SelectFirstChildConstruct();
 	        			break;
 	        		case KeyEvent.VK_A:
@@ -139,8 +142,19 @@ public class Application extends JFrame
             } else if (e.getID() == KeyEvent.KEY_TYPED) {
                 //System.out.println("3test3");
             }
-            return false;
-        }
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void keyTyped(KeyEvent e) {
+			// TODO Auto-generated method stub
+			
+		}
     }
 	
 	Application()
@@ -150,7 +164,6 @@ public class Application extends JFrame
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
 		this.setBackground(Color.white);
-		
 		
 		try {
 			jsonDocumentConstruct2 = JSONController.load_json(new FileInputStream("testNum.json"));
@@ -188,7 +201,9 @@ public class Application extends JFrame
 		this.add(JSONConstructEditorFactory.create_editor_for(jsonDocumentConstruct).get_component());
 		*/
 		
-		this.add(JSONController.editors_from_constructs(jsonDocumentConstruct2).get_component());
+		Component top = JSONController.editors_from_constructs(jsonDocumentConstruct2).get_component();
+		this.add(top);
+		top.addKeyListener(new MyDispatcher(this));
 		
 		selector = new EditSelection(this, JSONController.editors);
 		selector.SelectRandom();
@@ -198,8 +213,10 @@ public class Application extends JFrame
 		this.setSize(800, 600);
 		
 		
-		KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
-        manager.addKeyEventDispatcher(new MyDispatcher(this));
+	
+		
+		//KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
+        //manager.addKeyEventDispatcher(new MyDispatcher(this));
 	}
 
 	/**

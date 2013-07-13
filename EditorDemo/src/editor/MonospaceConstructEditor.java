@@ -10,6 +10,7 @@ import java.awt.LayoutManager;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.event.MouseMotionListener;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -18,6 +19,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
+import javax.swing.event.CaretEvent;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -38,7 +40,6 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 			super();
 			setBackground(new Color(0,0,0,0));
 		}
-		
         @Override
         protected void paintComponent( Graphics g ) {
 			super.paintComponent(g);
@@ -63,6 +64,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		if(construct.parent == null)  {
 			text_area = new JTextArea();
 			text_area.setBackground(new Color(255,255,255,255));
+			text_area.setHighlighter(null);
 		}
 		else
 			text_area = new TransparentTextArea();
@@ -71,9 +73,9 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		text_area.setFont(font);
 		text_area.setLayout(this);
 		
-		text_area.setEnabled(construct.screen_text() == null);
+		text_area.setEditable(construct.screen_text() == null);
 		text_area.setDisabledTextColor(Color.DARK_GRAY);
-		
+	
 		// Easy way to check out the layout
 		//text_area.setBackground(color_for_int(construct.nesting_level()));
 		
