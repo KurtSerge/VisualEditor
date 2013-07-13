@@ -36,6 +36,12 @@ public class Application extends JFrame
 	
     private class MyDispatcher implements KeyEventDispatcher {
     	boolean insert_pressed;
+    	boolean delete_pressed;
+    	private final JFrame frame;
+    	
+    	public MyDispatcher(JFrame frame) {
+    		this.frame = frame;
+    	}
     	
         @Override
         public boolean dispatchKeyEvent(KeyEvent e) {
@@ -62,10 +68,39 @@ public class Application extends JFrame
 		        		}
 	        		}
     			}
+        		// Check for combo key presses, such as "d + d"
+    			if(delete_pressed==true) {
+	        		switch(e.getKeyCode()) {
+	        			// Insert KV pair
+		        		case KeyEvent.VK_D: {
+		        			
+		        		
+		        			Construct deleteMeCon = selector.getSelected();
+		        			deleteMeCon = null;
+		        			
+		        			MonospaceConstructEditor deleteMeEditor = (MonospaceConstructEditor) selector.selected;
+		        			deleteMeEditor.RemoveComponents();
+		        			
+		        			// FIXME: how to delete construct?
+		        			  frame.revalidate();  
+		        			  frame.validate();  
+		        			  frame.repaint();  
+		        			
+		        			//deleteMeCon = null;
+		        			//deleteMeEd = null;
+		        			break;
+		        		}
+	        		}
+    			}
+    			
         		// Reset first key press
         		insert_pressed = false;
+        		delete_pressed = false;
         		
         		switch(e.getKeyCode()) {
+	        		case KeyEvent.VK_D:
+	        			delete_pressed = true;
+	        			break;
 	        		case KeyEvent.VK_I:
 	        			insert_pressed = true;
 	        			repaint();
@@ -92,6 +127,9 @@ public class Application extends JFrame
 	
 	        			jsonDocumentConstruct2.debugPrint();
 	        			 */
+	        			break;
+	        		case KeyEvent.VK_Q:
+	        			jsonDocumentConstruct2.debugPrint();
 	        			break;
 	        		default:
 	        			break;
@@ -155,12 +193,13 @@ public class Application extends JFrame
 		selector = new EditSelection(this, JSONController.editors);
 		selector.SelectRandom();
 		
+		
 		this.pack();
 		this.setSize(800, 600);
 		
 		
 		KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
-        manager.addKeyEventDispatcher(new MyDispatcher());
+        manager.addKeyEventDispatcher(new MyDispatcher(this));
 	}
 
 	/**

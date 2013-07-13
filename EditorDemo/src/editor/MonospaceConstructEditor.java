@@ -42,8 +42,16 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
         @Override
         protected void paintComponent( Graphics g ) {
 			super.paintComponent(g);
-			this.getParent().repaint();
-		}
+			
+			// Repaint top component if any component changes
+			Component iter = this;
+			Component top = this;
+			while(iter != null) {
+				top = iter;
+				iter = iter.getParent();
+			}
+			top.repaint();
+		}	
 	}
 	
 	public MonospaceConstructEditor(Construct construct)
@@ -69,14 +77,9 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		// Easy way to check out the layout
 		//text_area.setBackground(color_for_int(construct.nesting_level()));
 		
-		//if(construct.parent == null)
-		//	text_area.setBackground(new Color(255,255,255,255));
-		//else
-		//	text_area.setBackground(new Color(0,0,0,0));
-		
 		text_area.getDocument().addDocumentListener(this);
 		SwingUtilities.invokeLater(new Runnable(){
-
+			
 			@Override
 			public void run() {
 				MonospaceConstructEditor.this.update();
@@ -338,6 +341,11 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 	@Override
 	public void changedUpdate(DocumentEvent e) {
 		on_change();
+	}
+	
+	public void RemoveComponents() {
+		text_area.getDocument().removeDocumentListener(this);
+		text_area.getParent().remove(text_area);
 	}
 
 }
