@@ -73,8 +73,6 @@ public class Application extends JFrame
 	        		switch(e.getKeyCode()) {
 	        			// Insert KV pair
 		        		case KeyEvent.VK_D: {
-		        			
-		        		
 		        			Construct deleteMeCon = selector.getSelected();
 		        			deleteMeCon = null;
 		        			
@@ -104,22 +102,21 @@ public class Application extends JFrame
 	        			insert_pressed = true;
 	        			repaint();
 	        			break;
-	        		case KeyEvent.VK_RIGHT:
+	        		case KeyEvent.VK_UP:
 	        			System.out.println("Right");
 	        			selector.SelectAdjacentConstruct(true);
 	        			break;
-	        		case KeyEvent.VK_LEFT:
+	        		case KeyEvent.VK_DOWN:
 	        			System.out.println("Left");
 	        			selector.SelectAdjacentConstruct(false);
 	        			break;			
-	        		case KeyEvent.VK_UP:
+	        		case KeyEvent.VK_LEFT:
 	        			System.out.println("Up");
 	        			selector.SelectParentConstruct();
 	        			break;
-	        		case KeyEvent.VK_DOWN:
+	        		case KeyEvent.VK_RIGHT:
 	        			System.out.println("Down");
 	        			selector.SelectFirstChildConstruct();
-	        			break;
 	        		case KeyEvent.VK_A:
 	        			/*
 	        			// FIXME:
@@ -315,6 +312,7 @@ public class Application extends JFrame
 			}
 			sel.get_component().setBackground(Color.red);
 			selected = sel;
+			selected.setSelected();
 			frame.repaint();
 		}
 	}

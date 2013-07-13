@@ -350,4 +350,12 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		text_area.getParent().remove(text_area);
 	}
 
+	@Override
+	public void setSelected() {
+		if(construct.type == "string_literal") { // TODO: Some more generic way to handle all editable types?
+			get_component().requestFocus();
+			text_area.selectAll();
+		}
+	}
+
 }
