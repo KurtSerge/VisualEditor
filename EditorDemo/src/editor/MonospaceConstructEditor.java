@@ -6,10 +6,14 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.KeyEventDispatcher;
+import java.awt.KeyboardFocusManager;
 import java.awt.LayoutManager;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseMotionListener;
 import java.util.HashSet;
 import java.util.Map;
@@ -52,19 +56,43 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 				iter = iter.getParent();
 			}
 			top.repaint();
-		}	
+		}
 	}
 	
+	private class TextListener implements KeyListener {
+		private final JTextArea listenee;
+		
+		public TextListener(JTextArea ta) {
+			listenee = ta;
+		}
+		
+		@Override
+		public void keyPressed(KeyEvent e) {
+			if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+				// Find base
+				Component iter = listenee;
+				while(iter.getName() != "mono_base") {
+					iter = iter.getParent();
+				}
+				iter.requestFocus();
+			}
+			
+		}
+		@Override
+		public void keyReleased(KeyEvent e) {}
+		@Override
+		public void keyTyped(KeyEvent e) {}
+	}
+
 	public MonospaceConstructEditor(Construct construct)
 	{
 		super(construct);
 		
-		text_area = new TransparentTextArea();
-		
 		if(construct.parent == null)  {
 			text_area = new JTextArea();
-			text_area.setBackground(new Color(255,255,255,255));
 			text_area.setHighlighter(null);
+			text_area.setBackground(new Color(255,255,255,255));
+			text_area.setName("mono_base");
 		}
 		else
 			text_area = new TransparentTextArea();
@@ -352,6 +380,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 
 	@Override
 	public void setSelected() {
+		text_area.addKeyListener(new TextListener(text_area));
 		if(construct.type == "string_literal") { // TODO: Some more generic way to handle all editable types?
 			get_component().requestFocus();
 			text_area.selectAll();

@@ -209,9 +209,6 @@ public class Application extends JFrame
 		this.pack();
 		this.setSize(800, 600);
 		
-		
-	
-		
 		//KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
         //manager.addKeyEventDispatcher(new MyDispatcher(this));
 	}
