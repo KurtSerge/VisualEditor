@@ -55,6 +55,7 @@ public class Application extends JFrame
             	
         		// Check for combo key presses, such as "i + o"
     			if(insert_pressed==true) {
+            		insert_pressed = false;
 	        		switch(e.getKeyCode()) {
 	        			// Insert KV pair
 		        		case KeyEvent.VK_K: {
@@ -73,27 +74,28 @@ public class Application extends JFrame
 		        				JSONController.editors_from_constructs(ret);
 		        		}
 	        		}
+	        		return;
     			}
         		// Check for combo key presses, such as "d + d"
     			if(delete_pressed==true) {
+            		delete_pressed = false;
 	        		switch(e.getKeyCode()) {
-	        			// Insert KV pair
 		        		case KeyEvent.VK_D: {
-		        			Construct deleteMeCon = selector.getSelected();
-		        			deleteMeCon = null;
-		        			
+		        			// What to delete?
 		        			MonospaceConstructEditor deleteMeEditor = (MonospaceConstructEditor) selector.selected;
+		        			Construct deleteMeCon = deleteMeEditor.construct;
+		        			// What to select next?
+		        			if(selector.SelectAdjacentConstruct(false) == false)
+		        				selector.SelectParentConstruct();
+		        			// Delete
 		        			deleteMeEditor.RemoveComponents();
-		        			
-		        			// FIXME: how to delete construct?
-		        			  frame.validate();  
-		        			  frame.repaint();  
-		        			
-		        			//deleteMeCon = null;
-		        			//deleteMeEd = null;
+		        			if(deleteMeCon.parent != null)
+		        				deleteMeCon.parent.children.remove(deleteMeCon);
+		        			selector.selected.update();
 		        			break;
 		        		}
 	        		}
+	        		return;
     			}
     			
         		// Reset first key press
@@ -110,11 +112,11 @@ public class Application extends JFrame
 	        			break;
 	        		case KeyEvent.VK_UP:
 	        			System.out.println("Up");
-	        			selector.SelectAdjacentConstruct(true);
+	        			selector.SelectAdjacentConstruct(false);
 	        			break;
 	        		case KeyEvent.VK_DOWN:
 	        			System.out.println("Down");
-	        			selector.SelectAdjacentConstruct(false);
+	        			selector.SelectAdjacentConstruct(true);
 	        			break;			
 	        		case KeyEvent.VK_LEFT:
 	        			System.out.println("Left");
@@ -298,12 +300,12 @@ public class Application extends JFrame
 			 Select(ConstructEditor.editorsByConstructs.get(child).get());
 		}
 		
-		public void SelectAdjacentConstruct(boolean next) {
+		public boolean SelectAdjacentConstruct(boolean next) {
 			if(selected == null)
-				return;
+				return false;
 			Construct parent = selected.construct.parent;
 			if(parent == null)
-				return;
+				return false;
 			
 			int myIndex = parent.children.indexOf(selected.construct);
 			int selectIndex = (next) ? ++myIndex : --myIndex;
@@ -315,10 +317,15 @@ public class Application extends JFrame
 			}
 			Construct newSelect = parent.children.get(selectIndex);
 			if(newSelect == null)
-				return;
+				return false;
 		
 			ConstructEditor edit = ConstructEditor.editorsByConstructs.get(newSelect).get();
+			if(edit == selected)
+				return false;
+			
 			Select(edit);
+			
+			return true;
 		}
 		
 		public void Select(ConstructEditor newSel) {
