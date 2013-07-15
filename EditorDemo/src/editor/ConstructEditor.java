@@ -45,5 +45,5 @@ public abstract class ConstructEditor
 	protected static Map<Construct, WeakReference<ConstructEditor> > editorsByConstructs =
 			Collections.synchronizedMap(new HashMap<Construct, WeakReference<ConstructEditor> >());
 
-	public abstract void setSelected();
+	public abstract void setSelected(boolean bSelect);
 }

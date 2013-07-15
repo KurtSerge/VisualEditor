@@ -1,11 +1,17 @@
 package editor;
+import java.awt.AWTEvent;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
+import java.awt.MouseInfo;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.event.AWTEventListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -103,19 +109,19 @@ public class Application extends JFrame
 	        			repaint();
 	        			break;
 	        		case KeyEvent.VK_UP:
-	        			System.out.println("Right");
+	        			System.out.println("Up");
 	        			selector.SelectAdjacentConstruct(true);
 	        			break;
 	        		case KeyEvent.VK_DOWN:
-	        			System.out.println("Left");
+	        			System.out.println("Down");
 	        			selector.SelectAdjacentConstruct(false);
 	        			break;			
 	        		case KeyEvent.VK_LEFT:
-	        			System.out.println("Up");
+	        			System.out.println("Left");
 	        			selector.SelectParentConstruct();
 	        			break;
 	        		case KeyEvent.VK_RIGHT:
-	        			System.out.println("Down");
+	        			System.out.println("Right");
 	        			selector.SelectFirstChildConstruct();
 	        		case KeyEvent.VK_A:
 	        			/*
@@ -152,6 +158,17 @@ public class Application extends JFrame
 			// TODO Auto-generated method stub
 			
 		}
+    }
+    
+    // Using AWT because Swing "MouseListener" doesn't give coords when clicking over jtextareas
+    private static class Listener implements AWTEventListener {
+        public void eventDispatched(AWTEvent event) {
+        	if (event instanceof MouseEvent) {
+        		MouseEvent e = (MouseEvent)event;
+        		if(e.getID() == MouseEvent.MOUSE_CLICKED)
+	            System.out.print(MouseInfo.getPointerInfo().getLocation() + "\n");
+        	} 
+        }
     }
 	
 	Application()
@@ -202,15 +219,16 @@ public class Application extends JFrame
 		this.add(top);
 		top.addKeyListener(new MyDispatcher(this));
 		
+		//top.addMouseListener(new MouseSelector());
+		  Toolkit.getDefaultToolkit().addAWTEventListener(
+		          new Listener(), AWTEvent.MOUSE_EVENT_MASK | AWTEvent.FOCUS_EVENT_MASK);
+		  
 		selector = new EditSelection(this, JSONController.editors);
 		selector.SelectRandom();
 		
 		
 		this.pack();
 		this.setSize(800, 600);
-		
-		//KeyboardFocusManager manager = KeyboardFocusManager.getCurrentKeyboardFocusManager();
-        //manager.addKeyEventDispatcher(new MyDispatcher(this));
 	}
 
 	/**
@@ -303,13 +321,12 @@ public class Application extends JFrame
 			Select(edit);
 		}
 		
-		public void Select(ConstructEditor sel) {
+		public void Select(ConstructEditor newSel) {
 			if(selected != null)   {
-				selected.get_component().setBackground(new Color(0,0,0,0));
+				selected.setSelected(false);
 			}
-			sel.get_component().setBackground(Color.red);
-			selected = sel;
-			selected.setSelected();
+			selected = newSel;
+			selected.setSelected(true);
 			frame.repaint();
 		}
 	}

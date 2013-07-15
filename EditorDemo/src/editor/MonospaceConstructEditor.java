@@ -6,15 +6,12 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.KeyEventDispatcher;
-import java.awt.KeyboardFocusManager;
 import java.awt.LayoutManager;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseMotionListener;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -23,7 +20,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
-import javax.swing.event.CaretEvent;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -100,7 +96,6 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		
 		text_area.setFont(font);
 		text_area.setLayout(this);
-		
 		text_area.setEditable(construct.screen_text() == null);
 		text_area.setDisabledTextColor(Color.DARK_GRAY);
 	
@@ -353,6 +348,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 			public void run() {
 				if(construct.screen_text() == null)
 					construct.literal = text_area.getText();
+
 				MonospaceConstructEditor.this.update();
 			}
 		});
@@ -378,12 +374,24 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		text_area.getParent().remove(text_area);
 	}
 
+
+	private TextListener textListener;
 	@Override
-	public void setSelected() {
-		text_area.addKeyListener(new TextListener(text_area));
-		if(construct.type == "string_literal") { // TODO: Some more generic way to handle all editable types?
-			get_component().requestFocus();
-			text_area.selectAll();
+	public void setSelected(boolean bSelect) {
+		if(bSelect == true) {
+			text_area.setBackground(Color.red);
+			textListener = new TextListener(text_area);
+			text_area.addKeyListener(textListener);
+			if(construct.screen_text() == null) { // TODO: Some more generic way to handle all editable types?
+				get_component().requestFocus();
+				text_area.selectAll();
+			}
+		} 
+		else {
+			text_area.select(0, 0);
+			text_area.setBackground(new Color(0,0,0,0));
+			text_area.removeKeyListener(textListener);
+			textListener = null;
 		}
 	}
 
