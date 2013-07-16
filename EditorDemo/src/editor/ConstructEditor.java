@@ -42,8 +42,18 @@ public abstract class ConstructEditor
 		}
 	}
 	
+	final public ConstructEditor getParent() {
+		if(this.construct.parent == null)
+			return null;
+		
+		 return ConstructEditor.editorsByConstructs.get(construct.parent).get();
+	}
+	
 	protected static Map<Construct, WeakReference<ConstructEditor> > editorsByConstructs =
 			Collections.synchronizedMap(new HashMap<Construct, WeakReference<ConstructEditor> >());
 
 	public abstract void setSelected(boolean bSelect);
+	
+	// Remove this constructeditor's UI
+	public abstract void deleteMe();
 }

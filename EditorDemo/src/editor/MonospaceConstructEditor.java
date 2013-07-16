@@ -382,7 +382,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 			text_area.setBackground(Color.red);
 			textListener = new TextListener(text_area);
 			text_area.addKeyListener(textListener);
-			if(construct.screen_text() == null) { // TODO: Some more generic way to handle all editable types?
+			if(construct != null && construct.screen_text() == null) { // editable
 				get_component().requestFocus();
 				text_area.selectAll();
 			}
@@ -393,6 +393,13 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 			text_area.removeKeyListener(textListener);
 			textListener = null;
 		}
+	}
+	
+	
+	
+	final public void deleteMe() {
+		this.RemoveComponents();
+		this.construct.delete();
 	}
 
 }

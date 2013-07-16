@@ -40,6 +40,11 @@ public abstract class Construct
 	public void debugPrintNode(Construct con, int depth) {
 		for(int i = 0; i < depth; i++)
 			System.out.print("\t");
+		if(con == null)  {
+			System.out.println("null");
+			return;
+		}
+		
 		String nodeStr = "Type:" + con.type + ", Literal:" + con.literal + ", Children:" + con.children.size();
 		System.out.println(nodeStr);
 		
@@ -49,4 +54,13 @@ public abstract class Construct
 	}
 	
 	public abstract boolean validate();
+
+	public void delete() {
+		if(this.parent != null)  {
+			this.parent.children.remove(this);
+			
+			//int myIndex = deleteMeCon.parent.children.indexOf(deleteMeCon);
+			//deleteMeCon.parent.children.set(myIndex, null);
+		}
+	}
 }

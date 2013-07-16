@@ -30,18 +30,15 @@ public class BaseController implements KeyListener {
         		delete_pressed = false;
         		switch(arg0.getKeyCode()) {
 	        		case KeyEvent.VK_D: {
-	        			// What to delete?
-	        			MonospaceConstructEditor deleteMeEditor = (MonospaceConstructEditor) selector.selected;
-	        			Construct deleteMeCon = deleteMeEditor.construct;
-	        			// Delete
-	        			if(deleteMeCon.parent != null)  {
-		        			// What to select next?
-		        			if(selector.SelectAdjacentConstruct(false) == false)
-		        				selector.SelectParentConstruct();
-		        			// Delete
-		        			deleteMeEditor.RemoveComponents();
-	        				deleteMeCon.parent.children.remove(deleteMeCon);
-	        				selector.selected.update();
+	        			ConstructEditor deleteMeEditor = selector.selected;
+
+	        			if(deleteMeEditor.getParent() != null) 
+	        			{
+	        				if(selector.SelectAdjacentConstruct(false) == false)
+	        					selector.SelectParentConstruct();
+	        				
+		        			deleteMeEditor.deleteMe();
+		        			selector.selected.update();
 	        			}
 	        			break;
 	        		}
@@ -109,11 +106,12 @@ public class BaseController implements KeyListener {
 		public void SelectParentConstruct() {
 			if(selected == null)
 				return;
-			Construct parent = selected.construct.parent;
+			
+			ConstructEditor parent = selected.getParent();
 			if(parent == null)
 				return;
 			
-			 Select(ConstructEditor.editorsByConstructs.get(parent).get());
+			 Select(parent);
 		}
 		
 		public void SelectFirstChildConstruct() {
