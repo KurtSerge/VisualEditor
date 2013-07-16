@@ -38,11 +38,10 @@ public class Application extends JFrame
 {
 	// Demo
 	private Construct  jsonDocumentConstruct2 = null;
-	private EditSelection selector = null;
+	private  BaseController controller = null;
 	
     private class MyDispatcher implements KeyListener {
     	boolean insert_pressed;
-    	boolean delete_pressed;
     	private final JFrame frame;
     	
     	public MyDispatcher(JFrame frame) {
@@ -61,7 +60,7 @@ public class Application extends JFrame
 		        		case KeyEvent.VK_K: {
 		        			JSONObject obj=new JSONObject();
 		        			obj.put("?temp","?temp");// TODO: second string should actually be ? placeholder... can be object OR string
-		        			Construct ret = JSONController.add_key_value_pair(obj, selector.getSelected());
+		        			Construct ret = JSONController.add_key_value_pair(obj, controller.getSelectedEditor().construct);
 		        			if(ret != null)
 		        				JSONController.editors_from_constructs(ret);
 		        			break;
@@ -69,30 +68,9 @@ public class Application extends JFrame
 		        		case KeyEvent.VK_O: {
 		        			JSONObject obj=new JSONObject();
 		        			obj.put("?temp",new JSONObject());// TODO: second string should actually be ? placeholder... can be object OR string
-		        			Construct ret = JSONController.add_key_value_pair(obj, selector.getSelected());
+		        			Construct ret = JSONController.add_key_value_pair(obj, controller.getSelectedEditor().construct);
 		        			if(ret != null)
 		        				JSONController.editors_from_constructs(ret);
-		        		}
-	        		}
-	        		return;
-    			}
-        		// Check for combo key presses, such as "d + d"
-    			if(delete_pressed==true) {
-            		delete_pressed = false;
-	        		switch(e.getKeyCode()) {
-		        		case KeyEvent.VK_D: {
-		        			// What to delete?
-		        			MonospaceConstructEditor deleteMeEditor = (MonospaceConstructEditor) selector.selected;
-		        			Construct deleteMeCon = deleteMeEditor.construct;
-		        			// What to select next?
-		        			if(selector.SelectAdjacentConstruct(false) == false)
-		        				selector.SelectParentConstruct();
-		        			// Delete
-		        			deleteMeEditor.RemoveComponents();
-		        			if(deleteMeCon.parent != null)
-		        				deleteMeCon.parent.children.remove(deleteMeCon);
-		        			selector.selected.update();
-		        			break;
 		        		}
 	        		}
 	        		return;
@@ -100,41 +78,11 @@ public class Application extends JFrame
     			
         		// Reset first key press
         		insert_pressed = false;
-        		delete_pressed = false;
         		
         		switch(e.getKeyCode()) {
-	        		case KeyEvent.VK_D:
-	        			delete_pressed = true;
-	        			break;
 	        		case KeyEvent.VK_I:
 	        			insert_pressed = true;
 	        			repaint();
-	        			break;
-	        		case KeyEvent.VK_UP:
-	        			System.out.println("Up");
-	        			selector.SelectAdjacentConstruct(false);
-	        			break;
-	        		case KeyEvent.VK_DOWN:
-	        			System.out.println("Down");
-	        			selector.SelectAdjacentConstruct(true);
-	        			break;			
-	        		case KeyEvent.VK_LEFT:
-	        			System.out.println("Left");
-	        			selector.SelectParentConstruct();
-	        			break;
-	        		case KeyEvent.VK_RIGHT:
-	        			System.out.println("Right");
-	        			selector.SelectFirstChildConstruct();
-	        		case KeyEvent.VK_A:
-	        			/*
-	        			// FIXME:
-	        			JSONObject obj=new JSONObject();
-	        			obj.put("name","foo");
-	        			Construct ret = JSONController.add_key_value_pair(obj, jsonDocumentConstruct2);
-	        			JSONController.editors_from_constructs(ret);
-	
-	        			jsonDocumentConstruct2.debugPrint();
-	        			 */
 	        			break;
 	        		case KeyEvent.VK_Q:
 	        			jsonDocumentConstruct2.debugPrint();
@@ -142,24 +90,13 @@ public class Application extends JFrame
 	        		default:
 	        			break;
         		}
-            } else if (e.getID() == KeyEvent.KEY_RELEASED) {
-                //System.out.println("2test2");
-            } else if (e.getID() == KeyEvent.KEY_TYPED) {
-                //System.out.println("3test3");
             }
 		}
 
 		@Override
-		public void keyReleased(KeyEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
-
+		public void keyReleased(KeyEvent e) {}
 		@Override
-		public void keyTyped(KeyEvent e) {
-			// TODO Auto-generated method stub
-			
-		}
+		public void keyTyped(KeyEvent e) {}
     }
     
     // Using AWT because Swing "MouseListener" doesn't give coords when clicking over jtextareas
@@ -221,14 +158,15 @@ public class Application extends JFrame
 		this.add(top);
 		top.addKeyListener(new MyDispatcher(this));
 		
+		controller = new BaseController(this, JSONController.editors);
+		top.addKeyListener(controller);
+		
+		
 		//top.addMouseListener(new MouseSelector());
 		  Toolkit.getDefaultToolkit().addAWTEventListener(
 		          new Listener(), AWTEvent.MOUSE_EVENT_MASK | AWTEvent.FOCUS_EVENT_MASK);
 		  
-		selector = new EditSelection(this, JSONController.editors);
-		selector.SelectRandom();
-		
-		
+
 		this.pack();
 		this.setSize(800, 600);
 	}
@@ -257,84 +195,4 @@ public class Application extends JFrame
 		new Application();
 	}
 
-	private class EditSelection {
-		private final JFrame frame;
-		private final List<ConstructEditor> editors;
-		private ConstructEditor selected = null;
-		
-		public Construct getSelected() {
-			return selected.construct;
-		}
-		
-		public EditSelection(JFrame frame, List<ConstructEditor> editors) {
-			this.frame = frame;
-			this.editors = editors;
-		}
-		
-		public void SelectRandom() {
-			int select = Math.abs((new Random()).nextInt()) % editors.size();
-			ConstructEditor toSelect = editors.get(select);
-			Select(toSelect);
-		}
-		
-		public void SelectParentConstruct() {
-			if(selected == null)
-				return;
-			Construct parent = selected.construct.parent;
-			if(parent == null)
-				return;
-			
-			 Select(ConstructEditor.editorsByConstructs.get(parent).get());
-		}
-		
-		public void SelectFirstChildConstruct() {
-			if(selected == null)
-				return;
-			if(selected.construct.children.size() == 0)
-				return;
-			
-			Construct child = selected.construct.children.get(0);
-			if(child == null)
-				return;
-			
-			 Select(ConstructEditor.editorsByConstructs.get(child).get());
-		}
-		
-		public boolean SelectAdjacentConstruct(boolean next) {
-			if(selected == null)
-				return false;
-			Construct parent = selected.construct.parent;
-			if(parent == null)
-				return false;
-			
-			int myIndex = parent.children.indexOf(selected.construct);
-			int selectIndex = (next) ? ++myIndex : --myIndex;
-			if(selectIndex >= parent.children.size()) {
-				selectIndex = 0;
-			}	
-			else if(selectIndex < 0) {
-				selectIndex = parent.children.size()-1;
-			}
-			Construct newSelect = parent.children.get(selectIndex);
-			if(newSelect == null)
-				return false;
-		
-			ConstructEditor edit = ConstructEditor.editorsByConstructs.get(newSelect).get();
-			if(edit == selected)
-				return false;
-			
-			Select(edit);
-			
-			return true;
-		}
-		
-		public void Select(ConstructEditor newSel) {
-			if(selected != null)   {
-				selected.setSelected(false);
-			}
-			selected = newSel;
-			selected.setSelected(true);
-			frame.repaint();
-		}
-	}
 }
