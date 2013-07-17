@@ -55,12 +55,22 @@ public abstract class Construct
 	
 	public abstract boolean validate();
 
-	public void delete() {
+	final public void delete() {
 		if(this.parent != null)  {
 			this.parent.children.remove(this);
-			
-			//int myIndex = deleteMeCon.parent.children.indexOf(deleteMeCon);
-			//deleteMeCon.parent.children.set(myIndex, null);
 		}
+	}
+	
+	// Override this for special rules, example: KV-Pair must have at least 2 children
+	public void deleteChild(Construct child) {
+		int childIndex = this.children.indexOf(child);
+		this.children.remove(childIndex);
+	}
+	
+	// Set child leaf to an empty construct (deletes all children)
+	final public void setEmpty(Construct child) {
+		int index = children.indexOf(child);
+		child.delete();
+		children.add(index, new EmptyConstruct(this));
 	}
 }

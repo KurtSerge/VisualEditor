@@ -23,5 +23,4 @@ public class StringConstruct extends Construct {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
 }
