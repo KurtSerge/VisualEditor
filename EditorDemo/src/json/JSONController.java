@@ -43,8 +43,6 @@ public class JSONController
 					return null;
 				
 				if(object == null)  {
-					//object.put("temp", new EmptyConstruct(parent));
-
 					json.KeyValueConstruct key_value_construct = new json.KeyValueConstruct(parent);
 					key_value_construct.children.add(construct_for_json("temp", key_value_construct));
 					key_value_construct.children.add(new EmptyConstruct(key_value_construct));
@@ -63,11 +61,7 @@ public class JSONController
 			
 						key_value_construct = new json.KeyValueConstruct(parent);
 						key_value_construct.children.add(construct_for_json(key, key_value_construct));
-					
-						if(Construct.class.isAssignableFrom(child.getClass()))
-							key_value_construct.children.add((Construct)child);
-						else
-							key_value_construct.children.add(construct_for_json(child, key_value_construct));
+						key_value_construct.children.add(construct_for_json(child, key_value_construct));
 						
 						parent.children.add(key_value_construct);
 					}

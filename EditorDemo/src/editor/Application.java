@@ -25,6 +25,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import org.json.JSONObject;
 
+import editor.BaseController.EKeyBinding;
+
 import json.JSONController;
 import json.KeyValueConstruct;
 import json.ObjectConstruct;
@@ -34,11 +36,28 @@ import lisp.LispController;
 
 
 
+
 public class Application extends JFrame
 {
 	// Demo
 	private Construct  jsonDocumentConstruct2 = null;
 	private  BaseController controller = null;
+	
+	private class HotkeyListener implements BaseControllerListener {
+
+		@Override
+		public void receivedHotkey(EKeyBinding binding, int keyEventCode) {
+			switch(binding) {
+				case Bind_InsertAfter:  {
+					int i = 0;
+					i=i;
+
+				}
+			}
+			
+		}
+		
+	}
 	
     private class MyDispatcher implements KeyListener {
     	boolean insert_pressed;
@@ -50,6 +69,7 @@ public class Application extends JFrame
     	
 		@Override
 		public void keyPressed(KeyEvent e) {
+			
             if (e.getID() == KeyEvent.KEY_PRESSED) {
             	
         		// Check for combo key presses, such as "i + o"
@@ -60,7 +80,7 @@ public class Application extends JFrame
 		        		case KeyEvent.VK_K: {
 		        			JSONObject obj=new JSONObject();
 		        			obj.put("temp","temp");// TODO: second string should actually be ? placeholder... can be object OR string
-		        			Construct ret = JSONController.add_key_value_pair(null, controller.getSelectedEditor().construct);
+		        			Construct ret = JSONController.add_key_value_pair(null, controller.getSelectedEditor().construct.parent);
 		        			if(ret != null)
 		        				JSONController.editors_from_constructs(ret);
 		        			break;
@@ -156,12 +176,17 @@ public class Application extends JFrame
 		
 		Component top = JSONController.editors_from_constructs(jsonDocumentConstruct2).get_component();
 		this.add(top);
-		top.addKeyListener(new MyDispatcher(this));
 		
 		controller = new BaseController(this, JSONController.editors);
-		top.addKeyListener(controller);
+		top.addKeyListener(controller); // Must add BaseController first
+		top.addKeyListener(new MyDispatcher(this));
 		
+		controller.setListener(new HotkeyListener());
+		controller.registerHotkey(EKeyBinding.Bind_InsertAfter, "ia?");
 		
+
+
+	
 		//top.addMouseListener(new MouseSelector());
 		  Toolkit.getDefaultToolkit().addAWTEventListener(
 		          new Listener(), AWTEvent.MOUSE_EVENT_MASK | AWTEvent.FOCUS_EVENT_MASK);
