@@ -49,11 +49,16 @@ public class KeyValueConstruct extends Construct {
 	}
 
 	@Override
-	public void deleteChild(Construct child) {
+	public boolean deleteChild(Construct child) {
 		// Only delete allow deletion of value (to be replaced with object, value, array, etc)
 		int childIndex = this.children.indexOf(child);
 		
-		if(childIndex != 0)
+		if(childIndex != 0)  {
 			this.setEmpty(child);
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 }

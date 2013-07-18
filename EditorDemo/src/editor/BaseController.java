@@ -34,16 +34,15 @@ public class BaseController implements KeyListener {
 
 	        			if(deleteMeEditor.getParent() != null) 
 	        			{
-	        				if(selector.SelectAdjacentConstruct(false) == false)
-	        					selector.SelectParentConstruct();
-	        				
-		        			deleteMeEditor.deleteMe();
-		        			selector.selected.update();
+	        				if(deleteMeEditor.deleteMe()) {
+			        			selector.selected.update();
+		        				if(selector.SelectAdjacentConstruct(false) == false)
+		        					selector.SelectParentConstruct();
+	        				}
 	        			}
-	        			break;
+	        			return;
 	        		}
         		}
-        		return;
 			}
 			
     		// Reset first key press
@@ -141,8 +140,12 @@ public class BaseController implements KeyListener {
 			}	
 			else if(selectIndex < 0) {
 				selectIndex = parent.children.size()-1;
+				if(selectIndex < 0)
+					return false;
 			}
+			
 			Construct newSelect = parent.children.get(selectIndex);
+			
 			if(newSelect == null)
 				return false;
 		

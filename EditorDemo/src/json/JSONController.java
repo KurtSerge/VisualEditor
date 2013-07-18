@@ -43,8 +43,13 @@ public class JSONController
 					return null;
 				
 				if(object == null)  {
-					object = new JSONObject();
-					object.put("temp", new EmptyConstruct(parent));
+					//object.put("temp", new EmptyConstruct(parent));
+
+					json.KeyValueConstruct key_value_construct = new json.KeyValueConstruct(parent);
+					key_value_construct.children.add(construct_for_json("temp", key_value_construct));
+					key_value_construct.children.add(new EmptyConstruct(key_value_construct));
+					parent.children.add(key_value_construct);
+					return key_value_construct;
 				}
 				
 				String[] keys = JSONObject.getNames((JSONObject)object);
