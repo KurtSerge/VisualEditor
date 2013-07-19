@@ -49,16 +49,17 @@ public class Application extends JFrame
 
 		@Override
 		public void receivedHotkey(EKeyBinding binding, int keyEventCode) {
-			if(binding == BaseController.EKeyBinding.Bind_InsertAfter || 
-			   binding == BaseController.EKeyBinding.Bind_InsertBefore)  {				
+			//if(binding == BaseController.EKeyBinding.Bind_InsertAfter || 
+			//   binding == BaseController.EKeyBinding.Bind_InsertBefore)  {				
 					// Generate appropriate object*********
     				JSONObject newObj = new JSONObject();
     				Construct newConstruct = null;
     				Construct parent = null;
-    				
+    				ConstructEditor deleteMeEditor;
 					switch(binding) {
 						case Bind_InsertAfter:  
 						case Bind_InsertBefore:
+						case Bind_InsertReplace:
 							parent = controller.getSelectedEditor().construct.parent;
 							break;
 						default:
@@ -78,7 +79,10 @@ public class Application extends JFrame
 							return;
 					}
 
-        			
+					ConstructEditor added = null;
+					if(newConstruct != null)
+						added = JSONController.editors_from_constructs(newConstruct);
+
 					// Determine insertion location*********
 					switch(binding) {
 						case Bind_InsertAfter: {
@@ -102,12 +106,19 @@ public class Application extends JFrame
 							}
 							break;
 						}
+						case Bind_InsertReplace:  {
+							int selIndex = parent.children.indexOf(controller.getSelectedEditor().construct);
+							int newIndex = parent.children.indexOf(newConstruct);
+							Collections.swap(parent.children, newIndex, selIndex);
+							controller.DeleteAllSelected();
+							break;
+						}
 					}
 					
-					// Insert*******************************
-        			if(newConstruct != null)
-        				controller.selector.Select(JSONController.editors_from_constructs(newConstruct));
-			}
+        			if(added != null)
+        				controller.selector.Select(added);
+        			
+			//}
 		}
 	}
 	
@@ -237,7 +248,7 @@ public class Application extends JFrame
 		controller.setListener(new HotkeyListener());
 		controller.registerHotkey(EKeyBinding.Bind_InsertAfter, "IA?");
 		controller.registerHotkey(EKeyBinding.Bind_InsertBefore, "IB?");
-		
+		controller.registerHotkey(EKeyBinding.Bind_InsertReplace, "IR?");
 		
 
 

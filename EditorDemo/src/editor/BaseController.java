@@ -86,7 +86,7 @@ public class BaseController implements KeyListener {
 		
 			switch(bindingCheck) {
 				case Bind_DeleteAll:
-					DeleteAll();
+					DeleteAllSelected();
 					clearBindings();
 					break;
 				case Bind_SelectParent:
@@ -140,7 +140,7 @@ public class BaseController implements KeyListener {
 	public void keyTyped(KeyEvent arg0) {}
 
 	// Delete construct and all children
-	private void DeleteAll() {
+	public void DeleteAllSelected() {
 		ConstructEditor deleteMeEditor = selector.selected;
 		if(deleteMeEditor.getParent() != null) 
 		{
