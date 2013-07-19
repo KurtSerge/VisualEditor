@@ -31,18 +31,30 @@ public class ConstructFactory {
 		try {
 			editorClass = Class.forName(className);
 			constructor = editorClass.getDeclaredConstructor(Construct.class);
-		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException e) {
+		} catch (ClassNotFoundException e) {
+			return null;
+		} catch (NoSuchMethodException e) {
+			return null;
+		} catch (SecurityException e) {
 			return null;
 		}
 		
 		
 		try {
 			return (ConstructEditor) constructor.newInstance(construct);
-		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+		} catch (InstantiationException e) { 
+			e.printStackTrace();
+			return null;
+		} catch(IllegalAccessException e) { 
+			e.printStackTrace();
+			return null;
+		} catch(IllegalArgumentException e) { 
+			e.printStackTrace();
+			return null;
+		} catch(InvocationTargetException e) {
 			e.printStackTrace();
 			return null;
 		}
-
 	}
 	
 
@@ -59,13 +71,26 @@ public class ConstructFactory {
 		try {
 			constructClass = Class.forName(className);
 			constructor = constructClass.getDeclaredConstructor(GenericTreeNode.class);
-		} catch (ClassNotFoundException | NoSuchMethodException | SecurityException e) {
+		} catch (ClassNotFoundException e) {
+			return null;
+		} catch (NoSuchMethodException e) {
+			return null;
+		} catch (SecurityException e) {
 			return null;
 		}
 		
 		try {
 			return (Construct) constructor.newInstance(node);
-		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+		} catch (InstantiationException e) { 
+			e.printStackTrace();
+			return null;
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+			return null;
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+			return null;
+		} catch (InvocationTargetException e) {
 			e.printStackTrace();
 			return null;
 		}
