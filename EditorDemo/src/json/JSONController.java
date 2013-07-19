@@ -15,6 +15,7 @@ import org.json.JSONTokener;
 
 import editor.Construct;
 import editor.ConstructEditor;
+import editor.EmptyConstruct;
 import editor.MonospaceConstructEditor;
 
 public class JSONController
@@ -28,7 +29,7 @@ public class JSONController
 			editors_from_constructs(child);
 		
 		MonospaceConstructEditor my_editor = new MonospaceConstructEditor(top);
-		
+
 		if(editors == null)
 			editors = new ArrayList<ConstructEditor>();
 		editors.add(my_editor);
@@ -37,45 +38,47 @@ public class JSONController
 	}
 
 	static public Construct add_key_value_pair(JSONObject object, Construct parent) {
-		// Key-value pairs are members of objects// TODO: should be in KeyValueConstrcut()
-		if(parent.getClass() != ObjectConstruct.class)
-			return null;
-		
-		String[] keys = JSONObject.getNames((JSONObject)object);
-		json.KeyValueConstruct key_value_construct = null;
-		
-		for(String key : keys)
-		{
-			Object child = ((JSONObject)object).get(key);
+				// Key-value pairs are members of objects// TODO: should be in KeyValueConstrcut()
+				if(parent.getClass() != ObjectConstruct.class)
+					return null;
+				
+				if(object == null)  {
+					object = new JSONObject();
+					object.put("temp", new EmptyConstruct(parent));
+				}
+				
+				String[] keys = JSONObject.getNames((JSONObject)object);
 
-			key_value_construct = new json.KeyValueConstruct(parent);
-			key_value_construct.children.add(construct_for_json(key, key_value_construct));
-			key_value_construct.children.add(construct_for_json(child, key_value_construct));
-			parent.children.add(key_value_construct);
-		}
-		
-		return key_value_construct;
-	}
+		 		json.KeyValueConstruct key_value_construct = null;
+		 		
+		 		if(keys != null)  {
+					for(String key : keys)
+					{
+						Object child = ((JSONObject)object).get(key);
+			
+						key_value_construct = new json.KeyValueConstruct(parent);
+						key_value_construct.children.add(construct_for_json(key, key_value_construct));
+					
+						if(Construct.class.isAssignableFrom(child.getClass()))
+							key_value_construct.children.add((Construct)child);
+						else
+							key_value_construct.children.add(construct_for_json(child, key_value_construct));
+						
+						parent.children.add(key_value_construct);
+					}
+				}
 	
+		 		return key_value_construct;
+		 	}
+
 	static public Construct construct_for_json(Object object, Construct parent)
 	{
 		if(object.getClass().equals(JSONObject.class))
 		{
-			json.ObjectConstruct object_construct = new json.ObjectConstruct(parent);
-			
-			String[] keys = JSONObject.getNames((JSONObject)object);
-			if(keys != null) {
-				for(String key : keys)
-				{
-					Object child = ((JSONObject)object).get(key);
-	
-					json.KeyValueConstruct key_value_construct = new json.KeyValueConstruct(object_construct);
-					key_value_construct.children.add(construct_for_json(key, key_value_construct));
-					key_value_construct.children.add(construct_for_json(child, key_value_construct));
-					object_construct.children.add(key_value_construct);
-				}
-			}
-			
+ 			json.ObjectConstruct object_construct = new json.ObjectConstruct(parent);
+ 	
+			add_key_value_pair((JSONObject)object, object_construct);
+
 			return object_construct;
 		}
 		if(object.getClass().equals(JSONArray.class))

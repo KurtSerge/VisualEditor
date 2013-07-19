@@ -61,15 +61,15 @@ public class Application extends JFrame
 	        			// Insert KV pair
 		        		case KeyEvent.VK_K: {
 		        			JSONObject obj=new JSONObject();
-		        			obj.put("?temp","?temp");// TODO: second string should actually be ? placeholder... can be object OR string
-		        			Construct ret = JSONController.add_key_value_pair(obj, controller.getSelectedEditor().construct);
+		        			obj.put("temp","temp");// TODO: second string should actually be ? placeholder... can be object OR string
+		        			Construct ret = JSONController.add_key_value_pair(null, controller.getSelectedEditor().construct);
 		        			if(ret != null)
 		        				JSONController.editors_from_constructs(ret);
 		        			break;
 		        		}
 		        		case KeyEvent.VK_O: {
 		        			JSONObject obj=new JSONObject();
-		        			obj.put("?temp",new JSONObject());// TODO: second string should actually be ? placeholder... can be object OR string
+		        			obj.put("temp",new JSONObject());// TODO: second string should actually be ? placeholder... can be object OR string
 		        			Construct ret = JSONController.add_key_value_pair(obj, controller.getSelectedEditor().construct);
 		        			if(ret != null)
 		        				JSONController.editors_from_constructs(ret);

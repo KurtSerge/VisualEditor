@@ -40,6 +40,11 @@ public abstract class Construct
 	public void debugPrintNode(Construct con, int depth) {
 		for(int i = 0; i < depth; i++)
 			System.out.print("\t");
+		if(con == null)  {
+			System.out.println("null");
+			return;
+		}
+		
 		String nodeStr = "Type:" + con.type + ", Literal:" + con.literal + ", Children:" + con.children.size();
 		System.out.println(nodeStr);
 		
@@ -49,4 +54,23 @@ public abstract class Construct
 	}
 	
 	public abstract boolean validate();
+
+	final public void delete() {
+		if(this.parent != null)  {
+			this.parent.children.remove(this);
+		}
+	}
+	
+	// Override this for special rules, example: KV-Pair must have at least 2 children
+	public void deleteChild(Construct child) {
+		int childIndex = this.children.indexOf(child);
+		this.children.remove(childIndex);
+	}
+	
+	// Set child leaf to an empty construct (deletes all children)
+	final public void setEmpty(Construct child) {
+		int index = children.indexOf(child);
+		child.delete();
+		children.add(index, new EmptyConstruct(this));
+	}
 }

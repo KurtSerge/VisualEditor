@@ -23,6 +23,8 @@ import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import json.JSONController;
+
 
 public class MonospaceConstructEditor extends ConstructEditor implements LayoutManager, DocumentListener
 {
@@ -125,6 +127,10 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 			
 			for(Construct child : construct.children)
 			{
+				if(child.type == "empty" && editorsByConstructs.get(child) == null) {
+					JSONController.editors_from_constructs(child); // FIXME: Do not use JSONController in Mono Editor.. how to avoid?  Need to create editor from within editor. also, this should be handled by ConstructEditor
+				}
+				
 				ConstructEditor parent_editor = editorsByConstructs.get(child).get();
 				
 				if(parent_editor == null)
@@ -382,7 +388,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 			text_area.setBackground(Color.red);
 			textListener = new TextListener(text_area);
 			text_area.addKeyListener(textListener);
-			if(construct.screen_text() == null) { // TODO: Some more generic way to handle all editable types?
+			if(construct != null && construct.screen_text() == null) { // editable
 				get_component().requestFocus();
 				text_area.selectAll();
 			}
@@ -393,6 +399,16 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 			text_area.removeKeyListener(textListener);
 			textListener = null;
 		}
+	}
+	
+	// Delete editor and cleanup
+	final public void deleteMe() {
+		if(textListener != null)
+			text_area.removeKeyListener(textListener);
+		
+		this.RemoveComponents();
+		
+		this.construct.parent.deleteChild(construct);
 	}
 
 }

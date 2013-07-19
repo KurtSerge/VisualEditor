@@ -1,6 +1,7 @@
 package json;
 
 import editor.Construct;
+import editor.ConstructEditor;
 	
 
 public class KeyValueConstruct extends Construct {
@@ -47,5 +48,12 @@ public class KeyValueConstruct extends Construct {
 		return false;
 	}
 
-	
+	@Override
+	public void deleteChild(Construct child) {
+		// Only delete allow deletion of value (to be replaced with object, value, array, etc)
+		int childIndex = this.children.indexOf(child);
+		
+		if(childIndex != 0)
+			this.setEmpty(child);
+	}
 }
