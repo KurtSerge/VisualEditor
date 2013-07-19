@@ -402,13 +402,16 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 	}
 	
 	// Delete editor and cleanup
-	final public void deleteMe() {
-		if(textListener != null)
-			text_area.removeKeyListener(textListener);
-		
-		this.RemoveComponents();
-		
-		this.construct.parent.deleteChild(construct);
+	final public boolean deleteMe() {
+		if(this.construct.parent.deleteChild(construct) == true)
+		{
+			if(textListener != null)
+				text_area.removeKeyListener(textListener);
+			
+			this.RemoveComponents();
+			return true;
+		}
+		return false;
 	}
 
 }

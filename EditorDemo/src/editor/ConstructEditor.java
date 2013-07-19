@@ -55,6 +55,6 @@ public abstract class ConstructEditor
 	public abstract void setSelected(boolean bSelect);
 	
 	// Remove this constructeditor's UI
-	public abstract void deleteMe();
+	public abstract boolean deleteMe();
 	
 }

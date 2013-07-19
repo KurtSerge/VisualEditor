@@ -14,6 +14,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -24,6 +25,9 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import editor.BaseController.EKeyBinding;
 
 import clojure.ClojureController;
 
@@ -36,11 +40,89 @@ import lisp.LispController;
 
 
 
+
 public class Application extends JFrame
 {
 	// Demo
 	private Construct  jsonDocumentConstruct2 = null;
 	private  BaseController controller = null;
+	
+	private class HotkeyListener implements BaseControllerListener {
+
+		@Override
+		public void receivedHotkey(EKeyBinding binding, int keyEventCode) {
+			//if(binding == BaseController.EKeyBinding.Bind_InsertAfter || 
+			//   binding == BaseController.EKeyBinding.Bind_InsertBefore)  {				
+					// Generate appropriate object*********
+    				JSONObject newObj = new JSONObject();
+    				Construct newConstruct = null;
+    				Construct parent = null;
+    				ConstructEditor deleteMeEditor;
+					switch(binding) {
+						case Bind_InsertAfter:  
+						case Bind_InsertBefore:
+						case Bind_InsertReplace:
+							parent = controller.getSelectedEditor().construct.parent;
+							break;
+						default:
+							throw new RuntimeException("Unhandled hotkey");
+					
+					}
+					
+					switch(keyEventCode) {
+						case KeyEvent.VK_O:
+							newObj.put("temp",new JSONObject());
+		        			newConstruct = JSONController.add_key_value_pair(newObj, parent);
+							break;
+						case KeyEvent.VK_K:
+		        			newConstruct = JSONController.add_key_value_pair(null, parent);
+							break;
+						default:
+							return;
+					}
+
+					ConstructEditor added = null;
+					if(newConstruct != null)
+						added = JSONController.editors_from_constructs(newConstruct);
+
+					// Determine insertion location*********
+					switch(binding) {
+						case Bind_InsertAfter: {
+							int selIndex = parent.children.indexOf(controller.getSelectedEditor().construct);
+							int newIndex = -1;
+							while(newIndex != selIndex+1) {
+								if(newIndex >= 0)
+									Collections.swap(parent.children, newIndex-1, newIndex);	
+								newIndex = parent.children.indexOf(newConstruct);
+							}
+							break;
+						}
+						case Bind_InsertBefore:  {
+							int selIndex = -1;
+							int newIndex = -1;
+							while(newIndex != selIndex-1) {
+								if(newIndex >= 0)
+									Collections.swap(parent.children, newIndex, newIndex-1);
+								selIndex = parent.children.indexOf(controller.getSelectedEditor().construct);
+								newIndex = parent.children.indexOf(newConstruct);
+							}
+							break;
+						}
+						case Bind_InsertReplace:  {
+							int selIndex = parent.children.indexOf(controller.getSelectedEditor().construct);
+							int newIndex = parent.children.indexOf(newConstruct);
+							Collections.swap(parent.children, newIndex, selIndex);
+							controller.DeleteAllSelected();
+							break;
+						}
+					}
+					
+        			if(added != null)
+        				controller.selector.Select(added);
+        			
+			//}
+		}
+	}
 	
     private class MyDispatcher implements KeyListener {
     	boolean insert_pressed;
@@ -52,6 +134,7 @@ public class Application extends JFrame
     	
 		@Override
 		public void keyPressed(KeyEvent e) {
+			
             if (e.getID() == KeyEvent.KEY_PRESSED) {
             	
         		// Check for combo key presses, such as "i + o"
@@ -59,10 +142,11 @@ public class Application extends JFrame
             		insert_pressed = false;
 	        		switch(e.getKeyCode()) {
 	        			// Insert KV pair
+	        		/*
 		        		case KeyEvent.VK_K: {
 		        			JSONObject obj=new JSONObject();
 		        			obj.put("temp","temp");// TODO: second string should actually be ? placeholder... can be object OR string
-		        			Construct ret = JSONController.add_key_value_pair(null, controller.getSelectedEditor().construct);
+		        			Construct ret = JSONController.add_key_value_pair(null, controller.getSelectedEditor().construct.parent);
 		        			if(ret != null)
 		        				JSONController.editors_from_constructs(ret);
 		        			break;
@@ -73,7 +157,7 @@ public class Application extends JFrame
 		        			Construct ret = JSONController.add_key_value_pair(obj, controller.getSelectedEditor().construct);
 		        			if(ret != null)
 		        				JSONController.editors_from_constructs(ret);
-		        		}
+		        		}*/
 	        		}
 	        		return;
     			}
@@ -174,12 +258,30 @@ public class Application extends JFrame
 		}
 		
 		this.add(top);
-		top.addKeyListener(new MyDispatcher(this));
 		
+//<<<<<<< HEAD
 		controller = new BaseController(this, ClojureController.editors);
 		top.addKeyListener(controller);
 
 		Toolkit.getDefaultToolkit().addAWTEventListener(new Listener(), AWTEvent.MOUSE_EVENT_MASK | AWTEvent.FOCUS_EVENT_MASK);
+//=======
+//		controller = new BaseController(this, JSONController.editors);
+//		top.addKeyListener(controller); // Must add BaseController first
+		//top.addKeyListener(new MyDispatcher(this));
+		
+//		controller.setListener(new HotkeyListener());
+//		controller.registerHotkey(EKeyBinding.Bind_InsertAfter, "IA?");
+//		controller.registerHotkey(EKeyBinding.Bind_InsertBefore, "IB?");
+//		controller.registerHotkey(EKeyBinding.Bind_InsertReplace, "IR?");
+//		
+//
+//
+//	
+//		//top.addMouseListener(new MouseSelector());
+//		  Toolkit.getDefaultToolkit().addAWTEventListener(
+//		          new Listener(), AWTEvent.MOUSE_EVENT_MASK | AWTEvent.FOCUS_EVENT_MASK);
+//		  
+//>>>>>>> abfa3150d52f75d29b6d4d0604c110ac765611e5
 
 		this.pack();
 		this.setSize(800, 600);

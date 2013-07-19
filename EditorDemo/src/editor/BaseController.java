@@ -2,7 +2,9 @@ package editor;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import javax.swing.JFrame;
@@ -13,69 +15,120 @@ import org.json.JSONObject;
 
 public class BaseController implements KeyListener {
 	private boolean delete_pressed;
-	private EditSelection selector = null;
-	//private final JFrame frame;
+	public EditSelection selector = null;
+	private BaseControllerListener theListener = null;// TODO: allow for more listeners
+	private String currentInput = null;
+	private Map<String, EKeyBinding> keyMap = null;
+	
+	public enum EKeyBinding {
+		Bind_Insert,
+		Bind_InsertAfter,
+		Bind_InsertBefore,
+		Bind_InsertWrap,
+		Bind_InsertUsurp,
+		Bind_InsertReplace,
+		// Below this point: Standard non-overridable bindings
+		// Deletion
+		Bind_DeleteAll,
+		// Selection
+		Bind_SelectNextSibling,
+		Bind_SelectPrevSibling,
+		Bind_SelectParent,
+		Bind_SelectChild
+	}
+	
+
+	
+	public void setListener(BaseControllerListener listener) {
+		theListener = listener;
+	}
 	
 	public BaseController(JFrame frame, List<ConstructEditor> editors) {
 		selector = new EditSelection(frame, editors);
 		selector.SelectRandom();
+		currentInput = "";
+		keyMap = new HashMap<String, EKeyBinding>();
+		
+		// Internally handled hotkeys
+		this.registerHotkey(EKeyBinding.Bind_DeleteAll, "DD");
+		this.registerHotkey(EKeyBinding.Bind_SelectParent, "Left");
+		this.registerHotkey(EKeyBinding.Bind_SelectChild, "Right");
+		this.registerHotkey(EKeyBinding.Bind_SelectNextSibling, "Down");
+		this.registerHotkey(EKeyBinding.Bind_SelectPrevSibling, "Up");
+	}
+	
+	// Important:Use the '?' character to indicate that an "autocomplete char" comes after the hotkey
+	// Must write hotkey code in whatever form KeyEvent.getKeyText(code) uses.  Usually this means using capital letters
+	public void registerHotkey(EKeyBinding binding, String code) {
+		keyMap.put(code, binding);
+	}
+	
+	private void clearBindings() {
+		currentInput = "";
 	}
 	
 	@Override
 	public void keyPressed(KeyEvent arg0) {
-        if (arg0.getID() == KeyEvent.KEY_PRESSED) {
-        	
-    		// Check for combo key presses, such as "d + d"
-			if(delete_pressed==true) {
-        		delete_pressed = false;
-        		switch(arg0.getKeyCode()) {
-	        		case KeyEvent.VK_D: {
-	        			ConstructEditor deleteMeEditor = selector.selected;
+		// Handle combo bindings***************
+		if (arg0.getID() == KeyEvent.KEY_PRESSED && arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {
+			clearBindings();
+			return;
+		}
+		
+		// We assume all registered key bindings are 2 chars in length, but some take KeyEvent as a parameter
+		if(currentInput.length() < 2)
+			currentInput += KeyEvent.getKeyText(arg0.getKeyCode());
+		else
+			currentInput += "?"; // ? For KeyEvent
 
-	        			if(deleteMeEditor.getParent() != null) 
-	        			{
-	        				if(selector.SelectAdjacentConstruct(false) == false)
-	        					selector.SelectParentConstruct();
-	        				
-		        			deleteMeEditor.deleteMe();
-		        			selector.selected.update();
-	        			}
-	        			break;
-	        		}
-        		}
-        		return;
-			}
-			
-    		// Reset first key press
-    		delete_pressed = false;
-    		
-    		switch(arg0.getKeyCode()) {
-        		case KeyEvent.VK_D:
-        			delete_pressed = true;
-        			break;
-        		case KeyEvent.VK_UP:
-        			System.out.println("Up");
-        			selector.SelectAdjacentConstruct(false);
-        			break;
-        		case KeyEvent.VK_DOWN:
-        			System.out.println("Down");
-        			selector.SelectAdjacentConstruct(true);
-        			break;			
-        		case KeyEvent.VK_LEFT:
-        			System.out.println("Left");
+		EKeyBinding bindingCheck = keyMap.get(currentInput);
+		if(bindingCheck != null) {
+		
+			switch(bindingCheck) {
+				case Bind_DeleteAll:
+					DeleteAllSelected();
+					clearBindings();
+					break;
+				case Bind_SelectParent:
+					System.out.println("Left");
         			selector.SelectParentConstruct();
-        			break;
-        		case KeyEvent.VK_RIGHT:
-        			System.out.println("Right");
+					break;
+				case Bind_SelectChild:
+					System.out.println("Right");
         			selector.SelectFirstChildConstruct();
-        			break;
-        		default:
-        			break;
-    		}
-        }
+					break;
+				case Bind_SelectNextSibling:
+					System.out.println("Down");
+        			selector.SelectAdjacentConstruct(true);
+					break;
+				case Bind_SelectPrevSibling:
+					System.out.println("Up");
+        			selector.SelectAdjacentConstruct(false);
+					break;
+				default:
+					if(theListener != null)
+						theListener.receivedHotkey(bindingCheck, arg0.getKeyCode());
+					break;
+			}
 
+			clearBindings();
+			return;
+		}
+		else {
+			// See if we are on the right path
+			int len = currentInput.length();
+			for(String str : keyMap.keySet()) {
+				if(len > str.length())
+					continue;
+				String check = str.substring(0, len);
+				if(check.contains(currentInput))
+					return;
+			}
+			clearBindings();
+			return;
+		}
 	}
-        
+	
     public ConstructEditor getSelectedEditor() {
     	return selector.selected;
     }
@@ -86,8 +139,21 @@ public class BaseController implements KeyListener {
 	@Override
 	public void keyTyped(KeyEvent arg0) {}
 
+	// Delete construct and all children
+	public void DeleteAllSelected() {
+		ConstructEditor deleteMeEditor = selector.selected;
+		if(deleteMeEditor.getParent() != null) 
+		{
+			if(deleteMeEditor.deleteMe()) {
+    			selector.selected.update();
+				if(selector.SelectAdjacentConstruct(false) == false)
+					selector.SelectParentConstruct();
+			}
+		}
+	}
+	
 	// Handles keyboard selection of constructs
-	private class EditSelection {
+	public class EditSelection {
 		private final JFrame frame;
 		private final List<ConstructEditor> editors;
 		private ConstructEditor selected = null;
@@ -141,8 +207,12 @@ public class BaseController implements KeyListener {
 			}	
 			else if(selectIndex < 0) {
 				selectIndex = parent.children.size()-1;
+				if(selectIndex < 0)
+					return false;
 			}
+			
 			Construct newSelect = parent.children.get(selectIndex);
+			
 			if(newSelect == null)
 				return false;
 		

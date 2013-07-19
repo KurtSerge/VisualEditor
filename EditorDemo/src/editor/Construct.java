@@ -62,9 +62,10 @@ public abstract class Construct
 	}
 	
 	// Override this for special rules, example: KV-Pair must have at least 2 children
-	public void deleteChild(Construct child) {
+	public boolean deleteChild(Construct child) {
 		int childIndex = this.children.indexOf(child);
 		this.children.remove(childIndex);
+		return true;
 	}
 	
 	// Set child leaf to an empty construct (deletes all children)
