@@ -118,6 +118,8 @@ public class BaseController implements KeyListener {
 			// See if we are on the right path
 			int len = currentInput.length();
 			for(String str : keyMap.keySet()) {
+				if(len > str.length())
+					continue;
 				String check = str.substring(0, len);
 				if(check.contains(currentInput))
 					return;

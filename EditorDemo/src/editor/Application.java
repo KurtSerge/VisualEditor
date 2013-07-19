@@ -61,6 +61,8 @@ public class Application extends JFrame
 						case Bind_InsertBefore:
 							parent = controller.getSelectedEditor().construct.parent;
 							break;
+						default:
+							throw new RuntimeException("Unhandled hotkey");
 					
 					}
 					
@@ -70,7 +72,10 @@ public class Application extends JFrame
 		        			newConstruct = JSONController.add_key_value_pair(newObj, parent);
 							break;
 						case KeyEvent.VK_K:
+		        			newConstruct = JSONController.add_key_value_pair(null, parent);
 							break;
+						default:
+							return;
 					}
 
         			
@@ -78,19 +83,22 @@ public class Application extends JFrame
 					switch(binding) {
 						case Bind_InsertAfter: {
 							int selIndex = parent.children.indexOf(controller.getSelectedEditor().construct);
-							int newIndex = 0;
-							while(newIndex != selIndex+2) {
+							int newIndex = -1;
+							while(newIndex != selIndex+1) {
+								if(newIndex >= 0)
+									Collections.swap(parent.children, newIndex-1, newIndex);	
 								newIndex = parent.children.indexOf(newConstruct);
-								Collections.swap(parent.children, newIndex, newIndex-1);	
 							}
 							break;
 						}
 						case Bind_InsertBefore:  {
-							int selIndex = parent.children.indexOf(controller.getSelectedEditor().construct);
-							int newIndex = 0;
-							while(newIndex != selIndex+1) {
+							int selIndex = -1;
+							int newIndex = -1;
+							while(newIndex != selIndex-1) {
+								if(newIndex >= 0)
+									Collections.swap(parent.children, newIndex, newIndex-1);
+								selIndex = parent.children.indexOf(controller.getSelectedEditor().construct);
 								newIndex = parent.children.indexOf(newConstruct);
-								Collections.swap(parent.children, newIndex, newIndex-1);	
 							}
 							break;
 						}
