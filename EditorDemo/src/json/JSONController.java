@@ -40,33 +40,33 @@ public class JSONController
 	
 	static public Construct add_key_value_pair(JSONObject object, Construct parent) {
 		// Key-value pairs are members of objects// TODO: should be in KeyValueConstrcut()
-	if(parent.getClass() != ObjectConstruct.class)
-		return null;
-	
-	if(object == null)  {
-		json.KeyValueConstruct key_value_construct = new json.KeyValueConstruct(parent);
-		key_value_construct.children.add(construct_for_json("temp", key_value_construct));
-		key_value_construct.children.add(new EmptyConstruct(key_value_construct));
-		parent.children.add(key_value_construct);
-		return key_value_construct;
-	}
-	
-	String[] keys = JSONObject.getNames((JSONObject)object);
-
-		json.KeyValueConstruct key_value_construct = null;
+		if(parent.getClass() != ObjectConstruct.class)
+			return null;
 		
-		if(keys != null)  {
-		for(String key : keys)
-		{
-			Object child = ((JSONObject)object).get(key);
-
-			key_value_construct = new json.KeyValueConstruct(parent);
-			key_value_construct.children.add(construct_for_json(key, key_value_construct));
-			key_value_construct.children.add(construct_for_json(child, key_value_construct));
-			
+		if(object == null)  {
+			json.KeyValueConstruct key_value_construct = new json.KeyValueConstruct(parent);
+			key_value_construct.children.add(construct_for_json("temp", key_value_construct));
+			key_value_construct.children.add(new EmptyConstruct(key_value_construct));
 			parent.children.add(key_value_construct);
+			return key_value_construct;
 		}
-	}
+		
+		String[] keys = JSONObject.getNames((JSONObject)object);
+	
+			json.KeyValueConstruct key_value_construct = null;
+			
+			if(keys != null)  {
+			for(String key : keys)
+			{
+				Object child = ((JSONObject)object).get(key);
+	
+				key_value_construct = new json.KeyValueConstruct(parent);
+				key_value_construct.children.add(construct_for_json(key, key_value_construct));
+				key_value_construct.children.add(construct_for_json(child, key_value_construct));
+				
+				parent.children.add(key_value_construct);
+			}
+		}
 
 		return key_value_construct;
 	}
@@ -100,6 +100,9 @@ public class JSONController
 		}
 		if(object.getClass().equals(String.class))
 		{
+			if(parent.getClass() != KeyValueConstruct.class)
+				return null;
+			
 			json.StringConstruct string_construct = new json.StringConstruct(parent);
 			
 			String json_string = (String)object;

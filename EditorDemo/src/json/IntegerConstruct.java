@@ -3,8 +3,7 @@ package json;
 import editor.Construct;
 
 public class IntegerConstruct extends Construct{
-
-	protected IntegerConstruct(Construct parent, String literal) {
+	public IntegerConstruct(Construct parent, String literal) {
 		super("integer", parent);
 		this.literal = literal;
 	}

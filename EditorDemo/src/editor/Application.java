@@ -30,6 +30,7 @@ import org.json.JSONTokener;
 import editor.BaseController.EKeyBinding;
 
 import clojure.ClojureController;
+import clojure.constructs.IntegerConstruct;
 
 import json.JSONController;
 import json.KeyValueConstruct;
@@ -51,76 +52,96 @@ public class Application extends JFrame
 
 		@Override
 		public void receivedHotkey(EKeyBinding binding, int keyEventCode) {
-			//if(binding == BaseController.EKeyBinding.Bind_InsertAfter || 
-			//   binding == BaseController.EKeyBinding.Bind_InsertBefore)  {				
-					// Generate appropriate object*********
-    				JSONObject newObj = new JSONObject();
-    				Construct newConstruct = null;
-    				Construct parent = null;
-    				ConstructEditor deleteMeEditor;
-					switch(binding) {
-						case Bind_InsertAfter:  
-						case Bind_InsertBefore:
-						case Bind_InsertReplace:
-							parent = controller.getSelectedEditor().construct.parent;
-							break;
-						default:
-							throw new RuntimeException("Unhandled hotkey");
-					
-					}
-					
-					switch(keyEventCode) {
-						case KeyEvent.VK_O:
-							newObj.put("temp",new JSONObject());
-		        			newConstruct = JSONController.add_key_value_pair(newObj, parent);
-							break;
-						case KeyEvent.VK_K:
-		        			newConstruct = JSONController.add_key_value_pair(null, parent);
-							break;
-						default:
+			Construct newConstruct = null;
+			Construct parent = null;
+
+			switch(binding) {
+				case Bind_InsertAfter:  
+				case Bind_InsertBefore:
+				case Bind_InsertReplace:
+					parent = controller.getSelectedEditor().construct.parent;
+					break;
+				case Bind_InsertChild:
+					parent = controller.getSelectedEditor().construct;
+					break;
+				default:
+					throw new RuntimeException("Unhandled hotkey");
+			
+			}
+			
+			switch(keyEventCode) {
+				case KeyEvent.VK_O:
+					if(parent.getClass() == json.KeyValueConstruct.class)  {
+						if(parent.children.indexOf(controller.getSelectedEditor().construct) == 0)
 							return;
+						newConstruct = new json.ObjectConstruct(parent);
+						if(newConstruct != null)
+							parent.children.add(newConstruct);
 					}
-
-					ConstructEditor added = null;
+					else {
+						JSONObject newObj = new JSONObject();
+						newObj.put("temp", new JSONObject());
+	        			newConstruct = JSONController.add_key_value_pair(newObj, parent);
+					}
+					break;
+				case KeyEvent.VK_S:
+					if(binding != EKeyBinding.Bind_InsertReplace)
+						return;
+					newConstruct = JSONController.construct_for_json("EmtpyStr", parent);
 					if(newConstruct != null)
-						added = JSONController.editors_from_constructs(newConstruct);
+						parent.children.add(newConstruct);
+					break;
+				case KeyEvent.VK_K:
+        			newConstruct = JSONController.add_key_value_pair(null, parent);
+					break;
+				default:
+					return;
+			}
 
-					// Determine insertion location*********
-					switch(binding) {
-						case Bind_InsertAfter: {
-							int selIndex = parent.children.indexOf(controller.getSelectedEditor().construct);
-							int newIndex = -1;
-							while(newIndex != selIndex+1) {
-								if(newIndex >= 0)
-									Collections.swap(parent.children, newIndex-1, newIndex);	
-								newIndex = parent.children.indexOf(newConstruct);
-							}
-							break;
-						}
-						case Bind_InsertBefore:  {
-							int selIndex = -1;
-							int newIndex = -1;
-							while(newIndex != selIndex-1) {
-								if(newIndex >= 0)
-									Collections.swap(parent.children, newIndex, newIndex-1);
-								selIndex = parent.children.indexOf(controller.getSelectedEditor().construct);
-								newIndex = parent.children.indexOf(newConstruct);
-							}
-							break;
-						}
-						case Bind_InsertReplace:  {
-							int selIndex = parent.children.indexOf(controller.getSelectedEditor().construct);
-							int newIndex = parent.children.indexOf(newConstruct);
-							Collections.swap(parent.children, newIndex, selIndex);
-							controller.DeleteAllSelected();
-							break;
-						}
+			ConstructEditor added = null;
+			if(newConstruct != null)
+				added = JSONController.editors_from_constructs(newConstruct);
+			else
+				return;
+			
+			// Determine insertion location*********
+			switch(binding) {
+				case Bind_InsertAfter: {
+					int selIndex = parent.children.indexOf(controller.getSelectedEditor().construct);
+					int newIndex = -1;
+					while(newIndex != selIndex+1) {
+						if(newIndex >= 0)
+							Collections.swap(parent.children, newIndex-1, newIndex);	
+						newIndex = parent.children.indexOf(newConstruct);
 					}
-					
-        			if(added != null)
-        				controller.selector.Select(added);
-        			
-			//}
+					break;
+				}
+				case Bind_InsertBefore:  {
+					int selIndex = -1;
+					int newIndex = -1;
+					while(newIndex != selIndex-1) {
+						if(newIndex >= 0)
+							Collections.swap(parent.children, newIndex, newIndex-1);
+						selIndex = parent.children.indexOf(controller.getSelectedEditor().construct);
+						newIndex = parent.children.indexOf(newConstruct);
+					}
+					break;
+				}
+				case Bind_InsertReplace:  {
+					int selIndex = parent.children.indexOf(controller.getSelectedEditor().construct);
+					int newIndex = parent.children.indexOf(newConstruct);
+					Collections.swap(parent.children, newIndex, selIndex);
+					controller.DeleteAllSelected();
+					break;
+				}
+				case Bind_InsertChild: {
+					break;
+				}
+			}
+			
+			if(added != null)  {
+				controller.selector.Select(added);
+			}
 		}
 	}
     
@@ -213,6 +234,7 @@ public class Application extends JFrame
 			controller.registerHotkey(EKeyBinding.Bind_InsertAfter, "IA?");
 			controller.registerHotkey(EKeyBinding.Bind_InsertBefore, "IB?");
 			controller.registerHotkey(EKeyBinding.Bind_InsertReplace, "IR?");
+			controller.registerHotkey(EKeyBinding.Bind_InsertChild, "IC?");
 			
 			//top.addMouseListener(new MouseSelector());
 			Toolkit.getDefaultToolkit().addAWTEventListener(new Listener(), AWTEvent.MOUSE_EVENT_MASK | AWTEvent.FOCUS_EVENT_MASK);

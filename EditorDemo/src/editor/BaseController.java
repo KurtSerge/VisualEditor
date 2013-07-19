@@ -27,6 +27,7 @@ public class BaseController implements KeyListener {
 		Bind_InsertWrap,
 		Bind_InsertUsurp,
 		Bind_InsertReplace,
+		Bind_InsertChild,
 		// Below this point: Standard non-overridable bindings
 		// Deletion
 		Bind_DeleteAll,

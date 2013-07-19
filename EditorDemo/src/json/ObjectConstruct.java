@@ -49,8 +49,11 @@ public class ObjectConstruct extends Construct {
 
 	@Override
 	public boolean validate() {
-		// TODO Auto-generated method stub
-		return false;
+		// object can be root or key's value
+		if(parent.getClass() != KeyValueConstruct.class && parent != null)
+			return false;
+		
+		return true;
 	}
 
 }
