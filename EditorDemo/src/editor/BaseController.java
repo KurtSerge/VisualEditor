@@ -15,7 +15,7 @@ import org.json.JSONObject;
 
 public class BaseController implements KeyListener {
 	private boolean delete_pressed;
-	private EditSelection selector = null;
+	public EditSelection selector = null;
 	private BaseControllerListener theListener = null;// TODO: allow for more listeners
 	private String currentInput = null;
 	private Map<String, EKeyBinding> keyMap = null;
@@ -27,8 +27,14 @@ public class BaseController implements KeyListener {
 		Bind_InsertWrap,
 		Bind_InsertUsurp,
 		Bind_InsertReplace,
-		///
+		// Below this point: Standard non-overridable bindings
+		// Deletion
 		Bind_DeleteAll,
+		// Selection
+		Bind_SelectNextSibling,
+		Bind_SelectPrevSibling,
+		Bind_SelectParent,
+		Bind_SelectChild
 	}
 	
 
@@ -42,10 +48,17 @@ public class BaseController implements KeyListener {
 		selector.SelectRandom();
 		currentInput = "";
 		keyMap = new HashMap<String, EKeyBinding>();
+		
 		// Internally handled hotkeys
-		keyMap.put("dd", EKeyBinding.Bind_DeleteAll);
+		this.registerHotkey(EKeyBinding.Bind_DeleteAll, "DD");
+		this.registerHotkey(EKeyBinding.Bind_SelectParent, "Left");
+		this.registerHotkey(EKeyBinding.Bind_SelectChild, "Right");
+		this.registerHotkey(EKeyBinding.Bind_SelectNextSibling, "Down");
+		this.registerHotkey(EKeyBinding.Bind_SelectPrevSibling, "Up");
 	}
 	
+	// Important:Use the '?' character to indicate that an "autocomplete char" comes after the hotkey
+	// Must write hotkey code in whatever form KeyEvent.getKeyText(code) uses.  Usually this means using capital letters
 	public void registerHotkey(EKeyBinding binding, String code) {
 		keyMap.put(code, binding);
 	}
@@ -56,30 +69,6 @@ public class BaseController implements KeyListener {
 	
 	@Override
 	public void keyPressed(KeyEvent arg0) {
-		// Handle standard bindings************
-        if (arg0.getID() == KeyEvent.KEY_PRESSED) {
-    		switch(arg0.getKeyCode()) {
-        		case KeyEvent.VK_UP:
-        			System.out.println("Up");
-        			selector.SelectAdjacentConstruct(false);
-        			break;
-        		case KeyEvent.VK_DOWN:
-        			System.out.println("Down");
-        			selector.SelectAdjacentConstruct(true);
-        			break;			
-        		case KeyEvent.VK_LEFT:
-        			System.out.println("Left");
-        			selector.SelectParentConstruct();
-        			break;
-        		case KeyEvent.VK_RIGHT:
-        			System.out.println("Right");
-        			selector.SelectFirstChildConstruct();
-        			break;
-        		default:
-        			break;
-    		}
-        }
-		
 		// Handle combo bindings***************
 		if (arg0.getID() == KeyEvent.KEY_PRESSED && arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			clearBindings();
@@ -88,20 +77,40 @@ public class BaseController implements KeyListener {
 		
 		// We assume all registered key bindings are 2 chars in length, but some take KeyEvent as a parameter
 		if(currentInput.length() < 2)
-			currentInput += arg0.getKeyChar();
+			currentInput += KeyEvent.getKeyText(arg0.getKeyCode());
 		else
 			currentInput += "?"; // ? For KeyEvent
 
 		EKeyBinding bindingCheck = keyMap.get(currentInput);
-		// Handled Internally vs. Handled by listener
 		if(bindingCheck != null) {
-			if(bindingCheck == EKeyBinding.Bind_DeleteAll) {
-				DeleteAll();
-				clearBindings();
+		
+			switch(bindingCheck) {
+				case Bind_DeleteAll:
+					DeleteAll();
+					clearBindings();
+					break;
+				case Bind_SelectParent:
+					System.out.println("Left");
+        			selector.SelectParentConstruct();
+					break;
+				case Bind_SelectChild:
+					System.out.println("Right");
+        			selector.SelectFirstChildConstruct();
+					break;
+				case Bind_SelectNextSibling:
+					System.out.println("Down");
+        			selector.SelectAdjacentConstruct(true);
+					break;
+				case Bind_SelectPrevSibling:
+					System.out.println("Up");
+        			selector.SelectAdjacentConstruct(false);
+					break;
+				default:
+					if(theListener != null)
+						theListener.receivedHotkey(bindingCheck, arg0.getKeyCode());
+					break;
 			}
-			else if(theListener != null) {
-				theListener.receivedHotkey(bindingCheck, arg0.getKeyCode());
-			}
+
 			clearBindings();
 			return;
 		}
@@ -142,7 +151,7 @@ public class BaseController implements KeyListener {
 	}
 	
 	// Handles keyboard selection of constructs
-	private class EditSelection {
+	public class EditSelection {
 		private final JFrame frame;
 		private final List<ConstructEditor> editors;
 		private ConstructEditor selected = null;

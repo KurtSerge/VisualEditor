@@ -14,6 +14,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -24,6 +25,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import editor.BaseController.EKeyBinding;
 
@@ -47,16 +49,58 @@ public class Application extends JFrame
 
 		@Override
 		public void receivedHotkey(EKeyBinding binding, int keyEventCode) {
-			switch(binding) {
-				case Bind_InsertAfter:  {
-					int i = 0;
-					i=i;
+			if(binding == BaseController.EKeyBinding.Bind_InsertAfter || 
+			   binding == BaseController.EKeyBinding.Bind_InsertBefore)  {				
+					// Generate appropriate object*********
+    				JSONObject newObj = new JSONObject();
+    				Construct newConstruct = null;
+    				Construct parent = null;
+    				
+					switch(binding) {
+						case Bind_InsertAfter:  
+						case Bind_InsertBefore:
+							parent = controller.getSelectedEditor().construct.parent;
+							break;
+					
+					}
+					
+					switch(keyEventCode) {
+						case KeyEvent.VK_O:
+							newObj.put("temp",new JSONObject());
+		        			newConstruct = JSONController.add_key_value_pair(newObj, parent);
+							break;
+						case KeyEvent.VK_K:
+							break;
+					}
 
-				}
+        			
+					// Determine insertion location*********
+					switch(binding) {
+						case Bind_InsertAfter: {
+							int selIndex = parent.children.indexOf(controller.getSelectedEditor().construct);
+							int newIndex = 0;
+							while(newIndex != selIndex+2) {
+								newIndex = parent.children.indexOf(newConstruct);
+								Collections.swap(parent.children, newIndex, newIndex-1);	
+							}
+							break;
+						}
+						case Bind_InsertBefore:  {
+							int selIndex = parent.children.indexOf(controller.getSelectedEditor().construct);
+							int newIndex = 0;
+							while(newIndex != selIndex+1) {
+								newIndex = parent.children.indexOf(newConstruct);
+								Collections.swap(parent.children, newIndex, newIndex-1);	
+							}
+							break;
+						}
+					}
+					
+					// Insert*******************************
+        			if(newConstruct != null)
+        				controller.selector.Select(JSONController.editors_from_constructs(newConstruct));
 			}
-			
 		}
-		
 	}
 	
     private class MyDispatcher implements KeyListener {
@@ -77,6 +121,7 @@ public class Application extends JFrame
             		insert_pressed = false;
 	        		switch(e.getKeyCode()) {
 	        			// Insert KV pair
+	        		/*
 		        		case KeyEvent.VK_K: {
 		        			JSONObject obj=new JSONObject();
 		        			obj.put("temp","temp");// TODO: second string should actually be ? placeholder... can be object OR string
@@ -91,7 +136,7 @@ public class Application extends JFrame
 		        			Construct ret = JSONController.add_key_value_pair(obj, controller.getSelectedEditor().construct);
 		        			if(ret != null)
 		        				JSONController.editors_from_constructs(ret);
-		        		}
+		        		}*/
 	        		}
 	        		return;
     			}
@@ -179,10 +224,12 @@ public class Application extends JFrame
 		
 		controller = new BaseController(this, JSONController.editors);
 		top.addKeyListener(controller); // Must add BaseController first
-		top.addKeyListener(new MyDispatcher(this));
+		//top.addKeyListener(new MyDispatcher(this));
 		
 		controller.setListener(new HotkeyListener());
-		controller.registerHotkey(EKeyBinding.Bind_InsertAfter, "ia?");
+		controller.registerHotkey(EKeyBinding.Bind_InsertAfter, "IA?");
+		controller.registerHotkey(EKeyBinding.Bind_InsertBefore, "IB?");
+		
 		
 
 
