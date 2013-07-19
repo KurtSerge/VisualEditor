@@ -25,6 +25,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import org.json.JSONObject;
 
+import clojure.ClojureController;
+
 import json.JSONController;
 import json.KeyValueConstruct;
 import json.ObjectConstruct;
@@ -113,13 +115,21 @@ public class Application extends JFrame
 	Application()
 	{
 		super("Editor Demo");
+		
+		boolean shouldLoadJson = false;	// Alt: Loads Clojure
+		
 		this.setSize(800, 600);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
 		this.setBackground(Color.white);
 		
 		try {
-			jsonDocumentConstruct2 = JSONController.load_json(new FileInputStream("testNum.json"));
+			if(shouldLoadJson) {
+				jsonDocumentConstruct2 = JSONController.load_json(new FileInputStream("testNum.json"));
+			} else {
+				jsonDocumentConstruct2 = ClojureController.load_clojure(new FileInputStream("testtypes.clj"));
+			}
+			
 			//jsonDocumentConstruct2 = JSONController.load_json(new FileInputStream("commaTest.json"));
 			//jsonDocumentConstruct2 = JSONController.load_json(new FileInputStream("test2.json"));
 			//jsonDocumentConstruct2.debugPrint();
@@ -127,6 +137,8 @@ public class Application extends JFrame
 			e1.printStackTrace();
 			return;
 		}
+		
+
 		
 
 		/*
@@ -154,18 +166,20 @@ public class Application extends JFrame
 		this.add(JSONConstructEditorFactory.create_editor_for(jsonDocumentConstruct).get_component());
 		*/
 		
-		Component top = JSONController.editors_from_constructs(jsonDocumentConstruct2).get_component();
+		Component top;
+		if(shouldLoadJson) { 
+			top = JSONController.editors_from_constructs(jsonDocumentConstruct2).get_component();
+		} else { 
+			top = ClojureController.editors_from_constructs(jsonDocumentConstruct2).get_component();
+		}
+		
 		this.add(top);
 		top.addKeyListener(new MyDispatcher(this));
 		
-		controller = new BaseController(this, JSONController.editors);
+		controller = new BaseController(this, ClojureController.editors);
 		top.addKeyListener(controller);
-		
-		
-		//top.addMouseListener(new MouseSelector());
-		  Toolkit.getDefaultToolkit().addAWTEventListener(
-		          new Listener(), AWTEvent.MOUSE_EVENT_MASK | AWTEvent.FOCUS_EVENT_MASK);
-		  
+
+		Toolkit.getDefaultToolkit().addAWTEventListener(new Listener(), AWTEvent.MOUSE_EVENT_MASK | AWTEvent.FOCUS_EVENT_MASK);
 
 		this.pack();
 		this.setSize(800, 600);
@@ -176,19 +190,8 @@ public class Application extends JFrame
 	 */
 	public static void main(String[] args) {
 		try {
-			UIManager.setLookAndFeel(
-			        UIManager.getSystemLookAndFeelClassName());
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (UnsupportedLookAndFeelException e) {
-			// TODO Auto-generated catch block
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
