@@ -390,7 +390,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 			text_area.addKeyListener(textListener);
 			if(construct != null && construct.screen_text() == null) { // editable
 				get_component().requestFocus();
-				text_area.selectAll();
+				//text_area.selectAll();
 			}
 		} 
 		else {

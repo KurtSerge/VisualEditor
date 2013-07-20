@@ -250,7 +250,8 @@ public class Application extends JFrame
 		else{
 			controller = new BaseController(this, JSONController.editors);
 			top.addKeyListener(controller); // Must add BaseController first
-
+			top.requestFocus();
+			
 			controller.setListener(new HotkeyListener());
 			controller.registerHotkey(EKeyBinding.Bind_InsertAfter, "IA?");
 			controller.registerHotkey(EKeyBinding.Bind_InsertBefore, "IB?");
