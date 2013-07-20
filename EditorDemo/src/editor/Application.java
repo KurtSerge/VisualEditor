@@ -70,29 +70,48 @@ public class Application extends JFrame
 			}
 			
 			switch(keyEventCode) {
-				case KeyEvent.VK_O:
+				case KeyEvent.VK_O: // Object
 					if(parent.getClass() == json.KeyValueConstruct.class)  {
-						if(parent.children.indexOf(controller.getSelectedEditor().construct) == 0)
-							return;
-						newConstruct = new json.ObjectConstruct(parent);
+						// Empty Object 
+						JSONObject newObj = new JSONObject();
+						newConstruct = JSONController.construct_for_json(newObj, parent);
 						if(newConstruct != null)
 							parent.children.add(newConstruct);
 					}
-					else {
-						JSONObject newObj = new JSONObject();
-						newObj.put("temp", new JSONObject());
-	        			newConstruct = JSONController.add_key_value_pair(newObj, parent);
-					}
+					// FIXME:
+					//else {
+					//	// KV-Pair with Obj value (it's common enough to warrant a hotkey methinks)
+					//	JSONObject newObj = new JSONObject();
+					//	newObj.put("temp", new JSONObject());
+	        		//	newConstruct = JSONController.add_key_value_pair(newObj, parent);
+					//}
 					break;
-				case KeyEvent.VK_S:
-					if(binding != EKeyBinding.Bind_InsertReplace)
+				case KeyEvent.VK_S: // String
+					if(binding != EKeyBinding.Bind_InsertReplace) // FIXME: need a better way to invalide this (example: insert after while selecting an object)
 						return;
 					newConstruct = JSONController.construct_for_json("EmtpyStr", parent);
 					if(newConstruct != null)
 						parent.children.add(newConstruct);
 					break;
-				case KeyEvent.VK_K:
-        			newConstruct = JSONController.add_key_value_pair(null, parent);
+				case KeyEvent.VK_K: // KVPair
+        			newConstruct = JSONController.get_empty_kvp(parent);
+        			if(newConstruct != null)
+        				parent.children.add(newConstruct);
+					break;
+				case KeyEvent.VK_I: // Integer
+					if(binding != EKeyBinding.Bind_InsertReplace)
+						return;
+					newConstruct = JSONController.construct_for_json(0, parent);
+					if(newConstruct != null)
+						parent.children.add(newConstruct);
+					break;
+				case KeyEvent.VK_F: // Float
+					break;
+				case KeyEvent.VK_B: // Bool
+					break;
+				case KeyEvent.VK_N: // Null
+					break;
+				case KeyEvent.VK_A: // Array
 					break;
 				default:
 					return;
@@ -183,7 +202,7 @@ public class Application extends JFrame
 		}
 		
 
-		
+		jsonDocumentConstruct2.debugPrint();// FIXME: Debug
 
 		/*
 		// TODO: Load from file
