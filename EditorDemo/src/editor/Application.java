@@ -92,41 +92,27 @@ public class Application extends JFrame
 					}
 					break;
 				case KeyEvent.VK_S: // String
-					if(binding != EKeyBinding.Bind_InsertReplace) // FIXME: need a better way to invalide this (example: insert after while selecting an object)
-						return;
 					newConstruct = JSONController.construct_for_json("EmtpyStr", parent);
 					break;
 				case KeyEvent.VK_K: // KVPair
         			newConstruct = JSONController.get_empty_kvp(parent);
 					break;
 				case KeyEvent.VK_I: // Integer
-					if(binding != EKeyBinding.Bind_InsertReplace)
-						return;
 					newConstruct = JSONController.construct_for_json(0, parent);
 					break;
 				case KeyEvent.VK_F: // Float
-					if(binding != EKeyBinding.Bind_InsertReplace)
-						return;
 					newConstruct = JSONController.construct_for_json(0.0, parent);
 					break;
 				case KeyEvent.VK_B: // Bool
-					if(binding != EKeyBinding.Bind_InsertReplace)
-						return;
 					newConstruct = JSONController.construct_for_json(true, parent);
 					break;
 				case KeyEvent.VK_N: // Null
-					if(binding != EKeyBinding.Bind_InsertReplace)
-						return;
 					newConstruct = JSONController.construct_for_json(org.json.JSONObject.NULL, parent);
 					break;
 				case KeyEvent.VK_A: // Array
 					JSONArray list = new JSONArray();
-					list.put("foo");
-					list.put("foo2");
-					//list.put(new Integer(100));
-					//list.put(new Double(1000.21));
-					//list.put(new Boolean(true));
-
+					list.put("test");
+					list.put("test2");
 					newConstruct = JSONController.construct_for_json(list, parent);
 					break;
 				default:
