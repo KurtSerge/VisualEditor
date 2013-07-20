@@ -24,6 +24,7 @@ import javax.swing.JTextArea;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -52,9 +53,14 @@ public class Application extends JFrame
 
 		@Override
 		public void receivedHotkey(EKeyBinding binding, int keyEventCode) {
+			handleInsert(binding, keyEventCode);
+		}
+
+		private void handleInsert(EKeyBinding binding, int keyEventCode) {
 			Construct newConstruct = null;
 			Construct parent = null;
 
+			// Determine parent of construct to be added
 			switch(binding) {
 				case Bind_InsertAfter:  
 				case Bind_InsertBefore:
@@ -69,95 +75,90 @@ public class Application extends JFrame
 			
 			}
 			
+			// Get a construct to insert
 			switch(keyEventCode) {
 				case KeyEvent.VK_O: // Object
 					if(parent.getClass() == json.KeyValueConstruct.class)  {
 						// Empty Object 
 						JSONObject newObj = new JSONObject();
 						newConstruct = JSONController.construct_for_json(newObj, parent);
-						if(newConstruct != null)
-							parent.children.add(newConstruct);
 					}
-					// FIXME:
-					//else {
-					//	// KV-Pair with Obj value (it's common enough to warrant a hotkey methinks)
-					//	JSONObject newObj = new JSONObject();
-					//	newObj.put("temp", new JSONObject());
-	        		//	newConstruct = JSONController.add_key_value_pair(newObj, parent);
-					//}
+					else {
+						// KV-Pair with Obj value (it's common enough to warrant a hotkey methinks)
+						// FIXME: needs work
+						JSONObject newObj = new JSONObject();
+						newObj.put("EmptyString", new JSONObject());
+						newConstruct = JSONController.construct_for_json(newObj, parent);
+					}
 					break;
 				case KeyEvent.VK_S: // String
 					if(binding != EKeyBinding.Bind_InsertReplace) // FIXME: need a better way to invalide this (example: insert after while selecting an object)
 						return;
 					newConstruct = JSONController.construct_for_json("EmtpyStr", parent);
-					if(newConstruct != null)
-						parent.children.add(newConstruct);
 					break;
 				case KeyEvent.VK_K: // KVPair
         			newConstruct = JSONController.get_empty_kvp(parent);
-        			if(newConstruct != null)
-        				parent.children.add(newConstruct);
 					break;
 				case KeyEvent.VK_I: // Integer
 					if(binding != EKeyBinding.Bind_InsertReplace)
 						return;
 					newConstruct = JSONController.construct_for_json(0, parent);
-					if(newConstruct != null)
-						parent.children.add(newConstruct);
 					break;
 				case KeyEvent.VK_F: // Float
+					if(binding != EKeyBinding.Bind_InsertReplace)
+						return;
+					newConstruct = JSONController.construct_for_json(0.0, parent);
 					break;
 				case KeyEvent.VK_B: // Bool
+					if(binding != EKeyBinding.Bind_InsertReplace)
+						return;
+					newConstruct = JSONController.construct_for_json(true, parent);
 					break;
 				case KeyEvent.VK_N: // Null
+					if(binding != EKeyBinding.Bind_InsertReplace)
+						return;
+					newConstruct = JSONController.construct_for_json(org.json.JSONObject.NULL, parent);
 					break;
 				case KeyEvent.VK_A: // Array
+					JSONArray list = new JSONArray();
+					list.put("foo");
+					list.put("foo2");
+					//list.put(new Integer(100));
+					//list.put(new Double(1000.21));
+					//list.put(new Boolean(true));
+
+					newConstruct = JSONController.construct_for_json(list, parent);
 					break;
 				default:
 					return;
 			}
-
-			ConstructEditor added = null;
-			if(newConstruct != null)
-				added = JSONController.editors_from_constructs(newConstruct);
-			else
+			// Error check previous step
+			if(newConstruct == null)
 				return;
 			
-			// Determine insertion location*********
+			// Determine location of insertion
+			int selIndex = parent.children.indexOf(controller.getSelectedEditor().construct);
 			switch(binding) {
 				case Bind_InsertAfter: {
-					int selIndex = parent.children.indexOf(controller.getSelectedEditor().construct);
-					int newIndex = -1;
-					while(newIndex != selIndex+1) {
-						if(newIndex >= 0)
-							Collections.swap(parent.children, newIndex-1, newIndex);	
-						newIndex = parent.children.indexOf(newConstruct);
-					}
+					parent.children.add(selIndex + 1, newConstruct);
 					break;
 				}
 				case Bind_InsertBefore:  {
-					int selIndex = -1;
-					int newIndex = -1;
-					while(newIndex != selIndex-1) {
-						if(newIndex >= 0)
-							Collections.swap(parent.children, newIndex, newIndex-1);
-						selIndex = parent.children.indexOf(controller.getSelectedEditor().construct);
-						newIndex = parent.children.indexOf(newConstruct);
-					}
+					parent.children.add(selIndex, newConstruct);
 					break;
 				}
 				case Bind_InsertReplace:  {
-					int selIndex = parent.children.indexOf(controller.getSelectedEditor().construct);
-					int newIndex = parent.children.indexOf(newConstruct);
-					Collections.swap(parent.children, newIndex, selIndex);
 					controller.DeleteAllSelected();
+					parent.children.add(selIndex, newConstruct);
 					break;
 				}
 				case Bind_InsertChild: {
+					controller.getSelectedEditor().construct.children.add(newConstruct);
 					break;
 				}
 			}
 			
+			ConstructEditor added = JSONController.editors_from_constructs(newConstruct);
 			if(added != null)  {
 				controller.selector.Select(added);
 			}
