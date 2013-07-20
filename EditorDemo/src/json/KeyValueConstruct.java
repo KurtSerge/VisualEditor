@@ -47,6 +47,35 @@ public class KeyValueConstruct extends Construct {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	@Override
+	public boolean validateAddChild(int index, Construct child) {
+		if(index == 0) {
+			// Key
+			if(child.getClass() == StringConstruct.class)
+				return true;
+			else
+				return false;
+		}
+		else if(index == 1) {
+			// Value
+			if(child.getClass() == ArrayConstruct.class ||
+			   child.getClass() == BooleanConstruct.class ||
+			   child.getClass() == FloatConstruct.class ||
+			   child.getClass() == IntegerConstruct.class ||
+			   child.getClass() == NullConstruct.class ||
+			   child.getClass() == StringConstruct.class ||
+			   child.getClass() == ObjectConstruct.class ) {
+				return true;
+			}
+			else
+				return false;
+		}
+		else {
+			// iunno
+			return false;
+		}
+	}
 
 	@Override
 	public boolean deleteChild(Construct child) {

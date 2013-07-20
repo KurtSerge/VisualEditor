@@ -22,4 +22,8 @@ public class StringLiteralConstruct extends Construct
 		return true;
 	}
 
+	@Override
+	public boolean validateAddChild(int index, Construct child) {
+		return false;
+	}
 }

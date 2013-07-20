@@ -55,5 +55,13 @@ public class ObjectConstruct extends Construct {
 		
 		return true;
 	}
-
+	
+	@Override
+	public boolean validateAddChild(int index, Construct child) {
+		if(child.getClass() != KeyValueConstruct.class) {
+			return true;
+		}
+		
+		return false;
+	}
 }

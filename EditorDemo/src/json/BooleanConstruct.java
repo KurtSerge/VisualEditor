@@ -22,4 +22,9 @@ public class BooleanConstruct extends Construct{
 		
 		return false;
 	}
+	
+	@Override
+	public boolean validateAddChild(int index, Construct child) {
+		return false;
+	}
 }

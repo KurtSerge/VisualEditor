@@ -74,4 +74,29 @@ public abstract class Construct
 		child.delete();
 		children.add(index, new EmptyConstruct(this));
 	}
+	
+	// Check that child being added at the specified index is valid
+	public /*FIXME:abstract*/ boolean validateAddChild(int index, Construct child) {
+		return true;
+	}
+	
+	// TODO: How to force contract to use addChild instead of this.children.add
+	final public boolean addChild(int index, Construct child) {
+		if(validateAddChild(index, child) == true)  {
+			children.add(index, child);
+			return true;
+		}
+		// Else consider making empty TODO:
+		return false;
+	}
+	
+	final public boolean replaceChild(Construct replaceMe, Construct newCon) {
+		// FIXME: really you need to make the replacement first, then validate, then rollback if the replace is invalid
+		int newIndex = replaceMe.parent.children.indexOf(replaceMe);
+		boolean success = addChild(newIndex, newCon);
+		if(success == true) {
+			replaceMe.parent.children.remove(replaceMe);
+		}
+		return success;
+	}
 }

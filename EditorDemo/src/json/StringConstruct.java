@@ -23,4 +23,13 @@ public class StringConstruct extends Construct {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+	@Override
+	public boolean validateAddChild(int index, Construct child) {
+		if(child.getClass() == StringLiteralConstruct.class)
+			return true;
+		
+		return false;
+	}
+
 }

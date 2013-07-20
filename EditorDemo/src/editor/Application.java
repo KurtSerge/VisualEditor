@@ -140,20 +140,21 @@ public class Application extends JFrame
 			int selIndex = parent.children.indexOf(controller.getSelectedEditor().construct);
 			switch(binding) {
 				case Bind_InsertAfter: {
-					parent.children.add(selIndex + 1, newConstruct);
+					parent.addChild(selIndex + 1, newConstruct);
 					break;
 				}
 				case Bind_InsertBefore:  {
-					parent.children.add(selIndex, newConstruct);
+					parent.addChild(selIndex,  newConstruct);
 					break;
 				}
 				case Bind_InsertReplace:  {
-					controller.DeleteAllSelected();
-					parent.children.add(selIndex, newConstruct);
+					if(parent.replaceChild(controller.getSelectedEditor().construct, newConstruct) == false)
+						return;
 					break;
 				}
 				case Bind_InsertChild: {
-					controller.getSelectedEditor().construct.children.add(newConstruct);
+					int lastIndex = controller.getSelectedEditor().construct.children.size();
+					controller.getSelectedEditor().construct.addChild(lastIndex, newConstruct);
 					break;
 				}
 			}

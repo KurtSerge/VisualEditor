@@ -87,9 +87,6 @@ public class JSONController
 		}
 		if(object.getClass().equals(String.class))
 		{
-			if(parent.getClass() != KeyValueConstruct.class && parent.getClass() != ArrayConstruct.class)
-				return null;
-			
 			json.StringConstruct string_construct = new json.StringConstruct(parent);
 			
 			String json_string = (String)object;

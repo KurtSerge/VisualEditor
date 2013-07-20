@@ -24,4 +24,9 @@ public class IntegerConstruct extends Construct{
 			return false;
 		}
 	}
+	
+	@Override
+	public boolean validateAddChild(int index, Construct child) {
+		return false;
+	}
 }
