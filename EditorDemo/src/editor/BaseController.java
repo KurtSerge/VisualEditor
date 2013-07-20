@@ -45,6 +45,7 @@ public class BaseController implements KeyListener {
 	}
 	
 	public BaseController(JFrame frame, List<ConstructEditor> editors) {
+		System.out.println("Setup BaseController");
 		selector = new EditSelection(frame, editors);
 		selector.SelectRandom();
 		currentInput = "";
@@ -68,8 +69,11 @@ public class BaseController implements KeyListener {
 		currentInput = "";
 	}
 	
+
 	@Override
 	public void keyPressed(KeyEvent arg0) {
+		System.out.println(arg0.getKeyCode());
+		
 		// Handle combo bindings***************
 		if (arg0.getID() == KeyEvent.KEY_PRESSED && arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			clearBindings();
@@ -135,10 +139,13 @@ public class BaseController implements KeyListener {
     }
 
 	@Override
-	public void keyReleased(KeyEvent arg0) {}
+	public void keyReleased(KeyEvent arg0) {
+	}
 
 	@Override
-	public void keyTyped(KeyEvent arg0) {}
+	public void keyTyped(KeyEvent arg0) {
+		System.out.println("KeyTyped: " + arg0.getKeyCode());
+	}
 
 	// Delete construct and all children
 	public void DeleteAllSelected() {
@@ -234,5 +241,6 @@ public class BaseController implements KeyListener {
 			selected.setSelected(true);
 			frame.repaint();
 		}
+
 	}
 }

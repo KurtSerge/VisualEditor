@@ -204,8 +204,6 @@ public class Application extends JFrame
 		}
 		
 
-		jsonDocumentConstruct2.debugPrint();// FIXME: Debug
-
 		/*
 		// TODO: Load from file
 		Construct jsonDocumentConstruct = new ObjectConstruct(null);
