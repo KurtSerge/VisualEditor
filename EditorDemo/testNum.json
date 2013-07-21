@@ -2,7 +2,8 @@
 	"GlossSee1": {
 	},
 	"GlossDef": {
-		"para": 5.3
+		"para": 5.3,
+		"para2": "text"
 	},
 	"GlossSeeAlso": ["GML", "XML"]
 }

@@ -103,7 +103,7 @@ public abstract class Construct
 	// Each subclass must implement this.  
 	public Construct deepCopy(Construct parent) {
 		for( Construct child : this.children) {
-			parent.children.add(child.deepCopy(parent));
+			parent.children.add(child.deepCopy(parent.parent));
 		}
 
 		return null;

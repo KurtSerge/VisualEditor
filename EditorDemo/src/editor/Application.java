@@ -65,6 +65,7 @@ public class Application extends JFrame
 				case Bind_InsertAfter:  
 				case Bind_InsertBefore:
 				case Bind_InsertReplace:
+				case Bind_InsertUsurp:
 					parent = controller.getSelectedEditor().construct.parent;
 					break;
 				case Bind_InsertChild:
@@ -141,6 +142,27 @@ public class Application extends JFrame
 				case Bind_InsertChild: {
 					int lastIndex = controller.getSelectedEditor().construct.children.size();
 					controller.getSelectedEditor().construct.addChild(lastIndex, newConstruct);
+					break;
+				}
+				case Bind_InsertUsurp: {
+					// FIXME: What to test this on?
+					if(1==1)
+						throw(new RuntimeException("Usurp not working"));
+					
+					parent.addChild(selIndex + 1, newConstruct);// TODO: delete this if usurp fails
+					// Copy children
+					for(Construct child : controller.getSelectedEditor().construct.children)  {
+						Construct usurp = child.deepCopy(newConstruct);
+						int addIndex = newConstruct.children.size();
+						parent.addChild(addIndex, usurp);
+					}
+					
+					// copy selected children
+					//newConstruct = controller.getSelectedEditor().construct.deepCopy(parent);
+					//parent.addChild(selIndex+1, newConstruct);
+					
+					// delete selected children
+					//parent.deleteChild(controller.getSelectedEditor().construct);
 					break;
 				}
 			}
@@ -241,13 +263,14 @@ public class Application extends JFrame
 			controller.registerHotkey(EKeyBinding.Bind_InsertBefore, "IB?");
 			controller.registerHotkey(EKeyBinding.Bind_InsertReplace, "IR?");
 			controller.registerHotkey(EKeyBinding.Bind_InsertChild, "IC?");
+			controller.registerHotkey(EKeyBinding.Bind_InsertUsurp, "IU?");
 			
 			//top.addMouseListener(new MouseSelector());
 			Toolkit.getDefaultToolkit().addAWTEventListener(new Listener(), AWTEvent.MOUSE_EVENT_MASK | AWTEvent.FOCUS_EVENT_MASK);
 
 		}
 
-		jsonDocumentConstruct2.debugPrint();
+		//jsonDocumentConstruct2.debugPrint();
 		
 		// Deep copy usage
 		//Construct copyroot = new ObjectConstruct(null);

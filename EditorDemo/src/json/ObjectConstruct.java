@@ -58,7 +58,8 @@ public class ObjectConstruct extends Construct {
 	
 	@Override
 	public boolean validateAddChild(int index, Construct child) {
-		if(child.getClass() != KeyValueConstruct.class) {
+		if(	child.getClass() == KeyValueConstruct.class ||
+		    child.getClass() == ObjectConstruct.class) {// TODO: temporary, should NOT be able to insert object! Remove this || clause
 			return true;
 		}
 		
