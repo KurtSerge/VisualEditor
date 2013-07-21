@@ -1,7 +1,6 @@
 package json;
 
 import editor.Construct;
-import editor.ConstructEditor;
 	
 
 public class KeyValueConstruct extends Construct {
@@ -89,5 +88,13 @@ public class KeyValueConstruct extends Construct {
 		else {
 			return false;
 		}
+	}
+
+	
+	public Construct deepCopy(Construct parent) {
+		KeyValueConstruct newCopy = new KeyValueConstruct(parent);
+		super.deepCopy(newCopy);
+
+		return newCopy;
 	}
 }

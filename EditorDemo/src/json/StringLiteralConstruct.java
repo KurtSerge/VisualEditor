@@ -26,4 +26,11 @@ public class StringLiteralConstruct extends Construct
 	public boolean validateAddChild(int index, Construct child) {
 		return false;
 	}
+	
+	
+	public Construct deepCopy(Construct parent) {
+		StringLiteralConstruct newCopy = new StringLiteralConstruct(parent, literal);
+		super.deepCopy(newCopy);
+		return newCopy;
+	}
 }

@@ -20,6 +20,12 @@ public class EmptyConstruct extends Construct {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	public Construct deepCopy(Construct parent) {
+		EmptyConstruct newCopy = new EmptyConstruct(parent);
+		super.deepCopy(newCopy);
+		return newCopy;
+	}
 }
 
 

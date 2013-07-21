@@ -247,6 +247,14 @@ public class Application extends JFrame
 
 		}
 
+		jsonDocumentConstruct2.debugPrint();
+		
+		// Deep copy usage
+		//Construct copyroot = new ObjectConstruct(null);
+		//Construct copyCon = jsonDocumentConstruct2.deepCopy(copyroot);
+		//System.out.println();
+		//copyCon.debugPrint();
+
 		this.pack();
 		this.setSize(800, 600);
 	}

@@ -18,7 +18,7 @@ public class FloatConstruct extends Construct{
 	@Override
 	public boolean validate() {
 		try {
-			double test = Double.parseDouble(this.literal);
+			// FIXME: double test = Double.parseDouble(this.literal);
 			return true;
 		}
 		catch (NumberFormatException e) {
@@ -29,5 +29,12 @@ public class FloatConstruct extends Construct{
 	@Override
 	public boolean validateAddChild(int index, Construct child) {
 		return false;
+	}
+	
+	
+	public Construct deepCopy(Construct parent) {
+		FloatConstruct newCopy = new FloatConstruct(parent, literal);
+		super.deepCopy(newCopy);
+		return newCopy;
 	}
 }

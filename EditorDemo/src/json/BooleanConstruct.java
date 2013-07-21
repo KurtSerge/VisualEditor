@@ -27,4 +27,10 @@ public class BooleanConstruct extends Construct{
 	public boolean validateAddChild(int index, Construct child) {
 		return false;
 	}
+	
+	public Construct deepCopy(Construct parent) {
+		BooleanConstruct newCopy = new BooleanConstruct(parent, literal);
+		super.deepCopy(newCopy);
+		return newCopy;
+	}
 }

@@ -49,5 +49,9 @@ public class ArrayConstruct extends Construct {
 		return false;
 	}
 
-
+	public Construct deepCopy(Construct parent) {
+		ArrayConstruct newCopy = new ArrayConstruct(parent);
+		super.deepCopy(newCopy);
+		return newCopy;
+	}
 }

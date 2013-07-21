@@ -31,5 +31,12 @@ public class StringConstruct extends Construct {
 		
 		return false;
 	}
+	
+	
+	public Construct deepCopy(Construct parent) {
+		StringConstruct newCopy = new StringConstruct(parent);
+		super.deepCopy(newCopy);
+		return newCopy;
+	}
 
 }

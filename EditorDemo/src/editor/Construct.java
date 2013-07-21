@@ -99,4 +99,13 @@ public abstract class Construct
 		}
 		return success;
 	}
+
+	// Each subclass must implement this.  
+	public Construct deepCopy(Construct parent) {
+		for( Construct child : this.children) {
+			parent.children.add(child.deepCopy(parent));
+		}
+
+		return null;
+	}	
 }

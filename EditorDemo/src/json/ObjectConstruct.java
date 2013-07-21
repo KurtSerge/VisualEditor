@@ -64,4 +64,12 @@ public class ObjectConstruct extends Construct {
 		
 		return false;
 	}
+	
+
+
+	public Construct deepCopy(Construct parent) {
+		ObjectConstruct newCopy = new ObjectConstruct(parent);
+		super.deepCopy(newCopy);
+		return newCopy;
+	}
 }

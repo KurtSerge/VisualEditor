@@ -17,7 +17,7 @@ public class IntegerConstruct extends Construct{
 	@Override
 	public boolean validate() {
 		try {
-			int test = Integer.parseInt(this.literal);
+			// FIXME: int test = Integer.parseInt(this.literal);
 			return true;
 		}
 		catch (NumberFormatException e) {
@@ -28,5 +28,12 @@ public class IntegerConstruct extends Construct{
 	@Override
 	public boolean validateAddChild(int index, Construct child) {
 		return false;
+	}
+	
+	
+	public Construct deepCopy(Construct parent) {
+		IntegerConstruct newCopy = new IntegerConstruct(parent, literal);
+		super.deepCopy(newCopy);
+		return newCopy;
 	}
 }

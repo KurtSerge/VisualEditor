@@ -27,4 +27,11 @@ public class NullConstruct extends Construct{
 	public boolean validateAddChild(int index, Construct child) {
 		return false;
 	}
+	
+	
+	public Construct deepCopy(Construct parent) {
+		NullConstruct newCopy = new NullConstruct(parent, literal);
+		super.deepCopy(newCopy);
+		return newCopy;
+	}
 }
