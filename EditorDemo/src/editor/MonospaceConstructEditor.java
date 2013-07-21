@@ -58,21 +58,15 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 	}
 	
 	private class TextListener implements KeyListener {
-		private final JTextArea listenee;
-		
-		public TextListener(JTextArea ta) {
-			listenee = ta;
+		public TextListener() {
+
 		}
 		
 		@Override
 		public void keyPressed(KeyEvent e) {
 			if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 				// Find base
-				Component iter = listenee;
-				while(iter.getName() != "mono_base") {
-					iter = iter.getParent();
-				}
-				iter.requestFocus();
+				requestTopFocus();
 			}
 			
 		}
@@ -92,9 +86,12 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 			text_area.setBackground(new Color(255,255,255,255));
 			text_area.setName("mono_base");
 		}
-		else
+		else  {
 			text_area = new TransparentTextArea();
-		
+			// If not editable
+			if(construct.screen_text() != null) 
+				text_area.setFocusable(false);
+		}
 		
 		text_area.setFont(font);
 		text_area.setLayout(this);
@@ -184,7 +181,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 					continue;
 				
 				Dimension child_size = child.get_size();
-				
+
 				int nWidth = (int)Math.ceil(((double)child_size.width) / ((double)metrics.stringWidth(" ")));
 				int nHeight = (int)Math.ceil(((double)child_size.height) / ((double)metrics.getHeight()));
 				
@@ -256,7 +253,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		
 		return new Dimension(max_line_width, 
 							 metrics.getHeight() * (NewlineCount(my_text)+1));
-	}
+	} 
 
 	@Override
 	public void addLayoutComponent(String name, Component comp) {
@@ -281,7 +278,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 	private static Point StringPoint(String s, FontMetrics metrics)
 	{
 		Point ret = new Point(0,0);
-		
+
 		ret.y = metrics.getHeight() * NewlineCount(s);
 		
 		int lastNewline = s.lastIndexOf('\n')+1;
@@ -386,7 +383,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 	public void setSelected(boolean bSelect) {
 		if(bSelect == true) {
 			text_area.setBackground(Color.red);
-			textListener = new TextListener(text_area);
+			textListener = new TextListener();
 			text_area.addKeyListener(textListener);
 			if(construct != null && construct.screen_text() == null) { // editable
 				get_component().requestFocus();
@@ -397,6 +394,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 			text_area.select(0, 0);
 			text_area.setBackground(new Color(0,0,0,0));
 			text_area.removeKeyListener(textListener);
+			requestTopFocus();
 			textListener = null;
 		}
 	}
@@ -409,9 +407,36 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 				text_area.removeKeyListener(textListener);
 			
 			this.RemoveComponents();
+
+			removeEditors(this);
+
+			//editorsByConstructs.get(child).get().deleteMe();
+			//editorsByConstructs.remove(this);
+			
+			this.update();
 			return true;
 		}
 		return false;
 	}
+	
+	private void removeEditors(ConstructEditor editor) {
+		JSONController.editors.remove(editor);
+		for(Construct child : editor.construct.children) {		
+			ConstructEditor remove = editorsByConstructs.get(child).get();
+			removeEditors(remove);
+			JSONController.editors.remove(remove);
+		}
+	}
 
+	// Set focus to topmost monospace editor
+	private void requestTopFocus() {
+		Component iter = text_area;
+		while(iter.getName() != "mono_base") {
+			iter = iter.getParent();
+			if(iter == null)
+				return;
+		}
+		iter.requestFocus();
+		
+	}
 }

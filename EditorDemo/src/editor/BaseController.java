@@ -1,5 +1,8 @@
 package editor;
 
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.HashMap;
@@ -8,6 +11,7 @@ import java.util.Map;
 import java.util.Random;
 
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 import json.JSONController;
 
@@ -47,7 +51,15 @@ public class BaseController implements KeyListener {
 	public BaseController(JFrame frame, List<ConstructEditor> editors) {
 		System.out.println("Setup BaseController");
 		selector = new EditSelection(frame, editors);
-		selector.SelectRandom();
+		
+	    SwingUtilities.invokeLater(new Runnable() {
+
+	        @Override
+	        public void run() {
+	        	selector.SelectRandom();
+	        }
+	    });
+		
 		currentInput = "";
 		keyMap = new HashMap<String, EKeyBinding>();
 		
@@ -234,6 +246,8 @@ public class BaseController implements KeyListener {
 		}
 		
 		public void Select(ConstructEditor newSel) {
+			if(newSel == null)
+				return;
 			if(selected != null)   {
 				selected.setSelected(false);
 			}

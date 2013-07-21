@@ -3,7 +3,7 @@
 	},
 	"GlossDef": {
 		"para": 5.3,
-		"para2": "text"
+		"pp": "fdk"
 	},
 	"GlossSeeAlso": ["GML", "XML"]
 }

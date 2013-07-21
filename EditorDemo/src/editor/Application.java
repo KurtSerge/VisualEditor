@@ -2,9 +2,10 @@ package editor;
 import java.awt.AWTEvent;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.KeyEventDispatcher;
-import java.awt.KeyboardFocusManager;
 import java.awt.MouseInfo;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.AWTEventListener;
@@ -14,6 +15,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
@@ -47,7 +49,7 @@ public class Application extends JFrame
 {
 	// Demo
 	private Construct  jsonDocumentConstruct2 = null;
-	private  BaseController controller = null;
+	private BaseController controller = null;
 	
 	private class HotkeyListener implements BaseControllerListener {
 
@@ -174,16 +176,6 @@ public class Application extends JFrame
 		}
 	}
     
-    // Using AWT because Swing "MouseListener" doesn't give coords when clicking over jtextareas
-    private static class Listener implements AWTEventListener {
-        public void eventDispatched(AWTEvent event) {
-        	if (event instanceof MouseEvent) {
-        		MouseEvent e = (MouseEvent)event;
-        		if(e.getID() == MouseEvent.MOUSE_CLICKED)
-	            System.out.print(MouseInfo.getPointerInfo().getLocation() + "\n");
-        	} 
-        }
-    }
 	
 	Application()
 	{
@@ -236,6 +228,7 @@ public class Application extends JFrame
 		
 		this.add(JSONConstructEditorFactory.create_editor_for(jsonDocumentConstruct).get_component());
 		*/
+	
 		
 		Component top;
 		if(shouldLoadJson) { 
@@ -246,15 +239,14 @@ public class Application extends JFrame
 		
 		this.add(top);
 		
-
 		if(shouldLoadJson == false) {
 			controller = new BaseController(this, ClojureController.editors);
+			Toolkit.getDefaultToolkit().addAWTEventListener(new BaseMouseController(controller), AWTEvent.MOUSE_EVENT_MASK);
 			top.addKeyListener(controller);
-	
-			Toolkit.getDefaultToolkit().addAWTEventListener(new Listener(), AWTEvent.MOUSE_EVENT_MASK | AWTEvent.FOCUS_EVENT_MASK);
 		}
 		else{
 			controller = new BaseController(this, JSONController.editors);
+			Toolkit.getDefaultToolkit().addAWTEventListener(new BaseMouseController(controller), AWTEvent.MOUSE_EVENT_MASK);
 			top.addKeyListener(controller); // Must add BaseController first
 			top.requestFocus();
 			
@@ -264,10 +256,6 @@ public class Application extends JFrame
 			controller.registerHotkey(EKeyBinding.Bind_InsertReplace, "IR?");
 			controller.registerHotkey(EKeyBinding.Bind_InsertChild, "IC?");
 			controller.registerHotkey(EKeyBinding.Bind_InsertUsurp, "IU?");
-			
-			//top.addMouseListener(new MouseSelector());
-			Toolkit.getDefaultToolkit().addAWTEventListener(new Listener(), AWTEvent.MOUSE_EVENT_MASK | AWTEvent.FOCUS_EVENT_MASK);
-
 		}
 
 		//jsonDocumentConstruct2.debugPrint();
