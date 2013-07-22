@@ -51,24 +51,16 @@ public class BaseController implements KeyListener {
 	public BaseController(JFrame frame, List<ConstructEditor> editors) {
 		System.out.println("Setup BaseController");
 		selector = new EditSelection(frame, editors);
-		
-	    SwingUtilities.invokeLater(new Runnable() {
-
-	        @Override
-	        public void run() {
-	        	selector.SelectRandom();
-	        }
-	    });
-		
+	    selector.SelectRandom();
 		currentInput = "";
 		keyMap = new HashMap<String, EKeyBinding>();
-		
+
 		// Internally handled hotkeys
-		this.registerHotkey(EKeyBinding.Bind_DeleteAll, "DD");
-		this.registerHotkey(EKeyBinding.Bind_SelectParent, "Left");
-		this.registerHotkey(EKeyBinding.Bind_SelectChild, "Right");
-		this.registerHotkey(EKeyBinding.Bind_SelectNextSibling, "Down");
-		this.registerHotkey(EKeyBinding.Bind_SelectPrevSibling, "Up");
+		this.registerHotkey(EKeyBinding.Bind_DeleteAll, String.format("%s%s", (char)KeyEvent.VK_D, (char)KeyEvent.VK_D));
+		this.registerHotkey(EKeyBinding.Bind_SelectParent, String.format("%s", (char)KeyEvent.VK_LEFT));
+		this.registerHotkey(EKeyBinding.Bind_SelectChild, String.format("%s", (char)KeyEvent.VK_RIGHT));
+		this.registerHotkey(EKeyBinding.Bind_SelectNextSibling, String.format("%s", (char)KeyEvent.VK_DOWN));
+		this.registerHotkey(EKeyBinding.Bind_SelectPrevSibling, String.format("%s", (char)KeyEvent.VK_UP));
 	}
 	
 	// Important:Use the '?' character to indicate that an "autocomplete char" comes after the hotkey
@@ -94,9 +86,9 @@ public class BaseController implements KeyListener {
 		
 		// We assume all registered key bindings are 2 chars in length, but some take KeyEvent as a parameter
 		if(currentInput.length() < 2)
-			currentInput += KeyEvent.getKeyText(arg0.getKeyCode());
+			currentInput += (char)arg0.getKeyCode();
 		else
-			currentInput += "?"; // ? For KeyEvent
+			currentInput += (char)KeyEvent.VK_UNDEFINED; // ? For KeyEvent
 
 		EKeyBinding bindingCheck = keyMap.get(currentInput);
 		if(bindingCheck != null) {

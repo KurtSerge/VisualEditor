@@ -202,7 +202,6 @@ public class Application extends JFrame
 			e1.printStackTrace();
 			return;
 		}
-		
 
 		/*
 		// TODO: Load from file
@@ -236,7 +235,7 @@ public class Application extends JFrame
 		} else { 
 			top = ClojureController.editors_from_constructs(jsonDocumentConstruct2).get_component();
 		}
-		
+
 		this.add(top);
 		
 		if(shouldLoadJson == false) {
@@ -251,11 +250,11 @@ public class Application extends JFrame
 			top.requestFocus();
 			
 			controller.setListener(new HotkeyListener());
-			controller.registerHotkey(EKeyBinding.Bind_InsertAfter, "IA?");
-			controller.registerHotkey(EKeyBinding.Bind_InsertBefore, "IB?");
-			controller.registerHotkey(EKeyBinding.Bind_InsertReplace, "IR?");
-			controller.registerHotkey(EKeyBinding.Bind_InsertChild, "IC?");
-			controller.registerHotkey(EKeyBinding.Bind_InsertUsurp, "IU?");
+			controller.registerHotkey(EKeyBinding.Bind_InsertAfter, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_A, (char)KeyEvent.VK_UNDEFINED));
+			controller.registerHotkey(EKeyBinding.Bind_InsertBefore, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_B, (char)KeyEvent.VK_UNDEFINED));
+			controller.registerHotkey(EKeyBinding.Bind_InsertReplace, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_R, (char)KeyEvent.VK_UNDEFINED));
+			controller.registerHotkey(EKeyBinding.Bind_InsertChild, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_C, (char)KeyEvent.VK_UNDEFINED));
+			controller.registerHotkey(EKeyBinding.Bind_InsertUsurp, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_U, (char)KeyEvent.VK_UNDEFINED));
 		}
 
 		//jsonDocumentConstruct2.debugPrint();
