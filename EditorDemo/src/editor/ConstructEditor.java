@@ -3,8 +3,10 @@ package editor;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class ConstructEditor
@@ -54,7 +56,46 @@ public abstract class ConstructEditor
 
 	public abstract void setSelected(boolean bSelect);
 	
-	// Remove this constructeditor's UI
-	public abstract boolean deleteMe();
+	// Editor-specific cleanup - per editor instance
+	public abstract void delete();
 	
+	// Remove this constructeditor's UI
+	public final boolean deleteMe() {
+		if(construct.parent != null) {
+			// Get constructs
+			deleteList.clear();
+			getAllConstructs(construct);
+			// Delete Constructs
+			construct.debugPrint();
+			System.out.println();
+			if(construct.delete() == true) {
+				for(Construct del : deleteList) {
+					//del.parent.children.remove(del);// FIXME: When I comment this, crashes go away.  wtf? 
+					editorsByConstructs.get(del).get().delete();
+				}
+			}
+		}
+		construct.debugPrint();
+		return true;
+	}
+	// FIXME: Ugly, how to do this better?
+	static List<Construct> deleteList = new ArrayList<Construct>();
+	private void getAllConstructs(Construct delete) {
+		deleteList.add(delete);
+		for(Construct child : delete.children)  {
+			getAllConstructs(child);
+		}
+	}
+	
+	
+	
+	// calls deleteMe on topmost editor
+	public void deleteAll() {
+		Construct top = construct;
+		while(top.parent != null)
+			top = top.parent;
+		ConstructEditor topEditor = editorsByConstructs.get(top).get();
+		topEditor.deleteMe();
+	}
 }
+

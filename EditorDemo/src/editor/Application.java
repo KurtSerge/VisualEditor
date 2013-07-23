@@ -73,6 +73,23 @@ public class Application extends JFrame
 				case Bind_InsertChild:
 					parent = controller.getSelectedEditor().construct;
 					break;
+				case Bind_Undo:
+					// Delete
+					jsonDocumentConstruct2.debugPrint();
+					System.out.println();
+					controller.getSelectedEditor().deleteAll();
+					JSONController.editors.clear();
+					jsonDocumentConstruct2.delete();
+					
+					
+					jsonDocumentConstruct2.debugPrint();
+					System.out.println();
+					
+					// Add
+					jsonDocumentConstruct2 = Construct.getUndo();
+					jsonDocumentConstruct2.debugPrint();
+					JSONController.editors_from_constructs(jsonDocumentConstruct2);
+					return;
 				default:
 					throw new RuntimeException("Unhandled hotkey");
 			
@@ -255,15 +272,8 @@ public class Application extends JFrame
 			controller.registerHotkey(EKeyBinding.Bind_InsertReplace, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_R, (char)KeyEvent.VK_UNDEFINED));
 			controller.registerHotkey(EKeyBinding.Bind_InsertChild, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_C, (char)KeyEvent.VK_UNDEFINED));
 			controller.registerHotkey(EKeyBinding.Bind_InsertUsurp, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_U, (char)KeyEvent.VK_UNDEFINED));
+			controller.registerHotkey(EKeyBinding.Bind_Undo, String.format("%s", (char)KeyEvent.VK_U));
 		}
-
-		//jsonDocumentConstruct2.debugPrint();
-		
-		// Deep copy usage
-		//Construct copyroot = new ObjectConstruct(null);
-		//Construct copyCon = jsonDocumentConstruct2.deepCopy(copyroot);
-		//System.out.println();
-		//copyCon.debugPrint();
 
 		this.pack();
 		this.setSize(800, 600);

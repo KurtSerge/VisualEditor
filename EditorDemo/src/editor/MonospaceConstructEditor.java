@@ -124,11 +124,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 				text_area_components.add(c);
 			
 			for(Construct child : construct.children)
-			{
-				if(child.type == "empty" && editorsByConstructs.get(child) == null) {
-					JSONController.editors_from_constructs(child); // FIXME: Do not use JSONController in Mono Editor.. how to avoid?  Need to create editor from within editor. also, this should be handled by ConstructEditor
-				}
-				
+			{	
 				ConstructEditor parent_editor = editorsByConstructs.get(child).get();
 				
 				if(parent_editor == null)
@@ -176,7 +172,10 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 			int childIndex = 0;
 			while((nextChildBegins = screen_text.indexOf(child_string, lastChildEnd)) >= 0)
 			{
-				WeakReference<ConstructEditor> editorChild = editorsByConstructs.get(construct.children.get(childIndex));
+				if(construct.children.size() == 0) // FIXME: Temp, I think this check might be necessary because I am not deleting something properly
+					return "";
+				Construct constructChild = construct.children.get(childIndex);
+				WeakReference<ConstructEditor> editorChild = editorsByConstructs.get(constructChild);
 				if(editorChild == null)
 					throw(new RuntimeException("Probably forgot to add construct to editorsByConstructs with 'JSONController.editors_from_constructs'"));
 				ConstructEditor child = editorChild.get();
@@ -404,34 +403,15 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 	}
 	
 	// Delete editor and cleanup
-	final public boolean deleteMe() {
-		if(this.construct.parent.deleteChild(construct) == true)
-		{
-			if(textListener != null)
-				text_area.removeKeyListener(textListener);
-			
-			this.RemoveComponents();
-
-			removeEditors(this);
-
-			//editorsByConstructs.get(child).get().deleteMe();
-			//editorsByConstructs.remove(this);
-			
-			this.update();
-			return true;
-		}
-		return false;
+	public void delete() {
+		JSONController.editors.remove(this);
+		
+		if(textListener != null)
+			text_area.removeKeyListener(textListener);
+		
+		RemoveComponents();
 	}
 	
-	private void removeEditors(ConstructEditor editor) {
-		JSONController.editors.remove(editor);
-		for(Construct child : editor.construct.children) {		
-			ConstructEditor remove = editorsByConstructs.get(child).get();
-			removeEditors(remove);
-			JSONController.editors.remove(remove);
-		}
-	}
-
 	// Set focus to topmost monospace editor
 	private void requestTopFocus() {
 		Component iter = text_area;

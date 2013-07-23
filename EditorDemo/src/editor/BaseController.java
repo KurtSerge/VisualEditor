@@ -36,6 +36,8 @@ public class BaseController implements KeyListener {
 		// Deletion
 		Bind_DeleteAll,
 		Bind_DeleteTopmost,
+		// Undo buff
+		Bind_Undo,
 		// Selection
 		Bind_SelectNextSibling,
 		Bind_SelectPrevSibling,
@@ -161,12 +163,15 @@ public class BaseController implements KeyListener {
 		ConstructEditor deleteMeEditor = selector.selected;
 		if(deleteMeEditor.getParent() != null) 
 		{
-			if(deleteMeEditor.deleteMe()) {
-				if(selector.SelectAdjacentConstruct(false) == false)
-					selector.SelectParentConstruct();
+			boolean deleted = deleteMeEditor.deleteMe();
+			if(deleted == true) {
+			//	if(selector.SelectAdjacentConstruct(false) == false)
+			//		selector.SelectParentConstruct();
 			}
+			getSelectedEditor().update();
 		}
 	}
+
 	
 	// Delete topmost construct of selected
 	public void DeleteTopmost() {
@@ -178,7 +183,8 @@ public class BaseController implements KeyListener {
 			
 			// Delete topmost construct (only if we copied some children)
 			if(added > 0) {
-				if(deleteMeEditor.deleteMe()) {
+				boolean deleted = deleteMeEditor.deleteMe();
+				if(deleted == true) {
 	    			selector.selected.update();
 					if(selector.SelectAdjacentConstruct(false) == false)
 						selector.SelectParentConstruct();

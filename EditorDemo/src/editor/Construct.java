@@ -1,6 +1,11 @@
 package editor;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 
@@ -55,25 +60,33 @@ public abstract class Construct
 	
 	public abstract boolean validate();
 
-	final public void delete() {
-		if(this.parent != null)  {
-			this.parent.children.remove(this);
+	// Returns true if deleted
+	final public boolean delete() {
+		if(parent != null)  {
+			int index = parent.children.indexOf(this);
+			if(parent.canDeleteChild(index, this) == false)
+				return false;
+			AddToUndoBuffer();
+			parent.children.remove(this);
 		}
+		else {
+			// FIXME: how to delete top from inside?
+		}
+		
+		parent.handleDeleteChild();
+		return true; 
 	}
+
 	
 	// Override this for special rules, example: KV-Pair must have at least 2 children
-	public boolean deleteChild(Construct child) {
-		int childIndex = this.children.indexOf(child);
-		this.children.remove(childIndex);
-		return true;
+	public void handleDeleteChild() {
 	}
 	
-	// Set child leaf to an empty construct (deletes all children)
-	final public void setEmpty(Construct child) {
-		int index = children.indexOf(child);
-		child.delete();
-		children.add(index, new EmptyConstruct(this));
+	// Override this to set special conditions for when a child can be deleted
+	public boolean canDeleteChild(int index, Construct child) {
+		return true;
 	}
+
 	
 	// Check that child being added at the specified index is valid
 	public /*FIXME:abstract*/ boolean validateAddChild(int index, Construct child) {
@@ -84,6 +97,7 @@ public abstract class Construct
 	final public boolean addChild(int index, Construct child) {
 		if(validateAddChild(index, child) == true)  {
 			children.add(index, child);
+			AddToUndoBuffer();
 			return true;
 		}
 		// Else consider making empty TODO:
@@ -97,6 +111,9 @@ public abstract class Construct
 		if(success == true) {
 			replaceMe.parent.children.remove(replaceMe);
 		}
+		if(success == true) {
+			AddToUndoBuffer();
+		}
 		return success;
 	}
 
@@ -107,5 +124,32 @@ public abstract class Construct
 		}
 
 		return null;
-	}	
+	}
+	
+	
+	// For undo/redo buffers
+	protected static List<Construct> treeChanges = new ArrayList<Construct>();
+	protected static int treeChangeIndex = 0;
+	private void AddToUndoBuffer() {
+		// Find top of tree
+		Construct top = this;
+		while(top.parent != null) {
+			top = top.parent;
+		}
+		// TODO: What to do if we add a change, but thetreechangeindex is not at the end? handle this
+		treeChanges.add(top.deepCopy(null));
+		treeChangeIndex = treeChanges.size()-1;
+	}
+	
+	public static Construct getUndo() {
+		if(treeChangeIndex != 0)
+			treeChangeIndex--;
+		return treeChanges.get(treeChangeIndex);
+	}
+	
+	public static Construct getRedo() {
+		if(treeChangeIndex != treeChanges.size()-1)
+			treeChangeIndex++;
+		return treeChanges.get(treeChangeIndex);
+	}
 }
