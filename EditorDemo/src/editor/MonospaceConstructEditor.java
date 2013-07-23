@@ -12,6 +12,7 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -175,7 +176,10 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 			int childIndex = 0;
 			while((nextChildBegins = screen_text.indexOf(child_string, lastChildEnd)) >= 0)
 			{
-				ConstructEditor child = editorsByConstructs.get(construct.children.get(childIndex)).get();
+				WeakReference<ConstructEditor> editorChild = editorsByConstructs.get(construct.children.get(childIndex));
+				if(editorChild == null)
+					throw(new RuntimeException("Probably forgot to add construct to editorsByConstructs with 'JSONController.editors_from_constructs'"));
+				ConstructEditor child = editorChild.get();
 				
 				if(child == null)
 					continue;
