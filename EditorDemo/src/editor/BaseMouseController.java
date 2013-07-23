@@ -31,7 +31,7 @@ public class BaseMouseController implements AWTEventListener {
     			Point click = MouseInfo.getPointerInfo().getLocation();
     			List<ConstructEditor> clickedEditors = new ArrayList<ConstructEditor>();
     			//System.out.println(JSONController.editors.size());
-            	for(ConstructEditor editor : ClojureController.editors ) {
+            	for(ConstructEditor editor : bc.selector.editors ) {
         			Point topleft = editor.get_component().getLocationOnScreen();
         			Dimension dim = editor.get_size();
         		

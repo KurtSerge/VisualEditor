@@ -18,7 +18,7 @@ import editor.ConstructEditor;
 import editor.EmptyConstruct;
 import editor.MonospaceConstructEditor;
 
-public class JSONController
+public class JSONController 
 {
 	public static ArrayList<ConstructEditor> editors;
 	

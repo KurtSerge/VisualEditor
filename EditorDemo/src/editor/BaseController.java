@@ -23,7 +23,7 @@ public class BaseController implements KeyListener {
 	private BaseControllerListener theListener = null;// TODO: allow for more listeners
 	private String currentInput = null;
 	private Map<String, EKeyBinding> keyMap = null;
-	
+
 	public enum EKeyBinding {
 		Bind_Insert,
 		Bind_InsertAfter,
@@ -167,7 +167,7 @@ public class BaseController implements KeyListener {
 	// Handles keyboard selection of constructs
 	public class EditSelection {
 		private final JFrame frame;
-		private final List<ConstructEditor> editors;
+		public final List<ConstructEditor> editors;
 		private ConstructEditor selected = null;
 		
 		public EditSelection(JFrame frame, List<ConstructEditor> editors) {
