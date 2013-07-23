@@ -52,7 +52,12 @@ public class Application extends JFrame
 	private BaseController controller = null;
 	
 	private class HotkeyListener implements BaseControllerListener {
-
+		private final JFrame window;
+		
+		public HotkeyListener(JFrame window) {
+			this.window = window;
+		}
+		
 		@Override
 		public void receivedHotkey(EKeyBinding binding, int keyEventCode) {
 			handleInsert(binding, keyEventCode);
@@ -75,20 +80,16 @@ public class Application extends JFrame
 					break;
 				case Bind_Undo:
 					// Delete
-					jsonDocumentConstruct2.debugPrint();
-					System.out.println();
+					
 					controller.getSelectedEditor().deleteAll();
-					JSONController.editors.clear();
-					jsonDocumentConstruct2.delete();
+
 					
-					
-					jsonDocumentConstruct2.debugPrint();
-					System.out.println();
+					jsonDocumentConstruct2 = Construct.getUndo();
+					Component top = JSONController.editors_from_constructs(jsonDocumentConstruct2).get_component();
+					window.add(top);
 					
 					// Add
-					jsonDocumentConstruct2 = Construct.getUndo();
-					jsonDocumentConstruct2.debugPrint();
-					JSONController.editors_from_constructs(jsonDocumentConstruct2);
+					//jsonDocumentConstruct2 = Construct.getUndo();
 					return;
 				default:
 					throw new RuntimeException("Unhandled hotkey");
@@ -266,7 +267,7 @@ public class Application extends JFrame
 			top.addKeyListener(controller); // Must add BaseController first
 			top.requestFocus();
 			
-			controller.setListener(new HotkeyListener());
+			controller.setListener(new HotkeyListener(this));
 			controller.registerHotkey(EKeyBinding.Bind_InsertAfter, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_A, (char)KeyEvent.VK_UNDEFINED));
 			controller.registerHotkey(EKeyBinding.Bind_InsertBefore, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_B, (char)KeyEvent.VK_UNDEFINED));
 			controller.registerHotkey(EKeyBinding.Bind_InsertReplace, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_R, (char)KeyEvent.VK_UNDEFINED));

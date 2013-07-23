@@ -61,12 +61,11 @@ public abstract class ConstructEditor
 	
 	// Remove this constructeditor's UI
 	public final boolean deleteMe() {
-		if(construct.parent != null) {
+		//if(construct.parent != null) {
 			// Get constructs
 			deleteList.clear();
 			getAllConstructs(construct);
 			// Delete Constructs
-			construct.debugPrint();
 			System.out.println();
 			if(construct.delete() == true) {
 				for(Construct del : deleteList) {
@@ -74,8 +73,7 @@ public abstract class ConstructEditor
 					editorsByConstructs.get(del).get().delete();
 				}
 			}
-		}
-		construct.debugPrint();
+		//}
 		return true;
 	}
 	// FIXME: Ugly, how to do this better?

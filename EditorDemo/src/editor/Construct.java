@@ -68,12 +68,12 @@ public abstract class Construct
 				return false;
 			AddToUndoBuffer();
 			parent.children.remove(this);
+			parent.handleDeleteChild();
 		}
 		else {
 			// FIXME: how to delete top from inside?
 		}
-		
-		parent.handleDeleteChild();
+	
 		return true; 
 	}
 
@@ -137,7 +137,7 @@ public abstract class Construct
 			top = top.parent;
 		}
 		// TODO: What to do if we add a change, but thetreechangeindex is not at the end? handle this
-		treeChanges.add(top.deepCopy(null));
+		treeChanges.add(top.deepCopy(top));
 		treeChangeIndex = treeChanges.size()-1;
 	}
 	
