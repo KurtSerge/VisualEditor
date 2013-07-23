@@ -1,8 +1,9 @@
 package clojure.constructs;
 
+import clojure.ClojureConstruct;
 import editor.Construct;
 
-public class KeywordConstruct extends Construct {
+public class KeywordConstruct extends ClojureConstruct {
 	public KeywordConstruct(Construct parent, String literal) {
 		super("keyword", parent);
 		this.literal = literal;

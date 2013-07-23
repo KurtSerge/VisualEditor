@@ -10,6 +10,8 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import clojure.ClojureController;
+
 import json.JSONController;
 
 
@@ -29,7 +31,7 @@ public class BaseMouseController implements AWTEventListener {
     			Point click = MouseInfo.getPointerInfo().getLocation();
     			List<ConstructEditor> clickedEditors = new ArrayList<ConstructEditor>();
     			//System.out.println(JSONController.editors.size());
-            	for(ConstructEditor editor : JSONController.editors ) {
+            	for(ConstructEditor editor : ClojureController.editors ) {
         			Point topleft = editor.get_component().getLocationOnScreen();
         			Dimension dim = editor.get_size();
         		

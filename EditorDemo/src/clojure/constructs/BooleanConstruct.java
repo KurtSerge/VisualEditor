@@ -1,8 +1,9 @@
 package clojure.constructs;
 
+import clojure.ClojureConstruct;
 import editor.Construct;
 
-public class BooleanConstruct extends Construct {
+public class BooleanConstruct extends ClojureConstruct {
 	public BooleanConstruct(Construct parent, String literal) { 
 		super("boolean", parent);
 		this.literal = literal;

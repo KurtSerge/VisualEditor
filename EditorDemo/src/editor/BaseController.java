@@ -116,7 +116,7 @@ public class BaseController implements KeyListener {
 					break;
 				default:
 					if(theListener != null)
-						theListener.receivedHotkey(bindingCheck, arg0.getKeyCode());
+						theListener.receivedHotkey(this, bindingCheck, arg0.getKeyCode());
 					break;
 			}
 

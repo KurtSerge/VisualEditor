@@ -1,8 +1,9 @@
 package clojure.constructs;
 
+import clojure.ClojureConstruct;
 import editor.Construct;
 
-public class BigDecimalConstruct extends Construct {
+public class BigDecimalConstruct extends ClojureConstruct {
 
 	public BigDecimalConstruct(Construct parent, String literal) {
 		super("bigdecimal", parent);

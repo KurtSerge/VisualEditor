@@ -1,8 +1,9 @@
 package clojure.constructs;
 
+import clojure.ClojureConstruct;
 import editor.Construct;
 
-public class CharacterConstruct extends Construct {
+public class CharacterConstruct extends ClojureConstruct {
 
 	public CharacterConstruct(Construct parent, String literal) { 
 		super("character", parent);

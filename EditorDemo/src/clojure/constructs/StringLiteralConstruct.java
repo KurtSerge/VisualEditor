@@ -1,8 +1,7 @@
 package clojure.constructs;
 
-import editor.Construct;
-
-public class StringLiteralConstruct extends Construct {
+import clojure.ClojureConstruct;
+public class StringLiteralConstruct extends ClojureConstruct {
 	public StringLiteralConstruct(StringConstruct parent, String literal) { 
 		super("stringliteral", parent);
 		this.literal = literal;

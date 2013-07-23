@@ -1,8 +1,9 @@
 package clojure.constructs;
 
+import clojure.ClojureConstruct;
 import editor.Construct;
 
-public class BigIntConstruct extends Construct {
+public class BigIntConstruct extends ClojureConstruct {
 	
 	public BigIntConstruct(Construct parent, String literal) {
 		super("bigint", parent);

@@ -1,8 +1,9 @@
 package clojure.constructs;
 
+import clojure.ClojureConstruct;
 import editor.Construct;
 
-public class DoubleConstruct extends Construct {
+public class DoubleConstruct extends ClojureConstruct {
 
 	public DoubleConstruct(Construct parent, String literal) { 
 		super("double", parent);

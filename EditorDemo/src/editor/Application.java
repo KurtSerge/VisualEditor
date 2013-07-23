@@ -42,9 +42,6 @@ import json.StringConstruct;
 import json.StringLiteralConstruct;
 import lisp.LispController;
 
-
-
-
 public class Application extends JFrame
 {
 	// Demo
@@ -54,7 +51,7 @@ public class Application extends JFrame
 	private class HotkeyListener implements BaseControllerListener {
 
 		@Override
-		public void receivedHotkey(EKeyBinding binding, int keyEventCode) {
+		public void receivedHotkey(BaseController controller, EKeyBinding binding, int keyEventCode) {
 			handleInsert(binding, keyEventCode);
 		}
 
@@ -181,7 +178,7 @@ public class Application extends JFrame
 	{
 		super("Editor Demo");
 		
-		boolean shouldLoadJson = true;	// Alt: Loads Clojure
+		boolean shouldLoadJson = false;	// Alt: Loads Clojure
 		
 		this.setSize(800, 600);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -242,6 +239,11 @@ public class Application extends JFrame
 			controller = new BaseController(this, ClojureController.editors);
 			Toolkit.getDefaultToolkit().addAWTEventListener(new BaseMouseController(controller), AWTEvent.MOUSE_EVENT_MASK);
 			top.addKeyListener(controller);
+			
+			controller.setListener(new clojure.HotkeyListener());
+			controller.registerHotkey(EKeyBinding.Bind_InsertAfter, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_A, (char)KeyEvent.VK_UNDEFINED));
+			controller.registerHotkey(EKeyBinding.Bind_InsertBefore, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_B, (char)KeyEvent.VK_UNDEFINED));
+			controller.registerHotkey(EKeyBinding.Bind_InsertChild, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_C, (char)KeyEvent.VK_UNDEFINED));
 		}
 		else{
 			controller = new BaseController(this, JSONController.editors);

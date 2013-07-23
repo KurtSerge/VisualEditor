@@ -1,8 +1,9 @@
 package clojure.constructs;
 
+import clojure.ClojureConstruct;
 import editor.Construct;
 
-public class MapConstruct extends Construct {
+public class MapConstruct extends ClojureConstruct {
 	
 	public MapConstruct(Construct parent, String literal) { 
 		super("map", parent);

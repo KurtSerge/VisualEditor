@@ -1,8 +1,9 @@
 package clojure.constructs;
 
+import clojure.ClojureConstruct;
 import editor.Construct;
 
-public class IntegerConstruct extends Construct {
+public class IntegerConstruct extends ClojureConstruct {
 	public IntegerConstruct(Construct parent, String literal) {
 		super("integer", parent);
 		
