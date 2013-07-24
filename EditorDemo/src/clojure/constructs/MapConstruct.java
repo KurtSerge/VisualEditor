@@ -21,8 +21,10 @@ public class MapConstruct extends ClojureConstruct {
 			
 			builder.append("$(node)");
 			
-			if(i % 2 == 1 && i != children.size() - 1)
+			boolean isFinalNode = i == children.size() - 1;
+			if(i % 2 == 1 && !isFinalNode) { 
 				builder.append(",");
+			}
 		}
 
 		builder.append("}");
@@ -34,5 +36,10 @@ public class MapConstruct extends ClojureConstruct {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	@Override 
+	public boolean canInsertChildren() { 
+		return true;
+	}	
 
 }

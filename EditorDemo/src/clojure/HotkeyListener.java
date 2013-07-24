@@ -20,33 +20,9 @@ public class HotkeyListener implements BaseControllerListener {
 	public void receivedHotkey(BaseController controller, EKeyBinding binding, int keyEventCode) {
 		handleInsert(controller, binding, keyEventCode);
 	}
-
-	private void handleInsert(BaseController controller, EKeyBinding binding, int keyEventCode) {
+	
+	private ClojureConstruct constructFromKey(ClojureConstruct parent, int keyEventCode) { 
 		ClojureConstruct newConstruct = null;
-		ClojureConstruct parent = null;
-
-		// Determine parent of construct to be added
-		switch(binding) {
-			case Bind_InsertAfter:  
-			case Bind_InsertBefore:
-			case Bind_InsertReplace:
-				parent = (ClojureConstruct) controller.getSelectedEditor().construct.parent;
-				break;
-				
-			case Bind_InsertChild:
-				// Check to see if this node can be used to insert children
-				parent = (ClojureConstruct) controller.getSelectedEditor().construct;
-				if(!parent.canInsertChildren()) { 
-					// This node cannot be used, ignore command
-					System.out.println("Ignoring Bind_InsertChild");
-					return ;
-				}
-				break;
-			default:
-				throw new RuntimeException("Unhandled hotkey");
-		}
-		
-		// Get a construct to insert
 		switch(keyEventCode) {
 			case KeyEvent.VK_S: 
 				newConstruct = new SymbolConstruct(parent, "symbol");
@@ -91,9 +67,47 @@ public class HotkeyListener implements BaseControllerListener {
 				System.out.println("Unknown keyEventCode: " + keyEventCode);
 		}
 		
-		// Error check previous step
+		return newConstruct;
+	}
+	
+	private ClojureConstruct parentForBinding(ConstructEditor selectedEditor, EKeyBinding binding) { 
+		ClojureConstruct parent = null;
+		switch(binding) {
+			case Bind_InsertAfter:  
+			case Bind_InsertBefore:
+			case Bind_InsertReplace:
+				parent = (ClojureConstruct) selectedEditor.construct.parent;
+				break;
+				
+			case Bind_InsertChild:
+				// Check to see if this node can be used to insert children
+				parent = (ClojureConstruct) selectedEditor.construct;
+				if(!parent.canInsertChildren()) { 
+					return null;
+				}
+				break;
+				
+			default:
+				throw new RuntimeException("Unhandled hotkey");
+		}
+	
+		return parent;
+	}
+
+	private void handleInsert(BaseController controller, EKeyBinding binding, int keyEventCode) {
+		// Determine the parent for the new construct, this is 
+		// based on the initial input (IA, IA, IC)
+		ClojureConstruct parent = parentForBinding(controller.getSelectedEditor(), binding);
+		if(parent == null) { 
+			System.out.println("handleInsert: Failed to determine parent for new construct.");
+			return ;
+		}
+
+		// Determine what the new construct will be and any default
+		// children that the construct will have
+		ClojureConstruct newConstruct = constructFromKey(parent, keyEventCode);
 		if(newConstruct == null) {
-			System.out.println("Fatal Error: A construct was not created");
+			System.out.println("handleInsert: Construct not created for wildcard key.");
 			return ;
 		}
 		

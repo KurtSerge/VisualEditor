@@ -1,1 +1,1 @@
-(symbol)
+(set-accounts {:clord "Christopher", :ksurge "Kurt", :spurserh "Sean"})
