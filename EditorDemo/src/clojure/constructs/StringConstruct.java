@@ -23,8 +23,7 @@ public class StringConstruct extends ClojureConstruct {
 
 	@Override
 	public boolean validate() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 }

@@ -11,7 +11,6 @@ public class BooleanConstruct extends ClojureConstruct {
 
 	@Override
 	public String screen_text() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

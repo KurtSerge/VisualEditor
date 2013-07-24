@@ -12,13 +12,11 @@ public class KeywordConstruct extends ClojureConstruct {
 
 	@Override
 	public String screen_text() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public boolean validate() {
-		// TODO Auto-generated method stub
-		return false;
+		return this.literal.matches("^[a-zA-Z]([a-zA-Z0-9\\*\\?!+_-]+)?$");
 	}
 }

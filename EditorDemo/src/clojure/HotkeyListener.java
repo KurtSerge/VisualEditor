@@ -4,15 +4,11 @@ import java.awt.event.KeyEvent;
 
 import json.JSONController;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import clojure.constructs.*;
 
 import editor.BaseController;
 import editor.BaseController.EKeyBinding;
 import editor.BaseControllerListener;
-import editor.Construct;
 import editor.ConstructEditor;
 
 public class HotkeyListener implements BaseControllerListener {
