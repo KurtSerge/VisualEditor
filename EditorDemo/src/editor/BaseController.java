@@ -38,11 +38,13 @@ public class BaseController implements KeyListener {
 		Bind_DeleteTopmost,
 		// Undo buff
 		Bind_Undo,
+		Bind_Redo,
 		// Selection
 		Bind_SelectNextSibling,
 		Bind_SelectPrevSibling,
 		Bind_SelectParent,
-		Bind_SelectChild
+		Bind_SelectChild,
+		Bind_SelectRandom// TODO: debug
 	}
 	
 
@@ -66,6 +68,7 @@ public class BaseController implements KeyListener {
 		this.registerHotkey(EKeyBinding.Bind_SelectChild, String.format("%s", (char)KeyEvent.VK_RIGHT));
 		this.registerHotkey(EKeyBinding.Bind_SelectNextSibling, String.format("%s", (char)KeyEvent.VK_DOWN));
 		this.registerHotkey(EKeyBinding.Bind_SelectPrevSibling, String.format("%s", (char)KeyEvent.VK_UP));
+		//this.registerHotkey(EKeyBinding.Bind_SelectRandom, String.format("%s", (char)KeyEvent.VK_R));
 	}
 	
 	// Important:Use the '?' character to indicate that an "autocomplete char" comes after the hotkey
@@ -120,6 +123,9 @@ public class BaseController implements KeyListener {
 				case Bind_SelectPrevSibling:
 					System.out.println("Up");
         			selector.SelectAdjacentConstruct(false);
+					break;
+				case Bind_SelectRandom:
+					selector.SelectRandom();
 					break;
 				default:
 					if(theListener != null)

@@ -66,9 +66,9 @@ public abstract class Construct
 			int index = parent.children.indexOf(this);
 			if(parent.canDeleteChild(index, this) == false)
 				return false;
-			AddToUndoBuffer();
 			parent.children.remove(this);
 			parent.handleDeleteChild();
+			AddToUndoBuffer();
 		}
 		else {
 			// FIXME: how to delete top from inside?
@@ -120,7 +120,7 @@ public abstract class Construct
 	// Each subclass must implement this.  
 	public Construct deepCopy(Construct parent) {
 		for( Construct child : this.children) {
-			parent.children.add(child.deepCopy(parent.parent));
+			parent.children.add(child.deepCopy(parent));
 		}
 
 		return null;
@@ -130,26 +130,45 @@ public abstract class Construct
 	// For undo/redo buffers
 	protected static List<Construct> treeChanges = new ArrayList<Construct>();
 	protected static int treeChangeIndex = 0;
-	private void AddToUndoBuffer() {
+	protected static Construct last = null;
+	public void AddToUndoBuffer() {
 		// Find top of tree
 		Construct top = this;
 		while(top.parent != null) {
 			top = top.parent;
 		}
 		// TODO: What to do if we add a change, but thetreechangeindex is not at the end? handle this
-		treeChanges.add(top.deepCopy(top));
+		treeChanges.add(top.deepCopy(null));
 		treeChangeIndex = treeChanges.size()-1;
 	}
 	
 	public static Construct getUndo() {
-		if(treeChangeIndex != 0)
-			treeChangeIndex--;
-		return treeChanges.get(treeChangeIndex);
+		if(treeChanges.size() == 0 )
+			return null;
+		
+		treeChangeIndex = Math.max(treeChangeIndex-1, 0);
+		Construct ret = treeChanges.get(treeChangeIndex);
+
+		if(last != ret) {
+			last = ret;
+			return ret;
+		}
+		else 
+			return null;
 	}
 	
 	public static Construct getRedo() {
-		if(treeChangeIndex != treeChanges.size()-1)
-			treeChangeIndex++;
-		return treeChanges.get(treeChangeIndex);
+		if(treeChanges.size() == 0 || treeChangeIndex == treeChanges.size()-1)
+			return null;
+
+		treeChangeIndex = Math.min(treeChangeIndex+1, treeChanges.size()-1);
+		Construct ret = treeChanges.get(treeChangeIndex);
+
+		if(last != ret) {
+			last = ret;
+			return ret;
+		}
+		else
+			return null;
 	}
 }

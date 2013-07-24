@@ -421,6 +421,5 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 				return;
 		}
 		iter.requestFocus();
-		
 	}
 }

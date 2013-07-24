@@ -92,7 +92,7 @@ public abstract class ConstructEditor
 		Construct top = construct;
 		while(top.parent != null)
 			top = top.parent;
-		ConstructEditor topEditor = editorsByConstructs.get(top).get();
+ur		ConstructEditor topEditor = editorsByConstructs.get(top).get();
 		topEditor.deleteMe();
 	}
 }

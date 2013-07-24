@@ -47,6 +47,29 @@ import lisp.LispController;
 
 public class Application extends JFrame
 {
+
+	private void setupNewConstruct(Component top) {
+		// Delete
+		if(controller != null) {
+			controller.getSelectedEditor().deleteAll();
+			this.removeKeyListener(controller);
+		}
+
+		this.add(top);
+		controller = new BaseController(this, JSONController.editors);
+		top.addKeyListener(controller);
+		top.requestFocus();
+		
+		controller.setListener(new HotkeyListener(this));
+		controller.registerHotkey(EKeyBinding.Bind_InsertAfter, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_A, (char)KeyEvent.VK_UNDEFINED));
+		controller.registerHotkey(EKeyBinding.Bind_InsertBefore, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_B, (char)KeyEvent.VK_UNDEFINED));
+		controller.registerHotkey(EKeyBinding.Bind_InsertReplace, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_R, (char)KeyEvent.VK_UNDEFINED));
+		controller.registerHotkey(EKeyBinding.Bind_InsertChild, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_C, (char)KeyEvent.VK_UNDEFINED));
+		controller.registerHotkey(EKeyBinding.Bind_InsertUsurp, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_U, (char)KeyEvent.VK_UNDEFINED));
+		controller.registerHotkey(EKeyBinding.Bind_Undo, String.format("%s", (char)KeyEvent.VK_U));
+		controller.registerHotkey(EKeyBinding.Bind_Redo, String.format("%s", (char)KeyEvent.VK_R));
+	}
+	
 	// Demo
 	private Construct  jsonDocumentConstruct2 = null;
 	private BaseController controller = null;
@@ -79,17 +102,18 @@ public class Application extends JFrame
 					parent = controller.getSelectedEditor().construct;
 					break;
 				case Bind_Undo:
-					// Delete
-					
-					controller.getSelectedEditor().deleteAll();
-
-					
 					jsonDocumentConstruct2 = Construct.getUndo();
-					Component top = JSONController.editors_from_constructs(jsonDocumentConstruct2).get_component();
-					window.add(top);
-					
-					// Add
-					//jsonDocumentConstruct2 = Construct.getUndo();
+					if(jsonDocumentConstruct2 != null) {
+						Component top = JSONController.editors_from_constructs(jsonDocumentConstruct2).get_component();
+						setupNewConstruct(top);
+					}
+					return;
+				case Bind_Redo:
+					jsonDocumentConstruct2 = Construct.getRedo();
+					if(jsonDocumentConstruct2 != null) {
+						Component top = JSONController.editors_from_constructs(jsonDocumentConstruct2).get_component();
+						setupNewConstruct(top);
+					}
 					return;
 				default:
 					throw new RuntimeException("Unhandled hotkey");
@@ -256,24 +280,16 @@ public class Application extends JFrame
 
 		this.add(top);
 		
+		jsonDocumentConstruct2.AddToUndoBuffer();
+		
 		if(shouldLoadJson == false) {
 			controller = new BaseController(this, ClojureController.editors);
 			Toolkit.getDefaultToolkit().addAWTEventListener(new BaseMouseController(controller), AWTEvent.MOUSE_EVENT_MASK);
 			top.addKeyListener(controller);
 		}
 		else{
-			controller = new BaseController(this, JSONController.editors);
+			setupNewConstruct(top);
 			Toolkit.getDefaultToolkit().addAWTEventListener(new BaseMouseController(controller), AWTEvent.MOUSE_EVENT_MASK);
-			top.addKeyListener(controller); // Must add BaseController first
-			top.requestFocus();
-			
-			controller.setListener(new HotkeyListener(this));
-			controller.registerHotkey(EKeyBinding.Bind_InsertAfter, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_A, (char)KeyEvent.VK_UNDEFINED));
-			controller.registerHotkey(EKeyBinding.Bind_InsertBefore, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_B, (char)KeyEvent.VK_UNDEFINED));
-			controller.registerHotkey(EKeyBinding.Bind_InsertReplace, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_R, (char)KeyEvent.VK_UNDEFINED));
-			controller.registerHotkey(EKeyBinding.Bind_InsertChild, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_C, (char)KeyEvent.VK_UNDEFINED));
-			controller.registerHotkey(EKeyBinding.Bind_InsertUsurp, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_U, (char)KeyEvent.VK_UNDEFINED));
-			controller.registerHotkey(EKeyBinding.Bind_Undo, String.format("%s", (char)KeyEvent.VK_U));
 		}
 
 		this.pack();
