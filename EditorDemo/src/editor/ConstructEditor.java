@@ -14,7 +14,7 @@ public abstract class ConstructEditor
 	ConstructEditor(Construct construct)
 	{
 		this.construct = construct;
-		editorsByConstructs.put(construct, new WeakReference(this));
+		editorsByConstructs.put(construct, new WeakReference<ConstructEditor>(this));
 	}
 	
 	@Override

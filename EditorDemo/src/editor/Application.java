@@ -2,48 +2,29 @@ package editor;
 import java.awt.AWTEvent;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.KeyEventDispatcher;
-import java.awt.MouseInfo;
-import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.Toolkit;
-import java.awt.event.AWTEventListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import editor.BaseController.EKeyBinding;
 
 import clojure.ClojureController;
-import clojure.constructs.IntegerConstruct;
 
 import json.JSONController;
-import json.KeyValueConstruct;
-import json.ObjectConstruct;
-import json.StringConstruct;
-import json.StringLiteralConstruct;
-import lisp.LispController;
 
 public class Application extends JFrame
 {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	// Demo
 	private Construct  jsonDocumentConstruct2 = null;
 	private BaseController controller = null;
@@ -164,6 +145,9 @@ public class Application extends JFrame
 					//parent.deleteChild(controller.getSelectedEditor().construct);
 					break;
 				}
+				
+				default:
+					break;
 			}
 			
 			ConstructEditor added = JSONController.editors_from_constructs(newConstruct);

@@ -1,8 +1,5 @@
 package editor;
 
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.HashMap;
@@ -11,14 +8,8 @@ import java.util.Map;
 import java.util.Random;
 
 import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-
-import json.JSONController;
-
-import org.json.JSONObject;
 
 public class BaseController implements KeyListener {
-	private boolean delete_pressed;
 	public EditSelection selector = null;
 	private BaseControllerListener theListener = null;// TODO: allow for more listeners
 	private String currentInput = null;
