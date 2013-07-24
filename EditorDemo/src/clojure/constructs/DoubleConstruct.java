@@ -19,7 +19,12 @@ public class DoubleConstruct extends ClojureConstruct {
 	@Override
 	public boolean validate() {
 		// TODO Auto-generated method stub
+		try { 
+			Double.parseDouble(this.literal);
+			return true;
+		} catch(NumberFormatException ex) {
+		}
+		
 		return false;
 	}
-
 }

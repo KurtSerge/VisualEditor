@@ -18,7 +18,7 @@ public class IntegerConstruct extends ClojureConstruct {
 	@Override
 	public boolean validate() {
 		try {
-			int test = Integer.parseInt(this.literal);
+			Integer.parseInt(this.literal);
 			return true;
 		}
 		catch (NumberFormatException e) {

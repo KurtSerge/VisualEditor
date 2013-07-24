@@ -17,7 +17,11 @@ public class BooleanConstruct extends ClojureConstruct {
 
 	@Override
 	public boolean validate() {
-		// TODO Auto-generated method stub
-		return false;
+		try { 
+			Boolean.parseBoolean(this.literal);
+			return true;
+		} catch(NumberFormatException ex) { 
+			return false;
+		}
 	}
 }
