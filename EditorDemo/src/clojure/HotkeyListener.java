@@ -21,7 +21,7 @@ public class HotkeyListener implements BaseControllerListener {
 		handleInsert(controller, binding, keyEventCode);
 	}
 	
-	private ClojureConstruct constructFromKey(ClojureConstruct parent, int keyEventCode) { 
+	private ClojureConstruct getConstructFromKey(ClojureConstruct parent, int keyEventCode) { 
 		ClojureConstruct newConstruct = null;
 		switch(keyEventCode) {
 			case KeyEvent.VK_S: 
@@ -70,7 +70,7 @@ public class HotkeyListener implements BaseControllerListener {
 		return newConstruct;
 	}
 	
-	private ClojureConstruct parentForBinding(ConstructEditor selectedEditor, EKeyBinding binding) { 
+	private ClojureConstruct getParentForBinding(ConstructEditor selectedEditor, EKeyBinding binding) { 
 		ClojureConstruct parent = null;
 		switch(binding) {
 			case Bind_InsertAfter:  
@@ -97,7 +97,7 @@ public class HotkeyListener implements BaseControllerListener {
 	private void handleInsert(BaseController controller, EKeyBinding binding, int keyEventCode) {
 		// Determine the parent for the new construct, this is 
 		// based on the initial input (IA, IA, IC)
-		ClojureConstruct parent = parentForBinding(controller.getSelectedEditor(), binding);
+		ClojureConstruct parent = getParentForBinding(controller.getSelectedEditor(), binding);
 		if(parent == null) { 
 			System.out.println("handleInsert: Failed to determine parent for new construct.");
 			return ;
@@ -105,7 +105,7 @@ public class HotkeyListener implements BaseControllerListener {
 
 		// Determine what the new construct will be and any default
 		// children that the construct will have
-		ClojureConstruct newConstruct = constructFromKey(parent, keyEventCode);
+		ClojureConstruct newConstruct = getConstructFromKey(parent, keyEventCode);
 		if(newConstruct == null) {
 			System.out.println("handleInsert: Construct not created for wildcard key.");
 			return ;
@@ -135,6 +135,9 @@ public class HotkeyListener implements BaseControllerListener {
 				controller.getSelectedEditor().construct.addChild(lastIndex, newConstruct);
 				break;
 			}
+			
+			default:
+				break;
 		}
 		
 		ConstructEditor added = JSONController.editors_from_constructs(newConstruct);
