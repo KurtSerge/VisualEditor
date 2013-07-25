@@ -29,6 +29,9 @@ public class HotkeyListener implements BaseControllerListener {
 	private ClojureConstruct getConstructFromKey(ClojureConstruct parent, int keyEventCode) { 
 		ClojureConstruct newConstruct = null;
 		switch(keyEventCode) {
+			case KeyEvent.VK_8:
+				newConstruct = new LetConstruct(parent);
+				break;
 		
 			case KeyEvent.VK_9:
 				newConstruct = new DefineFunctionConstruct(parent);
