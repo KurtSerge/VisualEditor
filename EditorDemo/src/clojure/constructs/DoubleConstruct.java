@@ -1,8 +1,9 @@
 package clojure.constructs;
 
+import clojure.ClojureConstruct;
 import editor.Construct;
 
-public class DoubleConstruct extends Construct {
+public class DoubleConstruct extends ClojureConstruct {
 
 	public DoubleConstruct(Construct parent, String literal) { 
 		super("double", parent);
@@ -11,14 +12,17 @@ public class DoubleConstruct extends Construct {
 	
 	@Override
 	public String screen_text() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public boolean validate() {
-		// TODO Auto-generated method stub
+		try { 
+			Double.parseDouble(this.literal);
+			return true;
+		} catch(NumberFormatException ex) {
+		}
+		
 		return false;
 	}
-
 }

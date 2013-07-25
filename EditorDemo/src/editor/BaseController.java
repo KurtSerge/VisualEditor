@@ -1,8 +1,5 @@
 package editor;
 
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.HashMap;
@@ -11,19 +8,15 @@ import java.util.Map;
 import java.util.Random;
 
 import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
 
 import json.JSONController;
 
-import org.json.JSONObject;
-
 public class BaseController implements KeyListener {
-	private boolean delete_pressed;
 	public EditSelection selector = null;
 	private BaseControllerListener theListener = null;// TODO: allow for more listeners
 	private String currentInput = null;
 	private Map<String, EKeyBinding> keyMap = null;
-	
+
 	public enum EKeyBinding {
 		Bind_Insert,
 		Bind_InsertAfter,
@@ -129,7 +122,7 @@ public class BaseController implements KeyListener {
 					break;
 				default:
 					if(theListener != null)
-						theListener.receivedHotkey(bindingCheck, arg0.getKeyCode());
+						theListener.receivedHotkey(this, bindingCheck, arg0.getKeyCode());
 					break;
 			}
 
@@ -227,7 +220,7 @@ public class BaseController implements KeyListener {
 	// Handles keyboard selection of constructs
 	public class EditSelection {
 		private final JFrame frame;
-		private final List<ConstructEditor> editors;
+		public final List<ConstructEditor> editors;
 		private ConstructEditor selected = null;
 		
 		public EditSelection(JFrame frame, List<ConstructEditor> editors) {

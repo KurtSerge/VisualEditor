@@ -16,7 +16,7 @@ public abstract class ConstructEditor
 	ConstructEditor(Construct construct)
 	{
 		this.construct = construct;
-		editorsByConstructs.put(construct, new WeakReference(this));
+		editorsByConstructs.put(construct, new WeakReference<ConstructEditor>(this));
 	}
 	
 	@Override
@@ -92,8 +92,33 @@ public abstract class ConstructEditor
 		Construct top = construct;
 		while(top.parent != null)
 			top = top.parent;
-ur		ConstructEditor topEditor = editorsByConstructs.get(top).get();
+		ConstructEditor topEditor = editorsByConstructs.get(top).get();
 		topEditor.deleteMe();
+	}
+	
+	// Replace my construct with newCon.  Cleanup editors (prefer calling this over Construct.replaceChild())
+	final public boolean replace(Construct newCon) {
+		
+		
+		construct.parent.replaceChild(construct, newCon);
+
+		
+		
+		/*
+		construct.replaceChild(construct, newCon)
+		// FIXME: really you need to make the replacement first, then validate, then rollback if the replace is invalid
+		int newIndex = construct.parent.children.indexOf(construct);
+		boolean success = addChild(newIndex, newCon);
+		if(success == true) {
+			replaceMe.delete();
+			replaceMe.parent.children.remove(replaceMe);
+		}
+		if(success == true) {
+			AddToUndoBuffer();
+		}
+		return success;*/
+		
+		return true;
 	}
 }
 

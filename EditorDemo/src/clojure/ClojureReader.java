@@ -1,20 +1,9 @@
 package clojure;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringReader;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
-import java.nio.charset.Charset;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
 
 import clojure.constructs.BigDecimalConstruct;
 import clojure.constructs.BigIntConstruct;
@@ -27,15 +16,10 @@ import clojure.constructs.ListConstruct;
 import clojure.constructs.MapConstruct;
 import clojure.constructs.RatioConstruct;
 import clojure.constructs.StringConstruct;
-import clojure.constructs.StringLiteralConstruct;
 import clojure.constructs.SymbolConstruct;
 import clojure.constructs.UnknownConstruct;
 import clojure.constructs.VectorConstruct;
-import clojure.lang.IFn;
 import clojure.lang.RT;
-import clojure.lang.Compiler;
-import clojure.lang.Symbol;
-import clojure.lang.Var;
 
 import editor.Construct;
 

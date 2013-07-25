@@ -2,52 +2,25 @@ package editor;
 import java.awt.AWTEvent;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.KeyEventDispatcher;
-import java.awt.MouseInfo;
-import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.Toolkit;
-import java.awt.event.AWTEventListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
 
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
 import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import editor.BaseController.EKeyBinding;
 
 import clojure.ClojureController;
-import clojure.constructs.IntegerConstruct;
 
 import json.JSONController;
-import json.KeyValueConstruct;
-import json.ObjectConstruct;
-import json.StringConstruct;
-import json.StringLiteralConstruct;
-import lisp.LispController;
-
-
-
 
 public class Application extends JFrame
 {
-
 	private void setupNewConstruct(Component top) {
 		// Delete
 		if(controller != null) {
@@ -70,6 +43,10 @@ public class Application extends JFrame
 		controller.registerHotkey(EKeyBinding.Bind_Redo, String.format("%s", (char)KeyEvent.VK_R));
 	}
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	// Demo
 	private Construct  jsonDocumentConstruct2 = null;
 	private BaseController controller = null;
@@ -82,7 +59,7 @@ public class Application extends JFrame
 		}
 		
 		@Override
-		public void receivedHotkey(EKeyBinding binding, int keyEventCode) {
+		public void receivedHotkey(BaseController controller, EKeyBinding binding, int keyEventCode) {
 			handleInsert(binding, keyEventCode);
 		}
 
@@ -179,7 +156,8 @@ public class Application extends JFrame
 					break;
 				}
 				case Bind_InsertReplace:  {
-					if(parent.replaceChild(controller.getSelectedEditor().construct, newConstruct) == false)
+					//if(parent.replaceChild(controller.getSelectedEditor().construct, newConstruct) == false) TODO:
+					if(controller.getSelectedEditor().replace(newConstruct))
 						return;
 					break;
 				}
@@ -209,6 +187,9 @@ public class Application extends JFrame
 					//parent.deleteChild(controller.getSelectedEditor().construct);
 					break;
 				}
+				
+				default:
+					break;
 			}
 			
 			ConstructEditor added = JSONController.editors_from_constructs(newConstruct);
@@ -286,6 +267,12 @@ public class Application extends JFrame
 			controller = new BaseController(this, ClojureController.editors);
 			Toolkit.getDefaultToolkit().addAWTEventListener(new BaseMouseController(controller), AWTEvent.MOUSE_EVENT_MASK);
 			top.addKeyListener(controller);
+			
+			controller.setListener(new clojure.HotkeyListener());
+			controller.registerHotkey(EKeyBinding.Bind_InsertAfter, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_A, (char)KeyEvent.VK_UNDEFINED));
+			controller.registerHotkey(EKeyBinding.Bind_InsertBefore, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_B, (char)KeyEvent.VK_UNDEFINED));
+			controller.registerHotkey(EKeyBinding.Bind_InsertChild, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_C, (char)KeyEvent.VK_UNDEFINED));
+			controller.registerHotkey(EKeyBinding.Bind_InsertReplace, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_R, (char)KeyEvent.VK_UNDEFINED));
 		}
 		else{
 			setupNewConstruct(top);

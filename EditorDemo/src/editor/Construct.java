@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import json.JSONController;
+
 
 public abstract class Construct
 {
@@ -104,12 +106,13 @@ public abstract class Construct
 		return false;
 	}
 	
+	// editor should call this
 	final public boolean replaceChild(Construct replaceMe, Construct newCon) {
 		// FIXME: really you need to make the replacement first, then validate, then rollback if the replace is invalid
 		int newIndex = replaceMe.parent.children.indexOf(replaceMe);
 		boolean success = addChild(newIndex, newCon);
 		if(success == true) {
-			replaceMe.parent.children.remove(replaceMe);
+			replaceMe.delete();
 		}
 		if(success == true) {
 			AddToUndoBuffer();

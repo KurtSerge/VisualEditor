@@ -2,6 +2,7 @@ package editor;
 
 import java.awt.AWTEvent;
 import java.awt.Dimension;
+import java.awt.IllegalComponentStateException;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -9,9 +10,6 @@ import java.awt.event.AWTEventListener;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
-
-import json.JSONController;
-
 
 // Using AWT because Swing "MouseListener" doesn't give coords when clicking over jtextareas
 public class BaseMouseController implements AWTEventListener {
@@ -29,7 +27,8 @@ public class BaseMouseController implements AWTEventListener {
     			Point click = MouseInfo.getPointerInfo().getLocation();
     			List<ConstructEditor> clickedEditors = new ArrayList<ConstructEditor>();
     			//System.out.println(JSONController.editors.size());
-            	for(ConstructEditor editor : JSONController.editors ) {
+    			try {
+            	for(ConstructEditor editor : bc.selector.editors ) {
         			Point topleft = editor.get_component().getLocationOnScreen();
         			Dimension dim = editor.get_size();
         		
@@ -38,7 +37,10 @@ public class BaseMouseController implements AWTEventListener {
             			clickedEditors.add(editor);
             		}
             	}
-            	
+    			}
+    			catch(IllegalComponentStateException exception){
+    				exception.printStackTrace();
+    			}
             	// Determine deepest nested editor
             	int maxDepth = 0;
             	ConstructEditor deepEditor = null;

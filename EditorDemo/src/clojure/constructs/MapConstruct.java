@@ -1,8 +1,9 @@
 package clojure.constructs;
 
+import clojure.ClojureConstruct;
 import editor.Construct;
 
-public class MapConstruct extends Construct {
+public class MapConstruct extends ClojureConstruct {
 	
 	public MapConstruct(Construct parent, String literal) { 
 		super("map", parent);
@@ -20,8 +21,10 @@ public class MapConstruct extends Construct {
 			
 			builder.append("$(node)");
 			
-			if(i % 2 == 1 && i != children.size() - 1)
+			boolean isFinalNode = i == children.size() - 1;
+			if(i % 2 == 1 && !isFinalNode) { 
 				builder.append(",");
+			}
 		}
 
 		builder.append("}");
@@ -30,8 +33,12 @@ public class MapConstruct extends Construct {
 
 	@Override
 	public boolean validate() {
-		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	@Override 
+	public boolean canInsertChildren() { 
+		return true;
+	}	
 
 }

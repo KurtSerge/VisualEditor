@@ -1,8 +1,9 @@
 package clojure.constructs;
 
+import clojure.ClojureConstruct;
 import editor.Construct;
 
-public class IntegerConstruct extends Construct {
+public class IntegerConstruct extends ClojureConstruct {
 	public IntegerConstruct(Construct parent, String literal) {
 		super("integer", parent);
 		
@@ -17,7 +18,7 @@ public class IntegerConstruct extends Construct {
 	@Override
 	public boolean validate() {
 		try {
-			int test = Integer.parseInt(this.literal);
+			Integer.parseInt(this.literal);
 			return true;
 		}
 		catch (NumberFormatException e) {

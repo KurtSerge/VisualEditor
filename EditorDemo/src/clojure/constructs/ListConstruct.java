@@ -1,8 +1,9 @@
 package clojure.constructs;
 
+import clojure.ClojureConstruct;
 import editor.Construct;
 
-public class ListConstruct extends Construct {
+public class ListConstruct extends ClojureConstruct {
 
 	public ListConstruct(Construct parent, String literal) {
 		super("list", parent);
@@ -28,5 +29,9 @@ public class ListConstruct extends Construct {
 	public boolean validate() {
 		return false;
 	}
-
+	
+	@Override 
+	public boolean canInsertChildren() { 
+		return true;
+	}
 }

@@ -1,9 +1,10 @@
 package clojure.constructs;
 
+import clojure.ClojureConstruct;
 import clojure.constructs.StringLiteralConstruct;
 import editor.Construct;
 
-public class StringConstruct extends Construct {
+public class StringConstruct extends ClojureConstruct {
 	
 	public StringConstruct(Construct parent, String literal) { 
 		super("string", parent);
@@ -22,8 +23,7 @@ public class StringConstruct extends Construct {
 
 	@Override
 	public boolean validate() {
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 }
