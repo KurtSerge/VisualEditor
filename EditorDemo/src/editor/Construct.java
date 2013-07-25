@@ -25,12 +25,12 @@ public abstract class Construct
 	public UUID workspace; // Each construct will have user-defined rules for formatting.  example: a function with too many parameters goes onto a new line
 	public UUID instance;
 	
-	@Override
-	public boolean equals(Object o) {
-		Construct compare = (Construct)o;
-		boolean uuidcompare = this.instance.compareTo(compare.instance) == 0;
-		return (uuidcompare);
-	}
+	//@Override
+	//public boolean equals(Object o) {
+		//Construct compare = (Construct)o;
+		//boolean uuidcompare = this.instance.compareTo(compare.instance) == 0;
+		//return (uuidcompare);
+	//}
 	
 	/**
 	 * @return null if the literal should be used instead

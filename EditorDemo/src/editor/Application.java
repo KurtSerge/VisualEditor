@@ -231,6 +231,8 @@ public class Application extends JFrame
 			return;
 		}
 
+
+		
 		/*
 		// TODO: Load from file
 		Construct jsonDocumentConstruct = new ObjectConstruct(null);

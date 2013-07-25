@@ -39,7 +39,8 @@ public class BaseController implements KeyListener {
 		Bind_SelectChild,
 		Bind_SelectRandom,// TODO: debug
 		//
-		Bind_DebugPrint
+		Bind_DebugPrint,
+		Bind_Save
 	}
 	
 
@@ -63,6 +64,7 @@ public class BaseController implements KeyListener {
 		this.registerHotkey(EKeyBinding.Bind_SelectChild, String.format("%s", (char)KeyEvent.VK_RIGHT));
 		this.registerHotkey(EKeyBinding.Bind_SelectNextSibling, String.format("%s", (char)KeyEvent.VK_DOWN));
 		this.registerHotkey(EKeyBinding.Bind_SelectPrevSibling, String.format("%s", (char)KeyEvent.VK_UP));
+		this.registerHotkey(EKeyBinding.Bind_Save, String.format("%s%s", (char)KeyEvent.VK_S, (char)KeyEvent.VK_S));
 		//this.registerHotkey(EKeyBinding.Bind_SelectRandom, String.format("%s", (char)KeyEvent.VK_R));
 	}
 	
@@ -122,6 +124,9 @@ public class BaseController implements KeyListener {
 				case Bind_SelectRandom:
 					selector.SelectRandom();
 					break;
+				case Bind_Save:
+					SaveToFile();
+					break;
 				default:
 					if(theListener != null)
 						theListener.receivedHotkey(this, bindingCheck, arg0.getKeyCode());
@@ -144,6 +149,19 @@ public class BaseController implements KeyListener {
 			clearBindings();
 			return;
 		}
+	}
+	
+	private void SaveToFile() {
+		String outdir = System.getProperty("user.dir") + "\\JSONOut.json";
+		JSONController.save_json(getTopConstruct(), outdir, 4);
+	}
+	
+	private Construct getTopConstruct() {
+		Construct iter = selector.selected.construct;
+		while(iter.parent != null)
+			iter = iter.parent;
+			
+		return iter;
 	}
 	
     public ConstructEditor getSelectedEditor() {
