@@ -15,7 +15,7 @@ public class VectorConstruct extends ClojureConstruct {
 		
 		for(int i = 0; i < children.size(); ++i) {
 			if(i != 0 && i < children.size()) { 
-				builder.append(", ");
+				builder.append(" ");
 			}
 			builder.append("$(node)");
 		}

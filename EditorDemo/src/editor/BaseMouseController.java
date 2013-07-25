@@ -10,6 +10,8 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import clojure.ClojureController;
+
 // Using AWT because Swing "MouseListener" doesn't give coords when clicking over jtextareas
 public class BaseMouseController implements AWTEventListener {
 	private final BaseController bc;
@@ -26,13 +28,17 @@ public class BaseMouseController implements AWTEventListener {
     			Point click = MouseInfo.getPointerInfo().getLocation();
     			List<ConstructEditor> clickedEditors = new ArrayList<ConstructEditor>();
     			//System.out.println(JSONController.editors.size());
-            	for(ConstructEditor editor : bc.selector.editors ) {
-        			Point topleft = editor.get_component().getLocationOnScreen();
-        			Dimension dim = editor.get_size();
-        		
-            		Rectangle r = new Rectangle(topleft, dim);
-            		if(r.contains(click)) {
-            			clickedEditors.add(editor);
+            	for(ConstructEditor editor : ClojureController.editors) {
+               		if(editor.get_component().isDisplayable()) { 
+            			Point topleft = editor.get_component().getLocationOnScreen();
+            			Dimension dim = editor.get_size();
+            		
+                		Rectangle r = new Rectangle(topleft, dim);
+                		if(r.contains(click)) {
+                			clickedEditors.add(editor);
+                		}
+            		} else { 
+            			System.err.println("Warning: Component for " +  editor.construct.type + "construct is not on screen!");
             		}
             	}
             	

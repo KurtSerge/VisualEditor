@@ -12,6 +12,7 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -22,6 +23,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+
+import clojure.ClojureController;
 
 import json.JSONController;
 
@@ -36,7 +39,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 	}
 	
 	private JTextArea text_area;
-	private static Font font = new Font("Monospaced",Font.PLAIN, 12);
+	private static Font font = new Font("Monospaced",Font.PLAIN, 14);
 	public class TransparentTextArea extends JTextArea {
 		public TransparentTextArea() {
 			super();
@@ -97,9 +100,10 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		text_area.setLayout(this);
 		text_area.setEditable(construct.screen_text() == null);
 		text_area.setDisabledTextColor(Color.DARK_GRAY);
+		text_area.setForeground(construct.debug_getForegroundColor());
 	
 		// Easy way to check out the layout
-		//text_area.setBackground(color_for_int(construct.nesting_level()));
+		text_area.setBackground(color_for_int(construct.nesting_level()));
 		
 		text_area.getDocument().addDocumentListener(this);
 		SwingUtilities.invokeLater(new Runnable(){
@@ -124,11 +128,13 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 			
 			for(Construct child : construct.children)
 			{
-				if(child.type == "empty" && editorsByConstructs.get(child) == null) {
-					JSONController.editors_from_constructs(child); // FIXME: Do not use JSONController in Mono Editor.. how to avoid?  Need to create editor from within editor. also, this should be handled by ConstructEditor
+				if(editorsByConstructs.get(child) == null) {
+					System.out.println("ClojureController.. editors_from_constructs(child) .. " + child);
+					ClojureController.editors_from_constructs(child); // FIXME: Do not use JSONController in Mono Editor.. how to avoid?  Need to create editor from within editor. also, this should be handled by ConstructEditor
 				}
 				
-				ConstructEditor parent_editor = editorsByConstructs.get(child).get();
+				WeakReference<ConstructEditor> editor = editorsByConstructs.get(child);
+				ConstructEditor parent_editor = editor.get();
 				
 				if(parent_editor == null)
 					continue;
@@ -215,6 +221,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 			Border border = BorderFactory.createLineBorder(Color.BLACK);
 			text_area.setBorder(border);
 		}
+		
 		return text_area;
 	}
 
@@ -385,6 +392,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 			text_area.setBackground(Color.red);
 			textListener = new TextListener();
 			text_area.addKeyListener(textListener);
+			text_area.setForeground(Color.white);
 			if(construct != null && construct.screen_text() == null) { // editable
 				get_component().requestFocus();
 				//text_area.selectAll();
@@ -392,6 +400,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		} 
 		else {
 			text_area.select(0, 0);
+			text_area.setForeground(construct.debug_getForegroundColor());
 			text_area.setBackground(new Color(0,0,0,0));
 			text_area.removeKeyListener(textListener);
 			requestTopFocus();
@@ -401,6 +410,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 	
 	// Delete editor and cleanup
 	final public boolean deleteMe() {
+		int index = this.construct.parent.children.indexOf(this.construct);
 		if(this.construct.parent.deleteChild(construct) == true)
 		{
 			if(textListener != null)
@@ -415,16 +425,19 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 			
 			this.update();
 			return true;
+		} else { 
+			this.setSelected(true);
+			this.update();
 		}
 		return false;
 	}
 	
 	private void removeEditors(ConstructEditor editor) {
-		JSONController.editors.remove(editor);
+		ClojureController.editors.remove(editor);
 		for(Construct child : editor.construct.children) {		
 			ConstructEditor remove = editorsByConstructs.get(child).get();
 			removeEditors(remove);
-			JSONController.editors.remove(remove);
+			ClojureController.editors.remove(remove);
 		}
 	}
 

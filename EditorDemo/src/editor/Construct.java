@@ -1,4 +1,5 @@
 package editor;
+import java.awt.Color;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -65,6 +66,7 @@ public abstract class Construct
 	public boolean deleteChild(Construct child) {
 		int childIndex = this.children.indexOf(child);
 		this.children.remove(childIndex);
+		onChildDeleted(childIndex);
 		return true;
 	}
 	
@@ -107,5 +109,13 @@ public abstract class Construct
 		}
 
 		return null;
-	}	
+	}
+	
+	public void onChildDeleted(int indexOfDeletedChild) {
+	}
+	
+	
+	public Color debug_getForegroundColor() {
+		return Color.BLACK;
+	}
 }

@@ -5,6 +5,7 @@ import java.awt.event.KeyEvent;
 import json.JSONController;
 
 import clojure.constructs.*;
+import clojure.constructs.meta.*;
 
 import editor.BaseController;
 import editor.BaseController.EKeyBinding;
@@ -20,9 +21,19 @@ public class HotkeyListener implements BaseControllerListener {
 	private ClojureConstruct getConstructFromKey(ClojureConstruct parent, int keyEventCode) { 
 		ClojureConstruct newConstruct = null;
 		switch(keyEventCode) {
+		
+			case KeyEvent.VK_9:
+				newConstruct = new DefineFunctionConstruct(parent);
+				break;
+				
+			case KeyEvent.VK_0:
+				newConstruct = new IfThenElseConstruct(parent);
+				break;
+			
 			case KeyEvent.VK_S: 
 				newConstruct = new SymbolConstruct(parent, "symbol");
 				break;
+				
 			case KeyEvent.VK_V:
 				newConstruct = new VectorConstruct(parent, null);
 				break;
@@ -66,7 +77,7 @@ public class HotkeyListener implements BaseControllerListener {
 		return newConstruct;
 	}
 	
-	private ClojureConstruct getParentForBinding(ConstructEditor selectedEditor, EKeyBinding binding) { 
+	private ClojureConstruct getParentForBinding(ConstructEditor selectedEditor, EKeyBinding binding) {	
 		ClojureConstruct parent = null;
 		switch(binding) {
 			case Bind_InsertAfter:  
@@ -78,15 +89,20 @@ public class HotkeyListener implements BaseControllerListener {
 			case Bind_InsertChild:
 				// Check to see if this node can be used to insert children
 				parent = (ClojureConstruct) selectedEditor.construct;
-				if(!parent.canInsertChildren()) { 
-					return null;
-				}
 				break;
 				
 			default:
 				throw new RuntimeException("Unhandled hotkey");
 		}
-	
+		
+		if(parent.canInsertChildren() == false && 
+				(binding == EKeyBinding.Bind_InsertAfter || 
+				binding == EKeyBinding.Bind_InsertBefore || 
+				binding == EKeyBinding.Bind_InsertChild))
+		{ 
+			return null;
+		}			
+		
 		return parent;
 	}
 
@@ -136,9 +152,13 @@ public class HotkeyListener implements BaseControllerListener {
 				break;
 		}
 		
-		ConstructEditor added = JSONController.editors_from_constructs(newConstruct);
+		ConstructEditor added = ClojureController.editors_from_constructs(newConstruct);
 		if(added != null)  {
 			controller.selector.Select(added);
 		}
+	}
+	
+	
+	private void OnInsertIfThenElseStatement() { 
 	}
 }

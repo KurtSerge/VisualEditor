@@ -67,8 +67,6 @@ public class BaseController implements KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent arg0) {
-		System.out.println(arg0.getKeyCode());
-		
 		// Handle combo bindings***************
 		if (arg0.getID() == KeyEvent.KEY_PRESSED && arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {
 			clearBindings();
@@ -83,7 +81,6 @@ public class BaseController implements KeyListener {
 
 		EKeyBinding bindingCheck = keyMap.get(currentInput);
 		if(bindingCheck != null) {
-		
 			switch(bindingCheck) {
 				case Bind_DeleteAll:
 					DeleteAllSelected();
@@ -147,7 +144,10 @@ public class BaseController implements KeyListener {
 		ConstructEditor deleteMeEditor = selector.selected;
 		if(deleteMeEditor.getParent() != null) 
 		{
+			
 			if(deleteMeEditor.deleteMe()) {
+				deleteMeEditor.getParent().update();
+				
     			selector.selected.update();
 				if(selector.SelectAdjacentConstruct(false) == false)
 					selector.SelectParentConstruct();
