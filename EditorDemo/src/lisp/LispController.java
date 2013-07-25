@@ -17,17 +17,6 @@ import editor.MonospaceConstructEditor;
 
 public class LispController
 {
-	// TODO: This belongs in a utility function elsewhere
-	static public ConstructEditor editors_from_constructs(Construct top)
-	{
-		for(Construct child : top.children)
-			editors_from_constructs(child);
-		
-		MonospaceConstructEditor my_editor = new MonospaceConstructEditor(top);
-		
-		return my_editor;
-	}
-
 	static public Construct construct_for_json(Object object, Construct parent)
 	{
 		if(object.getClass().equals(JSONArray.class))

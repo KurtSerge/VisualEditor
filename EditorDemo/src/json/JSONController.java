@@ -20,22 +20,22 @@ import editor.MonospaceConstructEditor;
 
 public class JSONController 
 {
-	public static ArrayList<ConstructEditor> editors;
+//	public static ArrayList<ConstructEditor> editors;
 	
-	// TODO: This belongs in a utility function elsewhere
-	static public ConstructEditor editors_from_constructs(Construct top)
-	{
-		for(Construct child : top.children)
-			editors_from_constructs(child);
-		
-		MonospaceConstructEditor my_editor = new MonospaceConstructEditor(top);
-
-		if(editors == null)
-			editors = new ArrayList<ConstructEditor>();
-		editors.add(my_editor);
-		
-		return my_editor;
-	}
+//	// TODO: This belongs in a utility function elsewhere
+//	static public ConstructEditor editors_from_constructs(Construct top)
+//	{
+//		for(Construct child : top.children)
+//			editors_from_constructs(child);
+//		
+//		MonospaceConstructEditor my_editor = new MonospaceConstructEditor(top);
+//
+//		if(editors == null)
+//			editors = new ArrayList<ConstructEditor>();
+//		editors.add(my_editor);
+//		
+//		return my_editor;
+//	}
 
 
 	static public Construct get_empty_kvp(Construct parent)  {
@@ -127,12 +127,5 @@ public class JSONController
 		}
 		else
 			throw new RuntimeException("Unknown JSON type, this should never happen");
-	}
-	
-	static public Construct load_json(InputStream in)
-	{
-		JSONObject json = new JSONObject(new JSONTokener(in));
-	
-		return construct_for_json(json, null);
 	}
 }

@@ -9,6 +9,8 @@ import java.util.Random;
 
 import javax.swing.JFrame;
 
+import editor.document.Document;
+
 public class BaseController implements KeyListener {
 	public EditSelection selector = null;
 	private BaseControllerListener theListener = null;// TODO: allow for more listeners
@@ -39,9 +41,9 @@ public class BaseController implements KeyListener {
 		theListener = listener;
 	}
 	
-	public BaseController(JFrame frame, List<ConstructEditor> editors) {
+	public BaseController(JFrame frame, Document document) {
 		System.out.println("Setup BaseController");
-		selector = new EditSelection(frame, editors);
+		selector = new EditSelection(frame, document);
 	    selector.SelectRandom();
 		currentInput = "";
 		keyMap = new HashMap<String, EKeyBinding>();
@@ -158,15 +160,17 @@ public class BaseController implements KeyListener {
 	// Handles keyboard selection of constructs
 	public class EditSelection {
 		private final JFrame frame;
-		public final List<ConstructEditor> editors;
+		private final Document mDocument;
 		private ConstructEditor selected = null;
 		
-		public EditSelection(JFrame frame, List<ConstructEditor> editors) {
+		public EditSelection(JFrame frame, Document document) {
 			this.frame = frame;
-			this.editors = editors;
+			mDocument = document;
 		}
 		
 		public void SelectRandom() {
+			List<ConstructEditor> editors = mDocument.getEditors();
+			
 			int select = Math.abs((new Random()).nextInt()) % editors.size();
 			ConstructEditor toSelect = editors.get(select);
 			Select(toSelect);

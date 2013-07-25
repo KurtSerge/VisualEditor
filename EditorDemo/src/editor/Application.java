@@ -14,6 +14,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import editor.BaseController.EKeyBinding;
+import editor.document.ClojureDocument;
+import editor.document.Document;
+import editor.document.JSONDocument;
 
 import clojure.ClojureController;
 
@@ -26,11 +29,18 @@ public class Application extends JFrame
 	 */
 	private static final long serialVersionUID = 1L;
 	// Demo
-	private Construct  jsonDocumentConstruct2 = null;
+//	private Construct  jsonDocumentConstruct2 = null;
+	
+	private Document mDocument = null;
 	private BaseController controller = null;
 	
 	private class HotkeyListener implements BaseControllerListener {
-
+		private final Document mDocument;
+		
+		public HotkeyListener(Document document) { 
+			mDocument = document;
+		}
+		
 		@Override
 		public void receivedHotkey(BaseController controller, EKeyBinding binding, int keyEventCode) {
 			handleInsert(binding, keyEventCode);
@@ -150,7 +160,7 @@ public class Application extends JFrame
 					break;
 			}
 			
-			ConstructEditor added = JSONController.editors_from_constructs(newConstruct);
+			ConstructEditor added = mDocument.editorsFromConstruct(newConstruct);
 			if(added != null)  {
 				controller.selector.Select(added);
 			}
@@ -162,7 +172,7 @@ public class Application extends JFrame
 	{
 		super("Editor Demo");
 		
-		boolean shouldLoadJson = false;	// Alt: Loads Clojure
+		boolean shouldLoadJson = true;	// Alt: Loads Clojure
 		
 		this.setSize(800, 600);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -171,86 +181,49 @@ public class Application extends JFrame
 		
 		try {
 			if(shouldLoadJson) {
-				jsonDocumentConstruct2 = JSONController.load_json(new FileInputStream("testNum.json"));
+				mDocument = new JSONDocument("test2.json");
 			} else {
-				jsonDocumentConstruct2 = ClojureController.load_clojure(new FileInputStream("testtypes.clj"));
+				mDocument = new ClojureDocument("testtypes.clj");
 			}
-			
-			//jsonDocumentConstruct2 = JSONController.load_json(new FileInputStream("commaTest.json"));
-			//jsonDocumentConstruct2 = JSONController.load_json(new FileInputStream("test2.json"));
-			//jsonDocumentConstruct2.debugPrint();
+		
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
-			return;
+			return ;
+		} catch (Exception ex) {
+			System.err.println("Uncaught exception while loading Document");
+			ex.printStackTrace();
+			return ;
 		}
 
-		/*
-		// TODO: Load from file
-		Construct jsonDocumentConstruct = new ObjectConstruct(null);
 		
-		Construct key_literal = new StringLiteralConstruct(jsonDocumentConstruct, "key");
-		JSONConstructEditorFactory.create_editor_for(key_literal);
-		
-		Construct key = new StringConstruct(key_literal);
-		JSONConstructEditorFactory.create_editor_for(key);
-		key.children.add(key_literal);
-		
-		Construct value_literal = new StringLiteralConstruct(jsonDocumentConstruct, "value");
-		JSONConstructEditorFactory.create_editor_for(value_literal);
-		
-		Construct value = new StringConstruct(value_literal);
-		JSONConstructEditorFactory.create_editor_for(value);
-		value.children.add(value_literal);
-		
-		
-		jsonDocumentConstruct.children.add(key);
-		jsonDocumentConstruct.children.add(value);
-		
-		this.add(JSONConstructEditorFactory.create_editor_for(jsonDocumentConstruct).get_component());
-		*/
-	
-		
-		Component top;
-		if(shouldLoadJson) { 
-			top = JSONController.editors_from_constructs(jsonDocumentConstruct2).get_component();
-		} else { 
-			top = ClojureController.editors_from_constructs(jsonDocumentConstruct2).get_component();
-		}
-
-		this.add(top);
+		Component rootDocumentComponent = mDocument.getRootComponent();
+		this.add(rootDocumentComponent);
 		
 		if(shouldLoadJson == false) {
-			controller = new BaseController(this, ClojureController.editors);
-			Toolkit.getDefaultToolkit().addAWTEventListener(new BaseMouseController(controller), AWTEvent.MOUSE_EVENT_MASK);
-			top.addKeyListener(controller);
+			controller = new BaseController(this, mDocument);
+			Toolkit.getDefaultToolkit().addAWTEventListener(new BaseMouseController(controller, mDocument), AWTEvent.MOUSE_EVENT_MASK);
+			rootDocumentComponent.addKeyListener(controller);
+			rootDocumentComponent.requestFocus();
 			
-			controller.setListener(new clojure.HotkeyListener());
+			controller.setListener(new clojure.HotkeyListener(mDocument));
 			controller.registerHotkey(EKeyBinding.Bind_InsertAfter, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_A, (char)KeyEvent.VK_UNDEFINED));
 			controller.registerHotkey(EKeyBinding.Bind_InsertBefore, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_B, (char)KeyEvent.VK_UNDEFINED));
 			controller.registerHotkey(EKeyBinding.Bind_InsertChild, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_C, (char)KeyEvent.VK_UNDEFINED));
 			controller.registerHotkey(EKeyBinding.Bind_InsertReplace, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_R, (char)KeyEvent.VK_UNDEFINED));
 		}
 		else{
-			controller = new BaseController(this, JSONController.editors);
-			Toolkit.getDefaultToolkit().addAWTEventListener(new BaseMouseController(controller), AWTEvent.MOUSE_EVENT_MASK);
-			top.addKeyListener(controller); // Must add BaseController first
-			top.requestFocus();
+			controller = new BaseController(this, mDocument);
+			Toolkit.getDefaultToolkit().addAWTEventListener(new BaseMouseController(controller, mDocument), AWTEvent.MOUSE_EVENT_MASK);
+			rootDocumentComponent.addKeyListener(controller);
+			rootDocumentComponent.requestFocus();
 			
-			controller.setListener(new HotkeyListener());
+			controller.setListener(new HotkeyListener(mDocument));
 			controller.registerHotkey(EKeyBinding.Bind_InsertAfter, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_A, (char)KeyEvent.VK_UNDEFINED));
 			controller.registerHotkey(EKeyBinding.Bind_InsertBefore, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_B, (char)KeyEvent.VK_UNDEFINED));
 			controller.registerHotkey(EKeyBinding.Bind_InsertReplace, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_R, (char)KeyEvent.VK_UNDEFINED));
 			controller.registerHotkey(EKeyBinding.Bind_InsertChild, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_C, (char)KeyEvent.VK_UNDEFINED));
 			controller.registerHotkey(EKeyBinding.Bind_InsertUsurp, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_U, (char)KeyEvent.VK_UNDEFINED));
 		}
-
-		//jsonDocumentConstruct2.debugPrint();
-		
-		// Deep copy usage
-		//Construct copyroot = new ObjectConstruct(null);
-		//Construct copyCon = jsonDocumentConstruct2.deepCopy(copyroot);
-		//System.out.println();
-		//copyCon.debugPrint();
 
 		this.pack();
 		this.setSize(800, 600);

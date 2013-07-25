@@ -25,6 +25,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import clojure.ClojureController;
+import editor.document.Document;
 
 import json.JSONController;
 
@@ -78,10 +79,14 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		@Override
 		public void keyTyped(KeyEvent e) {}
 	}
+	
+	private Document mDocument = null;
 
-	public MonospaceConstructEditor(Construct construct)
+	public MonospaceConstructEditor(Construct construct, Document document)
 	{
 		super(construct);
+		
+		mDocument = document;
 		
 		if(construct.parent == null)  {
 			text_area = new JTextArea();
@@ -103,7 +108,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		text_area.setForeground(construct.debug_getForegroundColor());
 	
 		// Easy way to check out the layout
-		text_area.setBackground(color_for_int(construct.nesting_level()));
+//		text_area.setBackground(color_for_int(construct.nesting_level()));
 		
 		text_area.getDocument().addDocumentListener(this);
 		SwingUtilities.invokeLater(new Runnable(){
@@ -130,7 +135,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 			{
 				if(editorsByConstructs.get(child) == null) {
 					System.out.println("ClojureController.. editors_from_constructs(child) .. " + child);
-					ClojureController.editors_from_constructs(child); // FIXME: Do not use JSONController in Mono Editor.. how to avoid?  Need to create editor from within editor. also, this should be handled by ConstructEditor
+					mDocument.editorsFromConstruct(child); 
 				}
 				
 				WeakReference<ConstructEditor> editor = editorsByConstructs.get(child);
@@ -433,12 +438,13 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 	}
 	
 	private void removeEditors(ConstructEditor editor) {
-		ClojureController.editors.remove(editor);
+		mDocument.remove(editor);
+		
 		for(Construct child : editor.construct.children) {		
 			ConstructEditor remove = editorsByConstructs.get(child).get();
 			removeEditors(remove);
-			ClojureController.editors.remove(remove);
-		}
+			mDocument.remove(remove);
+		}		
 	}
 
 	// Set focus to topmost monospace editor

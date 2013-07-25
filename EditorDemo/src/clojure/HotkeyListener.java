@@ -11,8 +11,16 @@ import editor.BaseController;
 import editor.BaseController.EKeyBinding;
 import editor.BaseControllerListener;
 import editor.ConstructEditor;
+import editor.document.Document;
 
 public class HotkeyListener implements BaseControllerListener {
+	private final Document mDocument;
+	
+	public HotkeyListener(Document document) { 
+		mDocument = document;
+	}
+	
+	
 	@Override
 	public void receivedHotkey(BaseController controller, EKeyBinding binding, int keyEventCode) {
 		handleInsert(controller, binding, keyEventCode);
@@ -95,6 +103,10 @@ public class HotkeyListener implements BaseControllerListener {
 				throw new RuntimeException("Unhandled hotkey");
 		}
 		
+		if(parent == null) { 
+			return null;
+		}
+		
 		if(parent.canInsertChildren() == false && 
 				(binding == EKeyBinding.Bind_InsertAfter || 
 				binding == EKeyBinding.Bind_InsertBefore || 
@@ -137,8 +149,13 @@ public class HotkeyListener implements BaseControllerListener {
 			}
 			
 			case Bind_InsertReplace:  {
-				if(parent.replaceChild(controller.getSelectedEditor().construct, newConstruct) == false)
-					return;
+				if(parent.replaceChild(controller.getSelectedEditor().construct, newConstruct)) {
+					// Cleanup the existing editor
+					mDocument.remove(controller.getSelectedEditor());
+				} else { 
+					return ;
+				}
+				
 				break;
 			}
 			
@@ -152,13 +169,9 @@ public class HotkeyListener implements BaseControllerListener {
 				break;
 		}
 		
-		ConstructEditor added = ClojureController.editors_from_constructs(newConstruct);
+		ConstructEditor added = mDocument.editorsFromConstruct(newConstruct);
 		if(added != null)  {
 			controller.selector.Select(added);
 		}
-	}
-	
-	
-	private void OnInsertIfThenElseStatement() { 
 	}
 }
