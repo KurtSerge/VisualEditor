@@ -121,9 +121,8 @@ public class HotkeyListener implements BaseControllerListener {
 			}
 			
 			case Bind_InsertReplace:  {
-				//if(parent.replaceChild(controller.getSelectedEditor().construct, newConstruct) == false) // TODO:
-				if(controller.getSelectedEditor().replace(newConstruct))
-					return;
+				ConstructEditor editorParent = controller.getSelectedEditor().getParent();
+				editorParent.replaceChild(controller.getSelectedEditor().construct, newConstruct);
 				break;
 			}
 			

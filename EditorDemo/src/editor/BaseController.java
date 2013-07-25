@@ -37,7 +37,9 @@ public class BaseController implements KeyListener {
 		Bind_SelectPrevSibling,
 		Bind_SelectParent,
 		Bind_SelectChild,
-		Bind_SelectRandom// TODO: debug
+		Bind_SelectRandom,// TODO: debug
+		//
+		Bind_DebugPrint
 	}
 	
 

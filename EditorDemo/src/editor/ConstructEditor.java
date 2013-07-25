@@ -61,21 +61,21 @@ public abstract class ConstructEditor
 	
 	// Remove this constructeditor's UI
 	public final boolean deleteMe() {
-		//if(construct.parent != null) {
-			// Get constructs
-			deleteList.clear();
-			getAllConstructs(construct);
-			// Delete Constructs
-			System.out.println();
-			if(construct.delete() == true) {
-				for(Construct del : deleteList) {
-					//del.parent.children.remove(del);// FIXME: When I comment this, crashes go away.  wtf? 
-					editorsByConstructs.get(del).get().delete();
-				}
+		// Get constructs
+		deleteList.clear();
+		getAllConstructs(construct);
+		// Delete Constructs
+		System.out.println();
+		if(construct.delete() == true) {
+			for(Construct del : deleteList) {
+				//del.parent.children.remove(del);// FIXME: When I comment this, crashes go away.  wtf? 
+				editorsByConstructs.get(del).get().delete();
 			}
-		//}
+		}
 		return true;
 	}
+
+	
 	// FIXME: Ugly, how to do this better?
 	static List<Construct> deleteList = new ArrayList<Construct>();
 	private void getAllConstructs(Construct delete) {
@@ -97,27 +97,17 @@ public abstract class ConstructEditor
 	}
 	
 	// Replace my construct with newCon.  Cleanup editors (prefer calling this over Construct.replaceChild())
-	final public boolean replace(Construct newCon) {
-		
-		
-		construct.parent.replaceChild(construct, newCon);
-
-		
-		
-		/*
-		construct.replaceChild(construct, newCon)
-		// FIXME: really you need to make the replacement first, then validate, then rollback if the replace is invalid
-		int newIndex = construct.parent.children.indexOf(construct);
-		boolean success = addChild(newIndex, newCon);
-		if(success == true) {
-			replaceMe.delete();
-			replaceMe.parent.children.remove(replaceMe);
+	final public boolean replaceChild(Construct child, Construct newCon) {
+		// Get constructs to delete later
+		deleteList.clear();
+		getAllConstructs(child);
+		// replace
+		if(construct.replaceChild(child, newCon)) {// check if succeeds
+			for(Construct del : deleteList) {
+				editorsByConstructs.get(del).get().delete();
+			}
 		}
-		if(success == true) {
-			AddToUndoBuffer();
-		}
-		return success;*/
-		
+	
 		return true;
 	}
 }

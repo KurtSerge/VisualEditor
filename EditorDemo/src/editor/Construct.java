@@ -17,12 +17,21 @@ public abstract class Construct
 	{
 		this.type = type;
 		this.parent = parent;
+		instance = UUID.randomUUID();
 	}
 	
 	public final String type;
 	public final Construct parent;
 	public UUID workspace; // Each construct will have user-defined rules for formatting.  example: a function with too many parameters goes onto a new line
-
+	public UUID instance;
+	
+	@Override
+	public boolean equals(Object o) {
+		Construct compare = (Construct)o;
+		boolean uuidcompare = this.instance.compareTo(compare.instance) == 0;
+		return (uuidcompare);
+	}
+	
 	/**
 	 * @return null if the literal should be used instead
 	 */
@@ -109,13 +118,12 @@ public abstract class Construct
 	// editor should call this
 	final public boolean replaceChild(Construct replaceMe, Construct newCon) {
 		// FIXME: really you need to make the replacement first, then validate, then rollback if the replace is invalid
-		int newIndex = replaceMe.parent.children.indexOf(replaceMe);
+		int newIndex = children.indexOf(replaceMe);
 		boolean success = addChild(newIndex, newCon);
 		if(success == true) {
-			replaceMe.delete();
-		}
-		if(success == true) {
-			AddToUndoBuffer();
+			if(children.remove(replaceMe) == false) {
+				//assert(1==0);
+			}
 		}
 		return success;
 	}

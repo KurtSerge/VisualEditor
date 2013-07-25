@@ -11,6 +11,8 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import json.JSONController;
+
 // Using AWT because Swing "MouseListener" doesn't give coords when clicking over jtextareas
 public class BaseMouseController implements AWTEventListener {
 	private final BaseController bc;
@@ -26,7 +28,7 @@ public class BaseMouseController implements AWTEventListener {
     			// Get clicked editors
     			Point click = MouseInfo.getPointerInfo().getLocation();
     			List<ConstructEditor> clickedEditors = new ArrayList<ConstructEditor>();
-    			//System.out.println(JSONController.editors.size());
+    			System.out.println(JSONController.editors.size());
     			try {
             	for(ConstructEditor editor : bc.selector.editors ) {
         			Point topleft = editor.get_component().getLocationOnScreen();

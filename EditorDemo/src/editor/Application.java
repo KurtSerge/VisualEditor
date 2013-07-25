@@ -41,6 +41,8 @@ public class Application extends JFrame
 		controller.registerHotkey(EKeyBinding.Bind_InsertUsurp, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_U, (char)KeyEvent.VK_UNDEFINED));
 		controller.registerHotkey(EKeyBinding.Bind_Undo, String.format("%s", (char)KeyEvent.VK_U));
 		controller.registerHotkey(EKeyBinding.Bind_Redo, String.format("%s", (char)KeyEvent.VK_R));
+		
+		controller.registerHotkey(EKeyBinding.Bind_DebugPrint, String.format("%s", (char)KeyEvent.VK_P));
 	}
 	
 	/**
@@ -92,6 +94,9 @@ public class Application extends JFrame
 						setupNewConstruct(top);
 					}
 					return;
+				case Bind_DebugPrint:
+					jsonDocumentConstruct2.debugPrint();
+					break;
 				default:
 					throw new RuntimeException("Unhandled hotkey");
 			
@@ -156,9 +161,8 @@ public class Application extends JFrame
 					break;
 				}
 				case Bind_InsertReplace:  {
-					//if(parent.replaceChild(controller.getSelectedEditor().construct, newConstruct) == false) TODO:
-					if(controller.getSelectedEditor().replace(newConstruct))
-						return;
+					ConstructEditor editorParent = controller.getSelectedEditor().getParent();
+					editorParent.replaceChild(controller.getSelectedEditor().construct, newConstruct);
 					break;
 				}
 				case Bind_InsertChild: {
@@ -194,6 +198,7 @@ public class Application extends JFrame
 			
 			ConstructEditor added = JSONController.editors_from_constructs(newConstruct);
 			if(added != null)  {
+				controller.getSelectedEditor().update();
 				controller.selector.Select(added);
 			}
 		}
