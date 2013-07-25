@@ -187,7 +187,7 @@ public class BaseController implements KeyListener {
 				if(selector.SelectAdjacentConstruct(false) == false)
 					selector.SelectParentConstruct();
 			}
-			getSelectedEditor().update();
+			deleteMeEditor.getParent().update();
 		}
 	}
 
