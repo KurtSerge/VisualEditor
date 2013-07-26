@@ -64,7 +64,7 @@ public class Application extends JFrame
 	{
 		super("Editor Demo");
 		
-		boolean shouldLoadJson = true;	// Alt: Loads Clojure
+		boolean shouldLoadJson = false;	// Alt: Loads Clojure
 		
 		this.setSize(800, 600);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -75,6 +75,7 @@ public class Application extends JFrame
 		
 		try {
 			if(shouldLoadJson) {
+				// Create a document for JSON parsing
 				mDocument = new JSONConstructDocument("test2.json");
 				mDocument.setListener(new ConstructDocument.ConstructDocumentListener() {
 					@Override
@@ -90,6 +91,7 @@ public class Application extends JFrame
 					}
 				});				
 			} else {
+				// Create a document for Clojure parsing
 				mDocument = new ClojureConstructDocument("testtypes.clj");
 				mDocument.setListener(new ConstructDocument.ConstructDocumentListener() {
 					@Override
@@ -105,12 +107,6 @@ public class Application extends JFrame
 					}
 				});				
 			}
-			
-			// Adds a listener that will update the 
-			// visible document when the document is
-			// updated via redo/undo methods.
-
-		
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
 			return ;
@@ -123,16 +119,9 @@ public class Application extends JFrame
 		this.add(rootDocumentComponent);
 
 		if(shouldLoadJson == false) {
-			controller = new BaseController(this, mDocument);
+			clojure.HotkeyListener keyListener = new clojure.HotkeyListener(mDocument);
+			setupNewConstruct(rootDocumentComponent, keyListener);
 			Toolkit.getDefaultToolkit().addAWTEventListener(new BaseMouseController(controller, mDocument), AWTEvent.MOUSE_EVENT_MASK);
-			rootDocumentComponent.addKeyListener(controller);
-			rootDocumentComponent.requestFocus();
-			
-			controller.setListener(new clojure.HotkeyListener(mDocument));
-			controller.registerHotkey(EKeyBinding.Bind_InsertAfter, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_A, (char)KeyEvent.VK_UNDEFINED));
-			controller.registerHotkey(EKeyBinding.Bind_InsertBefore, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_B, (char)KeyEvent.VK_UNDEFINED));
-			controller.registerHotkey(EKeyBinding.Bind_InsertChild, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_C, (char)KeyEvent.VK_UNDEFINED));
-			controller.registerHotkey(EKeyBinding.Bind_InsertReplace, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_R, (char)KeyEvent.VK_UNDEFINED));
 		}
 		else{
 			JSONHotkeyListener keyListener = new JSONHotkeyListener(controller, mDocument, this);

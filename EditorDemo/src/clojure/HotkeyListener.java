@@ -23,10 +23,19 @@ public class HotkeyListener implements BaseControllerListener {
 	
 	@Override
 	public void receivedHotkey(BaseController controller, EKeyBinding binding, int keyEventCode) {
+		if(binding == EKeyBinding.Bind_Undo) { 
+			mDocument.undo();
+			return ;
+		} else if(binding == EKeyBinding.Bind_Redo) { 
+			mDocument.redo();
+			return ;
+		}
+		
+		
 		handleInsert(controller, binding, keyEventCode);
 	}
 	
-	private ClojureConstruct getConstructFromKey(ClojureConstruct parent, int keyEventCode) { 
+	private ClojureConstruct getConstructFromKey(ClojureConstruct parent, int keyEventCode) {
 		ClojureConstruct newConstruct = null;
 		switch(keyEventCode) {
 			case KeyEvent.VK_8:
