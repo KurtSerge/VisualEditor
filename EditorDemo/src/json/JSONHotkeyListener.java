@@ -17,20 +17,18 @@ import editor.document.ConstructDocument;
 public class JSONHotkeyListener implements BaseControllerListener {
 	private final ConstructDocument mDocument;
 	private final JFrame window;	
-	private final BaseController controller;
 
-	public JSONHotkeyListener(BaseController controller, ConstructDocument document, JFrame window) {
+	public JSONHotkeyListener(ConstructDocument document, JFrame window) {
 		this.window = window;
 		this.mDocument = document;
-		this.controller = controller;
 	}
 	
 	@Override
 	public void receivedHotkey(BaseController controller, EKeyBinding binding, int keyEventCode) {
-		handleInsert(binding, keyEventCode);
+		handleInsert(controller, binding, keyEventCode);
 	}
 
-	private void handleInsert(EKeyBinding binding, int keyEventCode) {
+	private void handleInsert(BaseController controller, EKeyBinding binding, int keyEventCode) {
 		Construct newConstruct = null;
 		Construct parent = null;
 
