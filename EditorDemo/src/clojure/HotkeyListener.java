@@ -11,12 +11,12 @@ import editor.BaseController;
 import editor.BaseController.EKeyBinding;
 import editor.BaseControllerListener;
 import editor.ConstructEditor;
-import editor.document.Document;
+import editor.document.ConstructDocument;
 
 public class HotkeyListener implements BaseControllerListener {
-	private final Document mDocument;
+	private final ConstructDocument mDocument;
 	
-	public HotkeyListener(Document document) { 
+	public HotkeyListener(ConstructDocument document) { 
 		mDocument = document;
 	}
 	

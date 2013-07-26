@@ -9,11 +9,11 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import editor.Construct;
-import editor.document.Document;
+import editor.document.ConstructDocument;
 
-public class JSONDocument extends Document {
+public class JSONConstructDocument extends ConstructDocument {
 
-	public JSONDocument(String filename) 
+	public JSONConstructDocument(String filename) 
 			throws FileNotFoundException
 	{
 		super(filename);

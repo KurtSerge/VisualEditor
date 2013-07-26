@@ -16,9 +16,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import editor.BaseController.EKeyBinding;
-import editor.document.ClojureDocument;
-import editor.document.Document;
-import editor.document.JSONDocument;
+import editor.document.ClojureConstructDocument;
+import editor.document.ConstructDocument;
+import editor.document.JSONConstructDocument;
 
 import clojure.ClojureController;
 
@@ -54,14 +54,14 @@ public class Application extends JFrame
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Document mDocument = null;
+	private ConstructDocument mDocument = null;
 	private BaseController controller = null;
 	
 	private class HotkeyListener implements BaseControllerListener {
-		private final Document mDocument;
+		private final ConstructDocument mDocument;
 		private final JFrame window;		
 
-		public HotkeyListener(Document document, JFrame window) {
+		public HotkeyListener(ConstructDocument document, JFrame window) {
 			this.window = window;
 			this.mDocument = document;
 		}
@@ -220,22 +220,22 @@ public class Application extends JFrame
 		
 		try {
 			if(shouldLoadJson) {
-				mDocument = new JSONDocument("test2.json");
+				mDocument = new JSONConstructDocument("test2.json");
 			} else {
-				mDocument = new ClojureDocument("testtypes.clj");
+				mDocument = new ClojureConstructDocument("testtypes.clj");
 			}
 			
 			// Adds a listener that will update the 
 			// visible document when the document is
 			// updated via redo/undo methods.
-			mDocument.setListener(new Document.DocumentListener() {
+			mDocument.setListener(new ConstructDocument.ConstructDocumentListener() {
 				@Override
-				public void onDocumentUndo(Document document) {
+				public void onDocumentUndo(ConstructDocument document) {
 					setupNewConstruct(document.getRootComponent());
 				}
 				
 				@Override
-				public void onDocumentRedo(Document document) {
+				public void onDocumentRedo(ConstructDocument document) {
 					setupNewConstruct(document.getRootComponent());
 				}
 			});

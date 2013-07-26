@@ -6,9 +6,9 @@ import java.io.InputStream;
 import clojure.ClojureReader;
 import editor.Construct;
 
-public class ClojureDocument extends Document {
+public class ClojureConstructDocument extends ConstructDocument {
 	
-	public ClojureDocument(String filename) 
+	public ClojureConstructDocument(String filename) 
 			throws FileNotFoundException
 	{
 		super(filename);

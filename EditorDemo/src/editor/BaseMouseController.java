@@ -11,14 +11,14 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import editor.document.Document;
+import editor.document.ConstructDocument;
 
 // Using AWT because Swing "MouseListener" doesn't give coords when clicking over jtextareas
 public class BaseMouseController implements AWTEventListener {
 	private final BaseController bc;
-	private final Document mDocument;
+	private final ConstructDocument mDocument;
 	
-	public BaseMouseController(BaseController bc, Document document) {
+	public BaseMouseController(BaseController bc, ConstructDocument document) {
 		this.bc = bc;
 		this.mDocument = document;
 	}

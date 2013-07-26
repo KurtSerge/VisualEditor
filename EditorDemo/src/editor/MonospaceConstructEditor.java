@@ -25,7 +25,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import clojure.ClojureController;
-import editor.document.Document;
+import editor.document.ConstructDocument;
 
 import json.JSONController;
 
@@ -80,9 +80,9 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		public void keyTyped(KeyEvent e) {}
 	}
 	
-	private Document mDocument = null;
+	private ConstructDocument mDocument = null;
 
-	public MonospaceConstructEditor(Construct construct, Document document)
+	public MonospaceConstructEditor(Construct construct, ConstructDocument document)
 	{
 		super(construct);
 		

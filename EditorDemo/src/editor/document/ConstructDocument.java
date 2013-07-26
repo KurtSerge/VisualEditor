@@ -20,18 +20,18 @@ import editor.MonospaceConstructEditor;
  * 
  * @author chrislord
  */
-public abstract class Document {
-	public interface DocumentListener { 
-		public void onDocumentUndo(Document document);
-		public void onDocumentRedo(Document document);
+public abstract class ConstructDocument {
+	public interface ConstructDocumentListener { 
+		public void onDocumentUndo(ConstructDocument document);
+		public void onDocumentRedo(ConstructDocument document);
 	}
 	
 	private ArrayList<ConstructEditor> mEditors;
 	private Construct mRootConstruct;
 	private Component mRootComponent;
-	private DocumentListener mListener;
+	private ConstructDocumentListener mListener;
 
-	public Document(String filename) 
+	public ConstructDocument(String filename) 
 		throws FileNotFoundException
 	{
 		if(filename == null) {
@@ -62,7 +62,7 @@ public abstract class Document {
 		mRootComponent = editorFromRoot.get_component();
 	}
 	
-	public void setListener(DocumentListener newListener) { 
+	public void setListener(ConstructDocumentListener newListener) { 
 		mListener = newListener;
 	}
 	

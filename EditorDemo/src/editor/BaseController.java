@@ -10,7 +10,7 @@ import java.util.Random;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import editor.document.Document;
+import editor.document.ConstructDocument;
 
 public class BaseController implements KeyListener {
 	public EditSelection selector = null;
@@ -47,13 +47,13 @@ public class BaseController implements KeyListener {
 		Bind_Save
 	}
 	
-	private Document mDocument;
+	private ConstructDocument mDocument;
 	
 	public void setListener(BaseControllerListener listener) {
 		theListener = listener;
 	}
 	
-	public BaseController(JFrame frame, Document document) {
+	public BaseController(JFrame frame, ConstructDocument document) {
 		System.out.println("Setup BaseController");
 		selector = new EditSelection(frame, document);
 	    selector.SelectRandom();
@@ -269,10 +269,10 @@ public class BaseController implements KeyListener {
 	// Handles keyboard selection of constructs
 	public class EditSelection {
 		private final JFrame frame;
-		private final Document mDocument;
+		private final ConstructDocument mDocument;
 		private ConstructEditor selected = null;
 		
-		public EditSelection(JFrame frame, Document document) {
+		public EditSelection(JFrame frame, ConstructDocument document) {
 			this.frame = frame;
 			mDocument = document;
 		}
