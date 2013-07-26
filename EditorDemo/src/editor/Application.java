@@ -64,7 +64,7 @@ public class Application extends JFrame
 	{
 		super("Editor Demo");
 		
-		boolean shouldLoadJson = false;	// Alt: Loads Clojure
+		boolean shouldLoadJson = true;	// Alt: Loads Clojure
 		
 		this.setSize(800, 600);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -64,7 +64,8 @@ public class JSONHotkeyListener implements BaseControllerListener {
 		// Get a construct to insert
 		switch(keyEventCode) {
 			case KeyEvent.VK_O: // Object
-				if(parent.getClass() == json.KeyValueConstruct.class)  {
+				if(parent.getClass() == json.KeyValueConstruct.class ||
+				   parent.getClass() == json.ArrayConstruct.class)  {
 					// Empty Object 
 					JSONObject newObj = new JSONObject();
 					newConstruct = JSONController.construct_for_json(newObj, parent);

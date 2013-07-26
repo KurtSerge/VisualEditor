@@ -42,7 +42,8 @@ public class ArrayConstruct extends Construct {
 		   child.getClass() == BooleanConstruct.class ||
 		   child.getClass() == FloatConstruct.class ||
 		   child.getClass() == IntegerConstruct.class ||
-		   child.getClass() == NullConstruct.class) {
+		   child.getClass() == NullConstruct.class ||
+		   child.getClass() == ObjectConstruct.class) {
 			return true;
 		}
 		

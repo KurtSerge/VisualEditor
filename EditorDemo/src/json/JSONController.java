@@ -111,11 +111,7 @@ public class JSONController
 		}
 		else
 			throw new RuntimeException("Unknown JSON type, this should never happen");
-		
-	//	for(Construct child : con.children) {
-	//		json_for_construct(child, ret);
-	//	}
-		
+
 		return ret;
 	}
 	
