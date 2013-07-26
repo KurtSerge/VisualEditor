@@ -34,4 +34,11 @@ public class ListConstruct extends ClojureConstruct {
 	public boolean canInsertChildren() { 
 		return true;
 	}
+	
+	@Override
+	public Construct deepCopy(Construct parent) {
+		ListConstruct newCopy = new ListConstruct(parent, null);
+		super.deepCopy(newCopy);
+		return newCopy;
+	}
 }

@@ -20,4 +20,10 @@ public class BigIntConstruct extends ClojureConstruct {
 		return false;
 	}
 
+	@Override
+	public Construct deepCopy(Construct parent) {
+		BigIntConstruct newCopy = new BigIntConstruct(parent, this.literal);
+		super.deepCopy(newCopy);
+		return newCopy;
+	}
 }

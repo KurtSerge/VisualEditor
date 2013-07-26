@@ -38,6 +38,8 @@ public abstract class Document {
 			throw new NullPointerException("No construct returned for Document::loadConstruct()");
 		}
 		
+		mRootConstruct.AddToUndoBuffer();
+		
 		// Create editors from the root document
 		ConstructEditor editorFromRoot = editorsFromConstruct(mRootConstruct);
 		if(editorFromRoot == null) { 
@@ -72,5 +74,38 @@ public abstract class Document {
 	
 	public void remove(ConstructEditor editor) { 
 		mEditors.remove(editor);
+	}
+	
+	
+	public boolean undo() {
+		Construct undoneConstruct = Construct.getUndo();
+		if(undoneConstruct != null) { 
+			mRootConstruct = undoneConstruct;
+			ConstructEditor editorFromRoot = editorsFromConstruct(mRootConstruct);
+			mRootComponent = editorFromRoot.get_component();
+			return true;
+		} else { 
+			System.err.println("Undo failed: Construct.getUndo() returned null");
+		}
+		
+		return false;
+	}
+	
+	public boolean redo() { 
+		Construct redoneConstruct = Construct.getRedo();
+		if(redoneConstruct != null) { 
+			mRootConstruct = redoneConstruct;
+			ConstructEditor editorFromRoot = editorsFromConstruct(mRootConstruct);
+			mRootComponent = editorFromRoot.get_component();
+			return true;
+		} else { 
+			System.err.println("Redo failed: Construct.getRedo() returned null");
+		}
+		
+		return false;
+	}
+	
+	public void debugPrint() { 
+		mRootConstruct.debugPrint();
 	}
 }

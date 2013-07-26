@@ -1,8 +1,10 @@
 
 package json;
 
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +50,75 @@ public class JSONController
 		return key_value_construct;
 	}
 
+	public static void save_json(Construct saveme, String filename, int indent) {
+		JSONObject saved = (JSONObject)JSONController.json_for_construct(saveme, null);
+
+	
+		PrintWriter out = null;
+		try {
+			out = new PrintWriter(filename);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		String outStr = saved.toString(indent);
+		outStr = outStr.replace("\n", "\r\n");
+		//System.out.print(outStr);
+		
+		out.println(outStr);
+		
+		out.close();
+	}
+	
+	public static Object json_for_construct(Construct con, JSONObject parent) {
+		Object ret = null; 
+	
+		if(con.type == "object") {
+			ret = new JSONObject();
+			for(Construct child : con.children) {
+				json_for_construct(child, (JSONObject)ret);
+			}
+		}
+		else if(con.type == "key_value_pair") {
+			assert(con.children.get(0).type == "string");
+			parent.put((String)json_for_construct(con.children.get(0), parent), json_for_construct(con.children.get(1), parent));
+		}
+		else if(con.type == "string") {
+			ret = json_for_construct(con.children.get(0), parent);
+		}
+		else if(con.type == "integer") {
+			ret = Integer.valueOf(con.literal);
+		}
+		else if(con.type == "float") {
+			ret = Float.valueOf(con.literal);
+		}
+		else if(con.type == "null") {
+			ret = JSONObject.NULL;
+		}
+		else if(con.type == "boolean") {
+			ret = Boolean.valueOf(con.literal);
+		}
+		else if(con.type == "string_literal") {
+			ret = con.literal;
+		}
+		else if(con.type == "array") {
+			JSONArray  array = new JSONArray();
+			
+			for(Construct child : con.children) 
+				array.put(json_for_construct(child, parent));
+			ret = array;
+		}
+		else
+			throw new RuntimeException("Unknown JSON type, this should never happen");
+		
+	//	for(Construct child : con.children) {
+	//		json_for_construct(child, ret);
+	//	}
+		
+		return ret;
+	}
+	
 	static public Construct construct_for_json(Object object, Construct parent)
 	{
 		if(object.getClass().equals(JSONObject.class))

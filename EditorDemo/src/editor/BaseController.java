@@ -28,14 +28,22 @@ public class BaseController implements KeyListener {
 		// Below this point: Standard non-overridable bindings
 		// Deletion
 		Bind_DeleteAll,
+		Bind_DeleteTopmost,
+		// Undo buff
+		Bind_Undo,
+		Bind_Redo,
 		// Selection
 		Bind_SelectNextSibling,
 		Bind_SelectPrevSibling,
 		Bind_SelectParent,
-		Bind_SelectChild
+		Bind_SelectChild,
+		Bind_SelectRandom,// TODO: debug
+		//
+		Bind_DebugPrint,
+		Bind_Save
 	}
 	
-
+	private Document mDocument;
 	
 	public void setListener(BaseControllerListener listener) {
 		theListener = listener;
@@ -46,14 +54,19 @@ public class BaseController implements KeyListener {
 		selector = new EditSelection(frame, document);
 	    selector.SelectRandom();
 		currentInput = "";
+		mDocument = document;
 		keyMap = new HashMap<String, EKeyBinding>();
 
 		// Internally handled hotkeys
 		this.registerHotkey(EKeyBinding.Bind_DeleteAll, String.format("%s%s", (char)KeyEvent.VK_D, (char)KeyEvent.VK_D));
+		this.registerHotkey(EKeyBinding.Bind_DeleteTopmost, String.format("%s%s", (char)KeyEvent.VK_D, (char)KeyEvent.VK_P));
+		
 		this.registerHotkey(EKeyBinding.Bind_SelectParent, String.format("%s", (char)KeyEvent.VK_LEFT));
 		this.registerHotkey(EKeyBinding.Bind_SelectChild, String.format("%s", (char)KeyEvent.VK_RIGHT));
 		this.registerHotkey(EKeyBinding.Bind_SelectNextSibling, String.format("%s", (char)KeyEvent.VK_DOWN));
 		this.registerHotkey(EKeyBinding.Bind_SelectPrevSibling, String.format("%s", (char)KeyEvent.VK_UP));
+		this.registerHotkey(EKeyBinding.Bind_Save, String.format("%s%s", (char)KeyEvent.VK_S, (char)KeyEvent.VK_S));
+		//this.registerHotkey(EKeyBinding.Bind_SelectRandom, String.format("%s", (char)KeyEvent.VK_R));
 	}
 	
 	// Important:Use the '?' character to indicate that an "autocomplete char" comes after the hotkey
@@ -86,7 +99,9 @@ public class BaseController implements KeyListener {
 			switch(bindingCheck) {
 				case Bind_DeleteAll:
 					DeleteAllSelected();
-					clearBindings();
+					break;
+				case Bind_DeleteTopmost:
+					DeleteTopmost();
 					break;
 				case Bind_SelectParent:
 					System.out.println("Left");
@@ -103,6 +118,12 @@ public class BaseController implements KeyListener {
 				case Bind_SelectPrevSibling:
 					System.out.println("Up");
         			selector.SelectAdjacentConstruct(false);
+					break;
+				case Bind_SelectRandom:
+					selector.SelectRandom();
+					break;
+				case Bind_Save:
+					SaveToFile();
 					break;
 				default:
 					if(theListener != null)
@@ -128,6 +149,19 @@ public class BaseController implements KeyListener {
 		}
 	}
 	
+	private void SaveToFile() {
+		String outdir = System.getProperty("user.dir") + "\\JSONOut.json";
+		//JSONController.save_json(getTopConstruct(), outdir, 4);
+	}
+	
+	private Construct getTopConstruct() {
+		Construct iter = selector.selected.construct;
+		while(iter.parent != null)
+			iter = iter.parent;
+			
+		return iter;
+	}
+	
     public ConstructEditor getSelectedEditor() {
     	return selector.selected;
     }
@@ -146,16 +180,63 @@ public class BaseController implements KeyListener {
 		ConstructEditor deleteMeEditor = selector.selected;
 		if(deleteMeEditor.getParent() != null) 
 		{
-			
 			if(deleteMeEditor.deleteMe()) {
 				deleteMeEditor.getParent().update();
 				
     			selector.selected.update();
+    			
 				if(selector.SelectAdjacentConstruct(false) == false)
 					selector.SelectParentConstruct();
 			}
+			deleteMeEditor.getParent().update();
 		}
 	}
+
+	
+	// Delete topmost construct of selected
+	public void DeleteTopmost() {
+		ConstructEditor deleteMeEditor = selector.selected;
+		if(deleteMeEditor.getParent() != null) 
+		{
+			int index = deleteMeEditor.construct.parent.children.indexOf(deleteMeEditor.construct);
+			int added = AddChildrenTo(deleteMeEditor.construct, deleteMeEditor.construct.parent, index);
+			
+			// Delete topmost construct (only if we copied some children)
+			if(added > 0) {
+				boolean deleted = deleteMeEditor.deleteMe();
+				if(deleted == true) {
+	    			selector.selected.update();
+					if(selector.SelectAdjacentConstruct(false) == false)
+						selector.SelectParentConstruct();
+				}
+			}
+		}
+	}
+	
+	// Searches for any children nested in childrenOf, and adds their tree to addToMe.
+	// Returns the number of trees added to addToMe
+	public int AddChildrenTo(Construct childrenOf, Construct addToMe, int index) {
+		int childrenAdded = 0;
+		for(Construct child : childrenOf.children) {
+			Construct copy = child.deepCopy(addToMe);
+			//int addIndex = .children.size();
+			if(addToMe.addChild(index, copy) == false) {
+				childrenAdded += AddChildrenTo(child, addToMe, index);
+			}
+			else {
+				// Successfully add
+				ConstructEditor added = mDocument.editorsFromConstruct(copy);
+				childrenAdded++;
+				index++;
+				if(added != null)  {
+					selector.Select(added);
+				}
+			}
+		}
+		return childrenAdded;
+	}
+	
+	
 	
 	// Handles keyboard selection of constructs
 	public class EditSelection {

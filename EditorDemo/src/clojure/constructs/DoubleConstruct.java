@@ -25,4 +25,11 @@ public class DoubleConstruct extends ClojureConstruct {
 		
 		return false;
 	}
+	
+	@Override
+	public Construct deepCopy(Construct parent) {
+		DoubleConstruct newCopy = new DoubleConstruct(parent, this.literal);
+		super.deepCopy(newCopy);
+		return newCopy;
+	}
 }

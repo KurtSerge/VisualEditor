@@ -2,8 +2,7 @@
 	"GlossSee1": {
 	},
 	"GlossDef": {
-		"para": 5.3,
-		"pp": "fdk"
+		"para": 0,
 	},
 	"GlossSeeAlso": ["GML", "XML"]
 }

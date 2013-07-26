@@ -2,6 +2,7 @@ package editor;
 
 import java.awt.AWTEvent;
 import java.awt.Dimension;
+import java.awt.IllegalComponentStateException;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -10,7 +11,6 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import clojure.ClojureController;
 import editor.document.Document;
 
 // Using AWT because Swing "MouseListener" doesn't give coords when clicking over jtextareas
@@ -31,7 +31,6 @@ public class BaseMouseController implements AWTEventListener {
     			// Get clicked editors
     			Point click = MouseInfo.getPointerInfo().getLocation();
     			List<ConstructEditor> clickedEditors = new ArrayList<ConstructEditor>();
-
             	for(ConstructEditor editor : mDocument.getEditors()) {
                		if(editor.get_component().isDisplayable()) { 
             			Point topleft = editor.get_component().getLocationOnScreen();
@@ -45,7 +44,7 @@ public class BaseMouseController implements AWTEventListener {
             			System.err.println("Warning: Component for " +  editor.construct.type + "construct is not on screen!");
             		}
             	}
-            	
+               		
             	// Determine deepest nested editor
             	int maxDepth = 0;
             	ConstructEditor deepEditor = null;
@@ -58,7 +57,7 @@ public class BaseMouseController implements AWTEventListener {
             	}
             	bc.selector.Select(deepEditor);
     		}
-    	} 
+    	}
     }
     
     private int getDepth(ConstructEditor editor) {

@@ -40,4 +40,11 @@ public class IfThenElseConstruct extends ListConstruct {
 	public boolean canInsertChildren() { 
 		return false;
 	}
+	
+	@Override
+	public Construct deepCopy(Construct parent) {
+		IfThenElseConstruct newCopy = new IfThenElseConstruct(parent);
+		super.deepCopy(newCopy);
+		return newCopy;
+	}
 }

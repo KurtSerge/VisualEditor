@@ -40,5 +40,11 @@ public class MapConstruct extends ClojureConstruct {
 	public boolean canInsertChildren() { 
 		return true;
 	}	
-
+	
+	@Override
+	public Construct deepCopy(Construct parent) {
+		MapConstruct newCopy = new MapConstruct(parent, null);
+		super.deepCopy(newCopy);
+		return newCopy;
+	}
 }

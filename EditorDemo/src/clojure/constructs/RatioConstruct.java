@@ -21,4 +21,10 @@ public class RatioConstruct extends ClojureConstruct {
 		return false;
 	}
 
+	@Override
+	public Construct deepCopy(Construct parent) {
+		RatioConstruct newCopy = new RatioConstruct(parent, null);
+		super.deepCopy(newCopy);
+		return newCopy;
+	}
 }

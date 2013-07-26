@@ -23,4 +23,11 @@ public class BooleanConstruct extends ClojureConstruct {
 			return false;
 		}
 	}
+	
+	@Override
+	public Construct deepCopy(Construct parent) {
+		BigDecimalConstruct newCopy = new BigDecimalConstruct(parent, this.literal);
+		super.deepCopy(newCopy);
+		return newCopy;
+	}
 }

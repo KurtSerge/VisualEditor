@@ -158,7 +158,6 @@ public class HotkeyListener implements BaseControllerListener {
 				} else { 
 					return ;
 				}
-				
 				break;
 			}
 			

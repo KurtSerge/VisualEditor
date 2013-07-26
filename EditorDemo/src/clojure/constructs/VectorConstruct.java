@@ -34,4 +34,10 @@ public class VectorConstruct extends ClojureConstruct {
 		return true;
 	}
 
+	@Override
+	public Construct deepCopy(Construct parent) {
+		VectorConstruct newCopy = new VectorConstruct(parent, null);
+		super.deepCopy(newCopy);
+		return newCopy;
+	}
 }

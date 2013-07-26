@@ -24,21 +24,44 @@ import json.JSONController;
 
 public class Application extends JFrame
 {
+	private void setupNewConstruct(Component top) {
+		// Delete
+		if(controller != null) {
+			controller.getSelectedEditor().deleteAll();
+			this.removeKeyListener(controller);
+		}
+
+		this.add(top);
+		controller = new BaseController(this, mDocument);
+		top.addKeyListener(controller);
+		top.requestFocus();
+		
+		controller.setListener(new HotkeyListener(mDocument, this));
+		controller.registerHotkey(EKeyBinding.Bind_InsertAfter, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_A, (char)KeyEvent.VK_UNDEFINED));
+		controller.registerHotkey(EKeyBinding.Bind_InsertBefore, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_B, (char)KeyEvent.VK_UNDEFINED));
+		controller.registerHotkey(EKeyBinding.Bind_InsertReplace, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_R, (char)KeyEvent.VK_UNDEFINED));
+		controller.registerHotkey(EKeyBinding.Bind_InsertChild, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_C, (char)KeyEvent.VK_UNDEFINED));
+		controller.registerHotkey(EKeyBinding.Bind_InsertUsurp, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_U, (char)KeyEvent.VK_UNDEFINED));
+		controller.registerHotkey(EKeyBinding.Bind_Undo, String.format("%s", (char)KeyEvent.VK_U));
+		controller.registerHotkey(EKeyBinding.Bind_Redo, String.format("%s", (char)KeyEvent.VK_R));
+		
+		controller.registerHotkey(EKeyBinding.Bind_DebugPrint, String.format("%s", (char)KeyEvent.VK_P));
+	}
+	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	// Demo
-//	private Construct  jsonDocumentConstruct2 = null;
-	
 	private Document mDocument = null;
 	private BaseController controller = null;
 	
 	private class HotkeyListener implements BaseControllerListener {
 		private final Document mDocument;
-		
-		public HotkeyListener(Document document) { 
-			mDocument = document;
+		private final JFrame window;		
+
+		public HotkeyListener(Document document, JFrame window) {
+			this.window = window;
+			this.mDocument = document;
 		}
 		
 		@Override
@@ -61,6 +84,21 @@ public class Application extends JFrame
 				case Bind_InsertChild:
 					parent = controller.getSelectedEditor().construct;
 					break;
+					
+				case Bind_Undo:
+					if(mDocument.undo()) { 
+						setupNewConstruct(mDocument.getRootComponent());
+					}
+					return;
+				case Bind_Redo:
+					if(mDocument.redo()) { 
+						setupNewConstruct(mDocument.getRootComponent());
+					}
+					return;
+				case Bind_DebugPrint:
+					mDocument.debugPrint();
+					break;
+					
 				default:
 					throw new RuntimeException("Unhandled hotkey");
 			
@@ -125,8 +163,8 @@ public class Application extends JFrame
 					break;
 				}
 				case Bind_InsertReplace:  {
-					if(parent.replaceChild(controller.getSelectedEditor().construct, newConstruct) == false)
-						return;
+					ConstructEditor editorParent = controller.getSelectedEditor().getParent();
+					editorParent.replaceChild(controller.getSelectedEditor().construct, newConstruct);
 					break;
 				}
 				case Bind_InsertChild: {
@@ -162,6 +200,7 @@ public class Application extends JFrame
 			
 			ConstructEditor added = mDocument.editorsFromConstruct(newConstruct);
 			if(added != null)  {
+				controller.getSelectedEditor().update();
 				controller.selector.Select(added);
 			}
 		}
@@ -172,7 +211,7 @@ public class Application extends JFrame
 	{
 		super("Editor Demo");
 		
-		boolean shouldLoadJson = false;	// Alt: Loads Clojure
+		boolean shouldLoadJson = true;	// Alt: Loads Clojure
 		
 		this.setSize(800, 600);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -192,13 +231,11 @@ public class Application extends JFrame
 		} catch (Exception ex) {
 			System.err.println("Uncaught exception while loading Document");
 			ex.printStackTrace();
-			return ;
 		}
-
 		
 		Component rootDocumentComponent = mDocument.getRootComponent();
 		this.add(rootDocumentComponent);
-		
+
 		if(shouldLoadJson == false) {
 			controller = new BaseController(this, mDocument);
 			Toolkit.getDefaultToolkit().addAWTEventListener(new BaseMouseController(controller, mDocument), AWTEvent.MOUSE_EVENT_MASK);
@@ -212,17 +249,8 @@ public class Application extends JFrame
 			controller.registerHotkey(EKeyBinding.Bind_InsertReplace, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_R, (char)KeyEvent.VK_UNDEFINED));
 		}
 		else{
-			controller = new BaseController(this, mDocument);
+			setupNewConstruct(rootDocumentComponent);
 			Toolkit.getDefaultToolkit().addAWTEventListener(new BaseMouseController(controller, mDocument), AWTEvent.MOUSE_EVENT_MASK);
-			rootDocumentComponent.addKeyListener(controller);
-			rootDocumentComponent.requestFocus();
-			
-			controller.setListener(new HotkeyListener(mDocument));
-			controller.registerHotkey(EKeyBinding.Bind_InsertAfter, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_A, (char)KeyEvent.VK_UNDEFINED));
-			controller.registerHotkey(EKeyBinding.Bind_InsertBefore, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_B, (char)KeyEvent.VK_UNDEFINED));
-			controller.registerHotkey(EKeyBinding.Bind_InsertReplace, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_R, (char)KeyEvent.VK_UNDEFINED));
-			controller.registerHotkey(EKeyBinding.Bind_InsertChild, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_C, (char)KeyEvent.VK_UNDEFINED));
-			controller.registerHotkey(EKeyBinding.Bind_InsertUsurp, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_U, (char)KeyEvent.VK_UNDEFINED));
 		}
 
 		this.pack();

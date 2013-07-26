@@ -3,6 +3,7 @@ package clojure.constructs.meta;
 import java.util.LinkedList;
 
 import clojure.ClojureConstruct;
+import clojure.constructs.ListConstruct;
 import clojure.constructs.SymbolConstruct;
 import editor.Construct;
 
@@ -54,4 +55,11 @@ public class DefineFunctionConstruct extends ClojureConstruct {
 	public boolean canInsertChildren() { 
 		return false;
 	}	
+	
+	@Override
+	public Construct deepCopy(Construct parent) {
+		DefineFunctionConstruct newCopy = new DefineFunctionConstruct(parent);
+		super.deepCopy(newCopy);
+		return newCopy;
+	}
 }

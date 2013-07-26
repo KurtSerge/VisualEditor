@@ -1,5 +1,6 @@
 package clojure.constructs;
 
+import json.ArrayConstruct;
 import clojure.ClojureConstruct;
 import editor.Construct;
 
@@ -19,5 +20,11 @@ public class BigDecimalConstruct extends ClojureConstruct {
 	public boolean validate() {
 		return false;
 	}
-
+	
+	@Override
+	public Construct deepCopy(Construct parent) {
+		BigDecimalConstruct newCopy = new BigDecimalConstruct(parent, this.literal);
+		super.deepCopy(newCopy);
+		return newCopy;
+	}
 }

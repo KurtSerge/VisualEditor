@@ -27,9 +27,11 @@ public class SymbolConstruct extends ClojureConstruct {
 		super("symbol", parent);
 		
 		if(mutable == false) { 
+			this.mMutable = false;
 			this.literal = null;
 			this.mImmutableSymbol = symbol;
 		} else { 
+			this.mMutable = true;
 			this.literal = symbol;
 			this.mImmutableSymbol = null;
 		}
@@ -54,5 +56,21 @@ public class SymbolConstruct extends ClojureConstruct {
 		}
 	}
 	
+	private boolean mMutable;
 	private String mImmutableSymbol;
+	
+	
+	@Override
+	public Construct deepCopy(Construct parent) {
+		SymbolConstruct newCopy;
+		
+		if(mMutable) { 
+			newCopy = new SymbolConstruct(parent, this.literal, true);
+		} else { 
+			newCopy = new SymbolConstruct(parent, mImmutableSymbol, false);
+		}
+		
+		super.deepCopy(newCopy);
+		return newCopy;
+	}
 }

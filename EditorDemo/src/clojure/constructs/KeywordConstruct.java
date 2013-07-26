@@ -19,4 +19,11 @@ public class KeywordConstruct extends ClojureConstruct {
 	public boolean validate() {
 		return this.literal.matches("^[a-zA-Z]([a-zA-Z0-9\\*\\?!+_-]+)?$");
 	}
+	
+	@Override
+	public Construct deepCopy(Construct parent) {
+		KeywordConstruct newCopy = new KeywordConstruct(parent, this.literal);
+		super.deepCopy(newCopy);
+		return newCopy;
+	}
 }

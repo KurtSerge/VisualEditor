@@ -18,5 +18,11 @@ public class UnknownConstruct extends ClojureConstruct {
 	public boolean validate() {
 		return false;
 	}
-
+	
+	@Override
+	public Construct deepCopy(Construct parent) {
+		UnknownConstruct newCopy = new UnknownConstruct(parent);
+		super.deepCopy(newCopy);
+		return newCopy;
+	}
 }

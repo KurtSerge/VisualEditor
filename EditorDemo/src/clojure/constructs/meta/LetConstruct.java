@@ -41,5 +41,12 @@ public class LetConstruct extends ClojureConstruct {
 	
 	public boolean canInsertChildren() { 
 		return false;
-	}	
+	}
+	
+	@Override
+	public Construct deepCopy(Construct parent) {
+		LetConstruct newCopy = new LetConstruct(parent);
+		super.deepCopy(newCopy);
+		return newCopy;
+	}
 }

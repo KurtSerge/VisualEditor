@@ -25,4 +25,11 @@ public class IntegerConstruct extends ClojureConstruct {
 			return false;
 		}
 	}
+	
+	@Override
+	public Construct deepCopy(Construct parent) {
+		IntegerConstruct newCopy = new IntegerConstruct(parent, this.literal);
+		super.deepCopy(newCopy);
+		return newCopy;
+	}
 }

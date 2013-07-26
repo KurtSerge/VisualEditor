@@ -25,5 +25,11 @@ public class StringConstruct extends ClojureConstruct {
 	public boolean validate() {
 		return true;
 	}
+	
+	@Override
+	public Construct deepCopy(Construct parent) {
+		StringConstruct newCopy = new StringConstruct(parent, this.children.get(0).literal);
+		return newCopy;
+	}
 
 }

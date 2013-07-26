@@ -19,5 +19,12 @@ public class CharacterConstruct extends ClojureConstruct {
 	public boolean validate() {
 		return false;
 	}
+	
+	@Override
+	public Construct deepCopy(Construct parent) {
+		CharacterConstruct newCopy = new CharacterConstruct(parent, this.literal);
+		super.deepCopy(newCopy);
+		return newCopy;
+	}
 
 }

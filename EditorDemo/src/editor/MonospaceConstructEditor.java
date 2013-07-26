@@ -186,7 +186,13 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 			int childIndex = 0;
 			while((nextChildBegins = screen_text.indexOf(child_string, lastChildEnd)) >= 0)
 			{
-				ConstructEditor child = editorsByConstructs.get(construct.children.get(childIndex)).get();
+				if(construct.children.size() == 0) // FIXME: Temp, I think this check might be necessary because I am not deleting something properly
+					return "";
+				Construct constructChild = construct.children.get(childIndex);
+				WeakReference<ConstructEditor> editorChild = editorsByConstructs.get(constructChild);
+				if(editorChild == null)
+					throw(new RuntimeException("Probably forgot to add construct to editorsByConstructs with 'JSONController.editors_from_constructs'"));
+				ConstructEditor child = editorChild.get();
 				
 				if(child == null)
 					continue;
@@ -413,30 +419,6 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		}
 	}
 	
-	// Delete editor and cleanup
-	final public boolean deleteMe() {
-		int index = this.construct.parent.children.indexOf(this.construct);
-		if(this.construct.parent.deleteChild(construct) == true)
-		{
-			if(textListener != null)
-				text_area.removeKeyListener(textListener);
-			
-			this.RemoveComponents();
-
-			removeEditors(this);
-
-			//editorsByConstructs.get(child).get().deleteMe();
-			//editorsByConstructs.remove(this);
-			
-			this.update();
-			return true;
-		} else { 
-			this.setSelected(true);
-			this.update();
-		}
-		return false;
-	}
-	
 	private void removeEditors(ConstructEditor editor) {
 		mDocument.remove(editor);
 		
@@ -447,6 +429,15 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		}		
 	}
 
+	public void delete() {
+		mDocument.remove(this);
+		
+		if(textListener != null)
+			text_area.removeKeyListener(textListener);
+		
+		RemoveComponents();
+	}
+	
 	// Set focus to topmost monospace editor
 	private void requestTopFocus() {
 		Component iter = text_area;
@@ -456,6 +447,5 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 				return;
 		}
 		iter.requestFocus();
-		
 	}
 }

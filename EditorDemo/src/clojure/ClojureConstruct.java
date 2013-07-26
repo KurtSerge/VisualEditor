@@ -2,6 +2,7 @@ package clojure;
 
 import java.util.List;
 
+import clojure.constructs.meta.IfThenElseConstruct;
 import clojure.constructs.special.PlaceholderConstruct;
 
 import editor.Construct;
@@ -63,4 +64,16 @@ public abstract class ClojureConstruct extends Construct
 	
 	private int mPlaceholdersOffset;
 	private List<String> mPlaceholders;
+	
+	
+	@Override
+	public Construct deepCopy(Construct parent) {
+		super.deepCopy(parent);
+		
+		if(parent.getClass().isInstance(ClojureConstruct.class)) {  
+			((ClojureConstruct) parent).setPlaceholders(mPlaceholders, mPlaceholdersOffset);
+		}
+		
+		return null;
+	}
 }
