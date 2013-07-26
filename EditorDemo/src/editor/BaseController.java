@@ -17,7 +17,7 @@ public class BaseController implements KeyListener {
 	private BaseControllerListener theListener = null;// TODO: allow for more listeners
 	private String currentInput = null;
 	private Map<String, EKeyBinding> keyMap = null;
-	private ConstructFinder finder = null;
+//	private ConstructFinder finder = null;
 	
 	public enum EKeyBinding {
 		Bind_Insert,
@@ -167,19 +167,19 @@ public class BaseController implements KeyListener {
 	}
 	
 	private void Find() {
-		String findme = JOptionPane.showInputDialog(null,"Find:");
-		if(findme != null) {
-			finder = new ConstructFinder(selector.selected.construct, findme);
-			FindNext();
-		}
+//		String findme = JOptionPane.showInputDialog(null,"Find:");
+//		if(findme != null) {
+//			finder = new ConstructFinder(selector.selected.construct, findme);
+//			FindNext();
+//		}
 	}
 	
 	private void FindNext() {
-		if(finder != null) {
-			Construct lit = finder.nextLiteral();
-			if(lit != null)
-				selector.Select(ConstructEditor.editorsByConstructs.get(lit).get());
-		}
+//		if(finder != null) {
+//			Construct lit = finder.nextLiteral();
+//			if(lit != null)
+//				selector.Select(ConstructEditor.editorsByConstructs.get(lit).get());
+//		}
 	}
 	
 	private Construct getTopConstruct() {
