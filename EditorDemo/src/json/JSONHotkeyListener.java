@@ -106,7 +106,7 @@ public class JSONHotkeyListener implements BaseControllerListener {
 				break;
 			case KeyEvent.VK_P: 
 				newConstruct = mClipboard.getCopyToPaste(parent);
-				return;
+				break;
 			default:
 				return;
 		}

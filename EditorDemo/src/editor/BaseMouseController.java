@@ -17,6 +17,7 @@ import editor.document.ConstructDocument;
 public class BaseMouseController implements AWTEventListener {
 	private final BaseController bc;
 	private final ConstructDocument mDocument;
+	private Point mLastMouseDownPos = null;
 	
 	public BaseMouseController(BaseController bc, ConstructDocument document) {
 		this.bc = bc;
@@ -57,7 +58,18 @@ public class BaseMouseController implements AWTEventListener {
             	}
             	bc.selector.Select(deepEditor);
     		}
+    		if(e.getID() == MouseEvent.MOUSE_PRESSED) {
+    			mLastMouseDownPos = MouseInfo.getPointerInfo().getLocation();
+    		}
+    		if(e.getID() == MouseEvent.MOUSE_RELEASED) {
+    			if(mLastMouseDownPos == null)
+    				return;
+    			
+    			
+    			mLastMouseDownPos = null;
+    		}
     	}
+    	
     }
     
     private int getDepth(ConstructEditor editor) {
