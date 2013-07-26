@@ -49,8 +49,9 @@ public class Application extends JFrame
 		controller.registerHotkey(EKeyBinding.Bind_Undo, String.format("%s", (char)KeyEvent.VK_U));
 		controller.registerHotkey(EKeyBinding.Bind_Redo, String.format("%s", (char)KeyEvent.VK_R));
 		
-		controller.registerHotkey(EKeyBinding.Bind_DebugPrint, String.format("%s", (char)KeyEvent.VK_P));
+		controller.registerHotkey(EKeyBinding.Bind_Copy, String.format("%s", (char)KeyEvent.VK_C));
 	}
+
 	
 	/**
 	 * 

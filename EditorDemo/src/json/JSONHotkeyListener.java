@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import editor.BaseController;
 import editor.BaseControllerListener;
+import editor.Clipboard;
 import editor.Construct;
 import editor.ConstructEditor;
 import editor.BaseController.EKeyBinding;
@@ -17,10 +18,12 @@ import editor.document.ConstructDocument;
 public class JSONHotkeyListener implements BaseControllerListener {
 	private final ConstructDocument mDocument;
 	private final JFrame window;	
-
+	private final Clipboard mClipboard;
+	
 	public JSONHotkeyListener(ConstructDocument document, JFrame window) {
 		this.window = window;
 		this.mDocument = document;
+		this.mClipboard = new Clipboard();
 	}
 	
 	@Override
@@ -43,19 +46,18 @@ public class JSONHotkeyListener implements BaseControllerListener {
 			case Bind_InsertChild:
 				parent = controller.getSelectedEditor().construct;
 				break;
-				
 			case Bind_Undo:
 				mDocument.undo();
 				return;
-				
 			case Bind_Redo:
 				mDocument.redo();
 				return;
-				
+			case Bind_Copy:
+				mClipboard.copy(controller.getSelectedEditor().construct);
+				break;
 			case Bind_DebugPrint:
 				mDocument.debugPrint();
 				break;
-				
 			default:
 				throw new RuntimeException("Unhandled hotkey");
 		
@@ -102,6 +104,9 @@ public class JSONHotkeyListener implements BaseControllerListener {
 				list.put("test2");
 				newConstruct = JSONController.construct_for_json(list, parent);
 				break;
+			case KeyEvent.VK_P: 
+				newConstruct = mClipboard.getCopyToPaste(parent);
+				return;
 			default:
 				return;
 		}

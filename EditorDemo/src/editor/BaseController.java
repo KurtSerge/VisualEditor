@@ -34,6 +34,9 @@ public class BaseController implements KeyListener {
 		// Undo buff
 		Bind_Undo,
 		Bind_Redo,
+		// clipboard
+		Bind_Copy,
+		Bind_InsertPaste,
 		// Selection
 		Bind_SelectNextSibling,
 		Bind_SelectPrevSibling,
