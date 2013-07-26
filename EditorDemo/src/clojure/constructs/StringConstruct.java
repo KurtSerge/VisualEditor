@@ -1,5 +1,7 @@
 package clojure.constructs;
 
+import java.awt.Color;
+
 import clojure.ClojureConstruct;
 import clojure.constructs.StringLiteralConstruct;
 import editor.Construct;
@@ -31,5 +33,9 @@ public class StringConstruct extends ClojureConstruct {
 		StringConstruct newCopy = new StringConstruct(parent, this.children.get(0).literal);
 		return newCopy;
 	}
-
+	
+	@Override
+	public Color debug_getForegroundColor() {
+		return new Color(144, 33, 104);
+	}
 }

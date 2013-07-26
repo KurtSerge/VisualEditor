@@ -59,7 +59,7 @@ public abstract class ConstructDocument {
 			throw new NullPointerException("No editor returned for construct root");
 		}
 		
-		mRootComponent = editorFromRoot.get_component();
+		setRootComponent(editorFromRoot.get_component());
 	}
 	
 	public void setListener(ConstructDocumentListener newListener) { 
@@ -99,7 +99,7 @@ public abstract class ConstructDocument {
 		if(undoneConstruct != null) { 
 			mRootConstruct = undoneConstruct;
 			ConstructEditor editorFromRoot = editorsFromConstruct(mRootConstruct);
-			mRootComponent = editorFromRoot.get_component();
+			setRootComponent(editorFromRoot.get_component());
 			
 			// Fire onDocumentUndo
 			if(mListener != null) { 
@@ -119,7 +119,7 @@ public abstract class ConstructDocument {
 		if(redoneConstruct != null) { 
 			mRootConstruct = redoneConstruct;
 			ConstructEditor editorFromRoot = editorsFromConstruct(mRootConstruct);
-			mRootComponent = editorFromRoot.get_component();
+			setRootComponent(editorFromRoot.get_component());
 			
 			// Fire onDocumentRedo
 			if(mListener != null) { 
@@ -135,5 +135,9 @@ public abstract class ConstructDocument {
 	
 	public void debugPrint() { 
 		mRootConstruct.debugPrint();
+	}
+	
+	protected void setRootComponent(Component component) { 
+		mRootComponent = component;
 	}
 }

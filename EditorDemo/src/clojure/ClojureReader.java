@@ -19,6 +19,7 @@ import clojure.constructs.StringConstruct;
 import clojure.constructs.SymbolConstruct;
 import clojure.constructs.UnknownConstruct;
 import clojure.constructs.VectorConstruct;
+import clojure.constructs.special.EmptyConstruct;
 import clojure.lang.RT;
 
 import editor.Construct;
@@ -133,7 +134,10 @@ public class ClojureReader {
 	public Construct parseFromInputStream(InputStream stream) throws Exception {
 		String inputStreamAsString = convertStreamToString(stream);
 		Object inputStreamAsSingleObject = RT.readString(inputStreamAsString);
-		return recursiveCreateConstructFromObject(null, inputStreamAsSingleObject);
+
+		EmptyConstruct emptyConstruct = new EmptyConstruct();
+		emptyConstruct.addChild(0, recursiveCreateConstructFromObject(emptyConstruct, inputStreamAsSingleObject));
+		return emptyConstruct;
 	}
 	
 	private Map<Class<?>, Class<?>> mClassToConstructClassMap;	

@@ -1,5 +1,7 @@
 package clojure.constructs;
 
+import java.awt.Color;
+
 import clojure.ClojureConstruct;
 import editor.Construct;
 public class StringLiteralConstruct extends ClojureConstruct {
@@ -16,5 +18,10 @@ public class StringLiteralConstruct extends ClojureConstruct {
 	@Override
 	public boolean validate() {
 		return false;
+	}
+	
+	@Override
+	public Color debug_getForegroundColor() {
+		return new Color(144, 33, 104);
 	}
 }
