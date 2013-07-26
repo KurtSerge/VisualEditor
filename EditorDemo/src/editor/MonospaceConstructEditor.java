@@ -188,6 +188,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 			{
 				if(construct.children.size() == 0) // FIXME: Temp, I think this check might be necessary because I am not deleting something properly
 					return "";
+				
 				Construct constructChild = construct.children.get(childIndex);
 				WeakReference<ConstructEditor> editorChild = editorsByConstructs.get(constructChild);
 				if(editorChild == null)
@@ -400,10 +401,9 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 	@Override
 	public void setSelected(boolean bSelect) {
 		if(bSelect == true) {
-			text_area.setBackground(Color.red);
+			text_area.setBackground(new Color(240, 240, 240));
 			textListener = new TextListener();
 			text_area.addKeyListener(textListener);
-			text_area.setForeground(Color.white);
 			if(construct != null && construct.screen_text() == null) { // editable
 				get_component().requestFocus();
 				//text_area.selectAll();
