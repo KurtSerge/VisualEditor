@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Random;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import editor.document.Document;
 
@@ -16,7 +17,8 @@ public class BaseController implements KeyListener {
 	private BaseControllerListener theListener = null;// TODO: allow for more listeners
 	private String currentInput = null;
 	private Map<String, EKeyBinding> keyMap = null;
-
+	private ConstructFinder finder = null;
+	
 	public enum EKeyBinding {
 		Bind_Insert,
 		Bind_InsertAfter,
@@ -40,6 +42,8 @@ public class BaseController implements KeyListener {
 		Bind_SelectRandom,// TODO: debug
 		//
 		Bind_DebugPrint,
+		Bind_Find,
+		Bind_FindNext,
 		Bind_Save
 	}
 	
@@ -66,6 +70,8 @@ public class BaseController implements KeyListener {
 		this.registerHotkey(EKeyBinding.Bind_SelectNextSibling, String.format("%s", (char)KeyEvent.VK_DOWN));
 		this.registerHotkey(EKeyBinding.Bind_SelectPrevSibling, String.format("%s", (char)KeyEvent.VK_UP));
 		this.registerHotkey(EKeyBinding.Bind_Save, String.format("%s%s", (char)KeyEvent.VK_S, (char)KeyEvent.VK_S));
+		this.registerHotkey(EKeyBinding.Bind_Find, String.format("%s%s", (char)KeyEvent.VK_F, (char)KeyEvent.VK_F));
+		this.registerHotkey(EKeyBinding.Bind_FindNext, String.format("%s%s", (char)KeyEvent.VK_F, (char)KeyEvent.VK_N));
 		//this.registerHotkey(EKeyBinding.Bind_SelectRandom, String.format("%s", (char)KeyEvent.VK_R));
 	}
 	
@@ -125,6 +131,12 @@ public class BaseController implements KeyListener {
 				case Bind_Save:
 					SaveToFile();
 					break;
+				case Bind_Find:
+					Find();
+					break;
+				case Bind_FindNext:
+					FindNext();
+					break;
 				default:
 					if(theListener != null)
 						theListener.receivedHotkey(this, bindingCheck, arg0.getKeyCode());
@@ -152,6 +164,22 @@ public class BaseController implements KeyListener {
 	private void SaveToFile() {
 		String outdir = System.getProperty("user.dir") + "\\JSONOut.json";
 		//JSONController.save_json(getTopConstruct(), outdir, 4);
+	}
+	
+	private void Find() {
+		String findme = JOptionPane.showInputDialog(null,"Find:");
+		if(findme != null) {
+			finder = new ConstructFinder(selector.selected.construct, findme);
+			FindNext();
+		}
+	}
+	
+	private void FindNext() {
+		if(finder != null) {
+			Construct lit = finder.nextLiteral();
+			if(lit != null)
+				selector.Select(ConstructEditor.editorsByConstructs.get(lit).get());
+		}
 	}
 	
 	private Construct getTopConstruct() {
