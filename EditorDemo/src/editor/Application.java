@@ -9,6 +9,8 @@ import java.io.FileNotFoundException;
 
 import javax.swing.JFrame;
 import javax.swing.UIManager;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -86,15 +88,13 @@ public class Application extends JFrame
 					break;
 					
 				case Bind_Undo:
-					if(mDocument.undo()) { 
-						setupNewConstruct(mDocument.getRootComponent());
-					}
+					mDocument.undo();
 					return;
+					
 				case Bind_Redo:
-					if(mDocument.redo()) { 
-						setupNewConstruct(mDocument.getRootComponent());
-					}
+					mDocument.redo();
 					return;
+					
 				case Bind_DebugPrint:
 					mDocument.debugPrint();
 					break;
@@ -224,6 +224,21 @@ public class Application extends JFrame
 			} else {
 				mDocument = new ClojureDocument("testtypes.clj");
 			}
+			
+			// Adds a listener that will update the 
+			// visible document when the document is
+			// updated via redo/undo methods.
+			mDocument.setListener(new Document.DocumentListener() {
+				@Override
+				public void onDocumentUndo(Document document) {
+					setupNewConstruct(document.getRootComponent());
+				}
+				
+				@Override
+				public void onDocumentRedo(Document document) {
+					setupNewConstruct(document.getRootComponent());
+				}
+			});
 		
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();

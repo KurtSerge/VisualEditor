@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,11 +13,23 @@ import editor.Construct;
 import editor.ConstructEditor;
 import editor.MonospaceConstructEditor;
 
+/**
+ * This is an abstract Construct oriented Document. It provides
+ * wrappers for the basic Undo, Redo and Components as well as 
+ * file input and output. 
+ * 
+ * @author chrislord
+ */
 public abstract class Document {
+	public interface DocumentListener { 
+		public void onDocumentUndo(Document document);
+		public void onDocumentRedo(Document document);
+	}
 	
 	private ArrayList<ConstructEditor> mEditors;
 	private Construct mRootConstruct;
 	private Component mRootComponent;
+	private DocumentListener mListener;
 
 	public Document(String filename) 
 		throws FileNotFoundException
@@ -47,6 +60,10 @@ public abstract class Document {
 		}
 		
 		mRootComponent = editorFromRoot.get_component();
+	}
+	
+	public void setListener(DocumentListener newListener) { 
+		mListener = newListener;
 	}
 	
 	public ConstructEditor editorsFromConstruct(Construct root) { 
@@ -83,6 +100,12 @@ public abstract class Document {
 			mRootConstruct = undoneConstruct;
 			ConstructEditor editorFromRoot = editorsFromConstruct(mRootConstruct);
 			mRootComponent = editorFromRoot.get_component();
+			
+			// Fire onDocumentUndo
+			if(mListener != null) { 
+				mListener.onDocumentUndo(this);
+			}
+			
 			return true;
 		} else { 
 			System.err.println("Undo failed: Construct.getUndo() returned null");
@@ -97,6 +120,11 @@ public abstract class Document {
 			mRootConstruct = redoneConstruct;
 			ConstructEditor editorFromRoot = editorsFromConstruct(mRootConstruct);
 			mRootComponent = editorFromRoot.get_component();
+			
+			// Fire onDocumentRedo
+			if(mListener != null) { 
+				mListener.onDocumentRedo(this);
+			}
 			return true;
 		} else { 
 			System.err.println("Redo failed: Construct.getRedo() returned null");

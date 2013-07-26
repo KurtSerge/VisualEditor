@@ -3,7 +3,6 @@ package editor.document;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-import clojure.ClojureController;
 import clojure.ClojureReader;
 import editor.Construct;
 
