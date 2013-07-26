@@ -7,8 +7,10 @@ import java.awt.event.KeyEvent;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
+import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
@@ -70,6 +72,8 @@ public class Application extends JFrame
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
 		this.setBackground(Color.white);
+		
+		this.getRootPane().setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		
 		final JFrame window = this;
 		

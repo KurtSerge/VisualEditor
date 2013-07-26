@@ -50,7 +50,7 @@ public class SymbolConstruct extends ClojureConstruct {
 	@Override
 	public Color debug_getForegroundColor() { 
 		if(mImmutableSymbol == null) { 
-			return super.debug_getForegroundColor();
+			return new Color(36, 26, 196);
 		} else { 
 			return new Color(0, 153, 0);
 		}

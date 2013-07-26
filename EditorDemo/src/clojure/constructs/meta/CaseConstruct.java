@@ -6,16 +6,17 @@ import clojure.ClojureConstruct;
 import clojure.constructs.SymbolConstruct;
 import editor.Construct;
 
-public class LetConstruct extends ClojureConstruct {
+public class CaseConstruct extends ClojureConstruct {
+	
 
-	public LetConstruct(Construct parent) {
-		super("let", parent);
+	public CaseConstruct(Construct parent) {
+		super("case", parent);
 		
-		this.children.add(new SymbolConstruct(this, "let", false));
+		this.children.add(new SymbolConstruct(this, "case", false));
 		
 		LinkedList<String> placeholders = new LinkedList<String>();
-		placeholders.add("binding");
-		placeholders.add("context");
+		placeholders.add("e");
+		placeholders.add("clause");
 		
 		setPlaceholders(placeholders, 1);
 	}
@@ -35,7 +36,7 @@ public class LetConstruct extends ClojureConstruct {
 
 	@Override
 	public String screen_text() {
-		return "($(node) $(node)\n     $(node))";
+		return "($(node) $(node) $(node))";
 	}
 	
 	public boolean canInsertChildren() { 
@@ -44,8 +45,9 @@ public class LetConstruct extends ClojureConstruct {
 	
 	@Override
 	public Construct deepCopy(Construct parent) {
-		LetConstruct newCopy = new LetConstruct(parent);
+		CaseConstruct newCopy = new CaseConstruct(parent);
 		super.deepCopy(newCopy);
 		return newCopy;
-	}
+	}	
+
 }

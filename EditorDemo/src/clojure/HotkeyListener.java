@@ -38,6 +38,14 @@ public class HotkeyListener implements BaseControllerListener {
 	private ClojureConstruct getConstructFromKey(ClojureConstruct parent, int keyEventCode) {
 		ClojureConstruct newConstruct = null;
 		switch(keyEventCode) {
+			case KeyEvent.VK_6:
+				newConstruct = new FunctionConstruct(parent);
+				break;
+			
+			case KeyEvent.VK_7:
+				newConstruct = new CaseConstruct(parent);
+				break;
+		
 			case KeyEvent.VK_8:
 				newConstruct = new LetConstruct(parent);
 				break;
