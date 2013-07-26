@@ -2,12 +2,14 @@ package editor;
 import java.awt.AWTEvent;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Graphics;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
@@ -26,7 +28,7 @@ import clojure.ClojureController;
 
 import json.JSONController;
 import json.JSONHotkeyListener;
-public class Application extends JFrame
+public class Application extends VisualEditorFrame
 {
 	private void setupNewConstruct(Component top, BaseControllerListener listener) {
 		// Delete
@@ -61,14 +63,12 @@ public class Application extends JFrame
 	private BaseController controller = null;
 	
 
-    
-	
 	Application()
 	{
 		super("Editor Demo");
 		
 		boolean shouldLoadJson = true;	// Alt: Loads Clojure
-		
+
 		this.setSize(800, 600);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
@@ -76,8 +76,7 @@ public class Application extends JFrame
 		
 		this.getRootPane().setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		
-		final JFrame window = this;
-		
+		final VisualEditorFrame window = this;
 		try {
 			if(shouldLoadJson) {
 				// Create a document for JSON parsing
@@ -126,12 +125,12 @@ public class Application extends JFrame
 		if(shouldLoadJson == false) {
 			clojure.HotkeyListener keyListener = new clojure.HotkeyListener(mDocument);
 			setupNewConstruct(rootDocumentComponent, keyListener);
-			Toolkit.getDefaultToolkit().addAWTEventListener(new BaseMouseController(controller, mDocument), AWTEvent.MOUSE_EVENT_MASK);
+			Toolkit.getDefaultToolkit().addAWTEventListener(new BaseMouseController(controller, mDocument, window), AWTEvent.MOUSE_EVENT_MASK);
 		}
 		else{
 			JSONHotkeyListener keyListener = new JSONHotkeyListener(mDocument, this);
 			setupNewConstruct(rootDocumentComponent, keyListener);
-			Toolkit.getDefaultToolkit().addAWTEventListener(new BaseMouseController(controller, mDocument), AWTEvent.MOUSE_EVENT_MASK);
+			Toolkit.getDefaultToolkit().addAWTEventListener(new BaseMouseController(controller, mDocument, window), AWTEvent.MOUSE_EVENT_MASK | AWTEvent.MOUSE_MOTION_EVENT_MASK);
 		}
 
 		this.pack();
