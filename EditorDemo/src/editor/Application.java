@@ -76,17 +76,17 @@ public class Application extends JFrame
 		try {
 			if(shouldLoadJson) {
 				// Create a document for JSON parsing
-				mDocument = new JSONConstructDocument("test2.json");
+				mDocument = new JSONConstructDocument("testNum.json");
 				mDocument.setListener(new ConstructDocument.ConstructDocumentListener() {
 					@Override
 					public void onDocumentUndo(ConstructDocument document) {
-						JSONHotkeyListener keyListener = new JSONHotkeyListener(controller, document, window);
+						JSONHotkeyListener keyListener = new JSONHotkeyListener(document, window);
 						setupNewConstruct(document.getRootComponent(), keyListener);
 					}
 					
 					@Override
 					public void onDocumentRedo(ConstructDocument document) {
-						JSONHotkeyListener keyListener = new JSONHotkeyListener(controller, document, window);
+						JSONHotkeyListener keyListener = new JSONHotkeyListener(document, window);
 						setupNewConstruct(document.getRootComponent(), keyListener);
 					}
 				});				
@@ -124,7 +124,7 @@ public class Application extends JFrame
 			Toolkit.getDefaultToolkit().addAWTEventListener(new BaseMouseController(controller, mDocument), AWTEvent.MOUSE_EVENT_MASK);
 		}
 		else{
-			JSONHotkeyListener keyListener = new JSONHotkeyListener(controller, mDocument, this);
+			JSONHotkeyListener keyListener = new JSONHotkeyListener(mDocument, this);
 			setupNewConstruct(rootDocumentComponent, keyListener);
 			Toolkit.getDefaultToolkit().addAWTEventListener(new BaseMouseController(controller, mDocument), AWTEvent.MOUSE_EVENT_MASK);
 		}
