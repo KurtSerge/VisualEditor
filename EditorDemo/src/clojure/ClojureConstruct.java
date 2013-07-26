@@ -32,7 +32,7 @@ public abstract class ClojureConstruct extends Construct
 		return false;
 	}
 	
-	public boolean canDeleteChild(Construct child) { 
+	public boolean canDeleteChild(int index, Construct child) { 
 		if(child.getClass().equals(clojure.constructs.special.PlaceholderConstruct.class)) { 
 			// Placeholder constructs can only be replaced, not deleted
 			return false;
@@ -41,26 +41,27 @@ public abstract class ClojureConstruct extends Construct
 		return true;
 	}
 	
-	public boolean deleteChild(Construct child) {
-		if(canDeleteChild(child)) {
-			// Check to see if we are managing placeholders at
-			// this location, if so then do not delete: replace.
-			int childIndex = this.children.indexOf(child);
-			if(mPlaceholders != null && 
-					childIndex >= mPlaceholdersOffset && 
-					childIndex <  mPlaceholdersOffset + mPlaceholders.size())
-			{
-				// Swap the child
-				this.replaceChild(child, new PlaceholderConstruct(this, mPlaceholders.get(childIndex-mPlaceholdersOffset)));
-				return true;
-			}
-	
-			this.children.remove(childIndex);
-			return true;
-		}
-		
-		return false;
-	}
+
+//	public boolean deleteChild(Construct child) {
+//		if(canDeleteChild(child)) {
+//			// Check to see if we are managing placeholders at
+//			// this location, if so then do not delete: replace.
+//			int childIndex = this.children.indexOf(child);
+//			if(mPlaceholders != null && 
+//					childIndex >= mPlaceholdersOffset && 
+//					childIndex <  mPlaceholdersOffset + mPlaceholders.size())
+//			{
+//				// Swap the child
+//				this.replaceChild(child, new PlaceholderConstruct(this, mPlaceholders.get(childIndex-mPlaceholdersOffset)));
+//				return true;
+//			}
+//	
+//			this.children.remove(childIndex);
+//			return true;
+//		}
+//		
+//		return false;
+//	}
 	
 	private int mPlaceholdersOffset;
 	private List<String> mPlaceholders;

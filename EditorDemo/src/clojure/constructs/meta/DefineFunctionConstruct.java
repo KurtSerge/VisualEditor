@@ -29,13 +29,12 @@ public class DefineFunctionConstruct extends ClojureConstruct {
 		return false;
 	}
 	
-	public boolean canDeleteChild(Construct child) {  
-		int index = this.children.indexOf(child);
+	public boolean canDeleteChild(int index, Construct child) {  
 		if(index == 0) { 
 			return false;
 		}
 		
-		return super.canDeleteChild(child);
+		return super.canDeleteChild(index, child);
 	}
 
 	@Override
