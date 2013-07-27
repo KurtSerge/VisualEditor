@@ -11,16 +11,15 @@ public abstract class ClojureConstruct extends Construct
 {
 	public static class Placeholder {
 		public static Placeholder createVariadicPlaceholder(String hint) {
-			return new Placeholder(hint, true, true);
+			return new Placeholder(hint, true, true, null);
 		}
 		
 		public static Placeholder createOptionalPlaceholder(String hint) { 
-			return new Placeholder(hint, true, false);
+			return new Placeholder(hint, true, false, null);
 		}
 		
-		public static Placeholder createOptionalPlaceholder(String hint, Class<ClojureConstruct> restriction) {
-			// TODO: Class type restrictions
-			return new Placeholder(hint, true, false);
+		public static Placeholder createOptionalPlaceholder(String hint, Class<?> restriction) {
+			return new Placeholder(hint, true, false, restriction);
 		}
 		
 		public static Placeholder createPermanentPlaceholder(ClojureConstruct permanentInstance) {
@@ -28,7 +27,11 @@ public abstract class ClojureConstruct extends Construct
 		}
 		
 		public static Placeholder createPlaceholder(String hint) { 
-			return new Placeholder(hint, false, false);
+			return new Placeholder(hint, false, false, null);
+		}
+		
+		public static Placeholder createPlaceholder(String hint, Class<?> restriction) { 
+			return new Placeholder(hint, false, false, restriction);
 		}
 		
 		protected Placeholder(ClojureConstruct permanentInstance) { 
@@ -40,11 +43,12 @@ public abstract class ClojureConstruct extends Construct
 		}
 		
 		protected Placeholder(String hint, boolean optional) {
-			this(hint, optional, false);
+			this(hint, optional, false, null);
 		}
 		
-		protected Placeholder(String hint, boolean optional, boolean variadic) {
+		protected Placeholder(String hint, boolean optional, boolean variadic, Class<?> restriction) {
 			this.mIsPermanent = false;
+			this.mClassRestriction = restriction;
 			this.mIsOptional = optional;
 			this.mIsVariadic = variadic;
 			this.mHint = hint;			
@@ -70,6 +74,14 @@ public abstract class ClojureConstruct extends Construct
 			return mIsVariadic;
 		}
 		
+		public boolean isAllowed(Class<?> obj) { 
+			if(mClassRestriction == null) 
+				return true;
+			
+			return obj.equals(mClassRestriction);
+		}
+		
+		private Class<?> mClassRestriction;
 		private ClojureConstruct mPermanentConstruct;
 		private boolean mIsPermanent;
 		private boolean mIsOptional;
@@ -151,10 +163,8 @@ public abstract class ClojureConstruct extends Construct
 		return null;
 	}
 	
-	private Placeholder descriptorForConstruct(Construct object) {
+	private Placeholder descriptorForIndex(int indexOfObject) { 
 		Placeholder descriptor = null;
-	
-		int indexOfObject = this.children.indexOf(object);
 		if(indexOfObject >= mPlaceholders.size()) { 
 			descriptor = mPlaceholders.get(mPlaceholders.size() - 1);
 			if(!descriptor.isVariadic()) {
@@ -165,6 +175,32 @@ public abstract class ClojureConstruct extends Construct
 		}
 		
 		return descriptor;
+	}
+	
+	private Placeholder descriptorForConstruct(Construct object) {
+		int indexOfObject = this.children.indexOf(object);
+		return descriptorForIndex(indexOfObject);
+	}
+
+	
+	@Override
+	public void handleDeleteChild(int index, Construct deleted) {
+		if(getPlaceholders() != null) {
+			Placeholder descriptor = descriptorForIndex(index);
+			String displayText = descriptor.getHint();
+			
+			if(descriptor.isVariadic()) { 
+				return ;
+			}
+			
+			if(descriptor.isOptional()) { 
+				displayText = displayText.concat("?");
+			}
+
+			PlaceholderConstruct construct = new PlaceholderConstruct(this, displayText);
+			construct.setDescriptor(descriptor);
+			this.addChild(index, construct);
+		}		
 	}
 	
 	@Override
@@ -187,6 +223,10 @@ public abstract class ClojureConstruct extends Construct
 			} else { 
 				descriptor = this.mPlaceholders.get(indexOfOldConstruct);
 			}
+			
+			if(!descriptor.isAllowed(newCon.getClass())) { 
+				return false;
+			}
 
 			if(descriptor.isPermanent()) {
 				System.err.println("Cannot replace permanent placeholder.");
@@ -203,5 +243,9 @@ public abstract class ClojureConstruct extends Construct
 		}
 				
 		return super.replaceChild(replaceMe, newCon);
+	}
+	
+	public List<Placeholder> getPlaceholders() { 
+		return mPlaceholders;
 	}
 }

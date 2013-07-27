@@ -73,13 +73,13 @@ public abstract class Construct
 	public abstract boolean validate();
 
 	// Returns true if deleted
-	final public boolean delete() {
+	public boolean delete() {
 		if(parent != null)  {
 			int index = parent.children.indexOf(this);
 			if(parent.canDeleteChild(index, this) == false)
 				return false;
 			parent.children.remove(this);
-			parent.handleDeleteChild();
+			parent.handleDeleteChild(index, this);
 			AddToUndoBuffer();
 		}
 		else {
@@ -97,7 +97,7 @@ public abstract class Construct
 		return true;
 	}
 
-	public void handleDeleteChild() {
+	public void handleDeleteChild(int index, Construct deleted) {
 	}
 	
 	// Override this to set special conditions for when a child can be deleted

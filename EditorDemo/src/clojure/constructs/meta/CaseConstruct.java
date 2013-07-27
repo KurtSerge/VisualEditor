@@ -3,7 +3,9 @@ package clojure.constructs.meta;
 import java.util.LinkedList;
 
 import clojure.ClojureConstruct;
+import clojure.ClojureConstruct.Placeholder;
 import clojure.constructs.SymbolConstruct;
+import clojure.constructs.VectorConstruct;
 import editor.Construct;
 
 public class CaseConstruct extends ClojureConstruct {
@@ -11,14 +13,14 @@ public class CaseConstruct extends ClojureConstruct {
 
 	public CaseConstruct(Construct parent) {
 		super("case", parent);
+
+		LinkedList<ClojureConstruct.Placeholder> placeholders = new LinkedList<ClojureConstruct.Placeholder>();
 		
-		this.children.add(new SymbolConstruct(this, "case", false));
+		placeholders.add(Placeholder.createPermanentPlaceholder(new SymbolConstruct(this, "case", false)));
+		placeholders.add(Placeholder.createPlaceholder("e"));
+		placeholders.add(Placeholder.createOptionalPlaceholder("condition"));
 		
-//		LinkedList<String> placeholders = new LinkedList<String>();
-//		placeholders.add("e");
-//		placeholders.add("clause");
-//		
-//		setPlaceholders(placeholders, 1);
+		setPlaceholders(placeholders);
 	}
 
 	@Override

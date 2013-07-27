@@ -5,8 +5,10 @@ import java.util.LinkedList;
 import clojure.ClojureConstruct;
 import clojure.ClojureConstruct.Placeholder;
 import clojure.constructs.ListConstruct;
+import clojure.constructs.StringConstruct;
 import clojure.constructs.SymbolConstruct;
 import clojure.constructs.VectorConstruct;
+import clojure.constructs.special.VariadicVectorConstruct;
 import editor.Construct;
 import clojure.ClojureConstruct.*;
 
@@ -20,16 +22,9 @@ public class DefineFunctionConstruct extends ClojureConstruct {
 		
 		placeholders.add(Placeholder.createPermanentPlaceholder(new SymbolConstruct(this, "defn", false)));
 		placeholders.add(Placeholder.createPlaceholder("name"));
-		placeholders.add(Placeholder.createOptionalPlaceholder("doc-string"));
+		placeholders.add(Placeholder.createOptionalPlaceholder("doc-string", StringConstruct.class));
 		placeholders.add(Placeholder.createOptionalPlaceholder("attr-map"));
-		
-		// Setup the non-optional "parameters" placeholder
-		LinkedList<ClojureConstruct.Placeholder> paramsPlaceholders = new LinkedList<ClojureConstruct.Placeholder>();
-		paramsPlaceholders.add(ClojureConstruct.Placeholder.createVariadicPlaceholder("param"));
-		VectorConstruct paramsCostruct = new VectorConstruct(this, null);
-		paramsCostruct.setPlaceholders(paramsPlaceholders);
-
-		placeholders.add(Placeholder.createPermanentPlaceholder(paramsCostruct));
+		placeholders.add(Placeholder.createPermanentPlaceholder(new VariadicVectorConstruct(this, "params")));
 		placeholders.add(ClojureConstruct.Placeholder.createVariadicPlaceholder("exprs"));
 		
 		setPlaceholders(placeholders);
