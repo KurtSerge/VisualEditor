@@ -123,7 +123,7 @@ public abstract class Construct
 	}
 	
 	// editor should call this
-	final public boolean replaceChild(Construct replaceMe, Construct newCon) {
+	public boolean replaceChild(Construct replaceMe, Construct newCon) {
 		// FIXME: really you need to make the replacement first, then validate, then rollback if the replace is invalid
 		int newIndex = children.indexOf(replaceMe);
 		boolean success = addChild(newIndex, newCon);

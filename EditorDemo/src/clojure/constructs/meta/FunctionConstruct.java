@@ -13,11 +13,11 @@ public class FunctionConstruct extends ClojureConstruct {
 		
 		this.children.add(new SymbolConstruct(this, "fn", false));
 		
-		LinkedList<String> placeholders = new LinkedList<String>();
-		placeholders.add("arguments");
-		placeholders.add("context");
-		
-		setPlaceholders(placeholders, 1);
+//		LinkedList<String> placeholders = new LinkedList<String>();
+//		placeholders.add("arguments");
+//		placeholders.add("context");
+//		
+//		setPlaceholders(placeholders, 1);
 	}
 
 	@Override

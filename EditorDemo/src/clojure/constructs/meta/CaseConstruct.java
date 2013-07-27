@@ -14,11 +14,11 @@ public class CaseConstruct extends ClojureConstruct {
 		
 		this.children.add(new SymbolConstruct(this, "case", false));
 		
-		LinkedList<String> placeholders = new LinkedList<String>();
-		placeholders.add("e");
-		placeholders.add("clause");
-		
-		setPlaceholders(placeholders, 1);
+//		LinkedList<String> placeholders = new LinkedList<String>();
+//		placeholders.add("e");
+//		placeholders.add("clause");
+//		
+//		setPlaceholders(placeholders, 1);
 	}
 
 	@Override

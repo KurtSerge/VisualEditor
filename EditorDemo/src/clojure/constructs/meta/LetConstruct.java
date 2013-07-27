@@ -3,7 +3,9 @@ package clojure.constructs.meta;
 import java.util.LinkedList;
 
 import clojure.ClojureConstruct;
+import clojure.ClojureConstruct.Placeholder;
 import clojure.constructs.SymbolConstruct;
+import clojure.constructs.VectorConstruct;
 import editor.Construct;
 
 public class LetConstruct extends ClojureConstruct {
@@ -11,13 +13,23 @@ public class LetConstruct extends ClojureConstruct {
 	public LetConstruct(Construct parent) {
 		super("let", parent);
 		
-		this.children.add(new SymbolConstruct(this, "let", false));
+
 		
-		LinkedList<String> placeholders = new LinkedList<String>();
-		placeholders.add("binding");
-		placeholders.add("context");
+		LinkedList<ClojureConstruct.Placeholder> placeholders = new LinkedList<ClojureConstruct.Placeholder>();
 		
-		setPlaceholders(placeholders, 1);
+		placeholders.add(Placeholder.createPermanentPlaceholder(new SymbolConstruct(this, "let", false)));
+
+		
+		// Setup the non-optional "parameters" placeholder
+		LinkedList<ClojureConstruct.Placeholder> bindingsPlaceholders = new LinkedList<ClojureConstruct.Placeholder>();
+		bindingsPlaceholders.add(ClojureConstruct.Placeholder.createVariadicPlaceholder("bindings"));
+		VectorConstruct bindingsConstruct = new VectorConstruct(this, null);
+		bindingsConstruct.setPlaceholders(bindingsPlaceholders);
+
+		placeholders.add(Placeholder.createPermanentPlaceholder(bindingsConstruct));
+		placeholders.add(Placeholder.createVariadicPlaceholder("exprs"));		
+		
+		setPlaceholders(placeholders);
 	}
 
 	@Override
@@ -35,7 +47,7 @@ public class LetConstruct extends ClojureConstruct {
 
 	@Override
 	public String screen_text() {
-		return "($(node) $(node)\n     $(node))";
+		return "($(node) $(node) $(node))";
 	}
 	
 	public boolean canInsertChildren() { 

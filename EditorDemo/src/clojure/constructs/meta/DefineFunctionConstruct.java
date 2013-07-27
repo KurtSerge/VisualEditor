@@ -3,25 +3,36 @@ package clojure.constructs.meta;
 import java.util.LinkedList;
 
 import clojure.ClojureConstruct;
+import clojure.ClojureConstruct.Placeholder;
 import clojure.constructs.ListConstruct;
 import clojure.constructs.SymbolConstruct;
+import clojure.constructs.VectorConstruct;
 import editor.Construct;
+import clojure.ClojureConstruct.*;
 
 public class DefineFunctionConstruct extends ClojureConstruct {
 
 	public DefineFunctionConstruct(Construct parent) {
 		super("DefineFunction", parent);
+
 		
-		this.children.add(new SymbolConstruct(this, "defn", false));
+		LinkedList<ClojureConstruct.Placeholder> placeholders = new LinkedList<ClojureConstruct.Placeholder>();
 		
-		LinkedList<String> placeholders = new LinkedList<String>();
-		placeholders.add("name");
-		placeholders.add("doc-string?");
-		placeholders.add("attr-map?");
-		placeholders.add("params");
-		placeholders.add("body");
+		placeholders.add(Placeholder.createPermanentPlaceholder(new SymbolConstruct(this, "defn", false)));
+		placeholders.add(Placeholder.createPlaceholder("name"));
+		placeholders.add(Placeholder.createOptionalPlaceholder("doc-string"));
+		placeholders.add(Placeholder.createOptionalPlaceholder("attr-map"));
 		
-		setPlaceholders(placeholders, 1);
+		// Setup the non-optional "parameters" placeholder
+		LinkedList<ClojureConstruct.Placeholder> paramsPlaceholders = new LinkedList<ClojureConstruct.Placeholder>();
+		paramsPlaceholders.add(ClojureConstruct.Placeholder.createVariadicPlaceholder("param"));
+		VectorConstruct paramsCostruct = new VectorConstruct(this, null);
+		paramsCostruct.setPlaceholders(paramsPlaceholders);
+
+		placeholders.add(Placeholder.createPermanentPlaceholder(paramsCostruct));
+		placeholders.add(ClojureConstruct.Placeholder.createVariadicPlaceholder("exprs"));
+		
+		setPlaceholders(placeholders);
 	}
 
 	@Override

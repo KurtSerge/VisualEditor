@@ -13,6 +13,14 @@ public class PlaceholderConstruct extends ClojureConstruct {
 		
 		mString = literal;
 	}
+	
+	public void setDescriptor(ClojureConstruct.Placeholder descriptor) { 
+		mDescriptor = descriptor;
+	}
+	
+	public ClojureConstruct.Placeholder getDescriptor() { 
+		return mDescriptor;
+	}
 
 	@Override
 	public String screen_text() {
@@ -36,4 +44,6 @@ public class PlaceholderConstruct extends ClojureConstruct {
 		super.deepCopy(newCopy);
 		return newCopy;
 	}
+	
+	private ClojureConstruct.Placeholder mDescriptor;
 }
