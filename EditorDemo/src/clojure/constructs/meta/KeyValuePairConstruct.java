@@ -30,8 +30,6 @@ public class KeyValuePairConstruct extends ClojureConstruct {
 		placeholders.add(Placeholder.createPlaceholder("test-constant"));
 		placeholders.add(Placeholder.createPlaceholder("result-expr"));		
 		setPlaceholders(placeholders);
-		
-		this.literal = "wtf";
 	}
 
 	@Override
