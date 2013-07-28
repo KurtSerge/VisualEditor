@@ -127,6 +127,9 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		{
 			Set<Component> text_area_components = new HashSet<Component>();
 			
+			if(text_area == null)// FIXME: Why does this happen? InvokeLater?
+				return;
+			
 			for(Component c : text_area.getComponents())
 				text_area_components.add(c);
 			

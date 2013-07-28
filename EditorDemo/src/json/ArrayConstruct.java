@@ -16,15 +16,26 @@ public class ArrayConstruct extends Construct {
 		
 		builder.append("[");
 		
+		// Change style of array contains objects
+		String nodeStyle = "$(node)";
+		String endStyle = "]";
+		for(Construct child : children) {
+			if(child.type == "object") {
+				nodeStyle = "\n $(node)";
+				endStyle = "\n]";
+				break;
+			}
+		}
+		
 		for(int index = 0;index<children.size();++index)
 		{
-			builder.append("$(node)");
+			builder.append(nodeStyle);
 
 			if(index != (children.size() - 1))
 				builder.append(", ");
 		}
 		
-		builder.append("]");
+		builder.append(endStyle);
 		
 		return builder.toString();
 	}
