@@ -4,6 +4,13 @@ import clojure.ClojureConstruct;
 import clojure.constructs.BigIntConstruct;
 import editor.Construct;
 
+/**
+ * A special construct returned as the parent to all
+ * Clojure documents that allows multiple root-level 
+ * clojure forms.
+ * 
+ * @author chrislord
+ */
 public class EmptyConstruct extends ClojureConstruct {
 	public EmptyConstruct() {
 		super("empty", null);

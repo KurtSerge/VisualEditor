@@ -2,24 +2,29 @@ package clojure.constructs.special;
 
 import java.util.LinkedList;
 
-import clojure.ClojureConstruct;
 import clojure.constructs.VectorConstruct;
+import clojure.constructs.placeholder.Placeholder;
 import editor.Construct;
 
+/**
+ * The VariadicVectorConstruct is an empty vector which contains
+ * a single variadic placeholder. It disables the addition of 
+ * arbitrary children.
+ * 
+ * TODO: Add class-type restriction support?
+ * 
+ * @author chrislord
+ */
 public class VariadicVectorConstruct extends VectorConstruct {
 	
 	public VariadicVectorConstruct(Construct parent, String hint) { 
 		super(parent, null);
 		
-		LinkedList<ClojureConstruct.Placeholder> paramsPlaceholders = new LinkedList<ClojureConstruct.Placeholder>();
-		paramsPlaceholders.add(ClojureConstruct.Placeholder.createVariadicPlaceholder(hint));
+		LinkedList<Placeholder> paramsPlaceholders = new LinkedList<Placeholder>();
+		paramsPlaceholders.add(Placeholder.createVariadicPlaceholder(hint));
 		setPlaceholders(paramsPlaceholders);
 	}
-	
-	/**
-	 * Variadic Vector only has variadic values,
-	 * so cannot support arbitrary child addition.
-	 */
+
 	@Override 
 	public boolean canInsertChildren() { 
 		return false;

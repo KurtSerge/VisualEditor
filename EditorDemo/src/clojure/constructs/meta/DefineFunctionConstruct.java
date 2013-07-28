@@ -3,11 +3,11 @@ package clojure.constructs.meta;
 import java.util.LinkedList;
 
 import clojure.ClojureConstruct;
-import clojure.ClojureConstruct.Placeholder;
 import clojure.constructs.ListConstruct;
 import clojure.constructs.StringConstruct;
 import clojure.constructs.SymbolConstruct;
 import clojure.constructs.VectorConstruct;
+import clojure.constructs.placeholder.Placeholder;
 import clojure.constructs.special.VariadicVectorConstruct;
 import editor.Construct;
 import clojure.ClojureConstruct.*;
@@ -17,16 +17,13 @@ public class DefineFunctionConstruct extends ClojureConstruct {
 	public DefineFunctionConstruct(Construct parent) {
 		super("DefineFunction", parent);
 
-		
-		LinkedList<ClojureConstruct.Placeholder> placeholders = new LinkedList<ClojureConstruct.Placeholder>();
-		
+		LinkedList<Placeholder> placeholders = new LinkedList<Placeholder>();
 		placeholders.add(Placeholder.createPermanentPlaceholder(new SymbolConstruct(this, "defn", false)));
 		placeholders.add(Placeholder.createPlaceholder("name"));
 		placeholders.add(Placeholder.createOptionalPlaceholder("doc-string", StringConstruct.class));
 		placeholders.add(Placeholder.createOptionalPlaceholder("attr-map"));
 		placeholders.add(Placeholder.createPermanentPlaceholder(new VariadicVectorConstruct(this, "params")));
-		placeholders.add(ClojureConstruct.Placeholder.createVariadicPlaceholder("exprs"));
-		
+		placeholders.add(Placeholder.createVariadicPlaceholder("exprs"));
 		setPlaceholders(placeholders);
 	}
 

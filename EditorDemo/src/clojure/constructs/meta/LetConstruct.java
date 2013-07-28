@@ -3,32 +3,21 @@ package clojure.constructs.meta;
 import java.util.LinkedList;
 
 import clojure.ClojureConstruct;
-import clojure.ClojureConstruct.Placeholder;
 import clojure.constructs.SymbolConstruct;
 import clojure.constructs.VectorConstruct;
+import clojure.constructs.placeholder.Placeholder;
+import clojure.constructs.special.VariadicVectorConstruct;
 import editor.Construct;
 
 public class LetConstruct extends ClojureConstruct {
 
 	public LetConstruct(Construct parent) {
 		super("let", parent);
-		
 
-		
-		LinkedList<ClojureConstruct.Placeholder> placeholders = new LinkedList<ClojureConstruct.Placeholder>();
-		
+		LinkedList<Placeholder> placeholders = new LinkedList<Placeholder>();
 		placeholders.add(Placeholder.createPermanentPlaceholder(new SymbolConstruct(this, "let", false)));
-
-		
-		// Setup the non-optional "parameters" placeholder
-		LinkedList<ClojureConstruct.Placeholder> bindingsPlaceholders = new LinkedList<ClojureConstruct.Placeholder>();
-		bindingsPlaceholders.add(ClojureConstruct.Placeholder.createVariadicPlaceholder("bindings"));
-		VectorConstruct bindingsConstruct = new VectorConstruct(this, null);
-		bindingsConstruct.setPlaceholders(bindingsPlaceholders);
-
-		placeholders.add(Placeholder.createPermanentPlaceholder(bindingsConstruct));
+		placeholders.add(Placeholder.createPermanentPlaceholder(new VariadicVectorConstruct(this, "bindings")));
 		placeholders.add(Placeholder.createVariadicPlaceholder("exprs"));		
-		
 		setPlaceholders(placeholders);
 	}
 

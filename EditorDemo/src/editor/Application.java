@@ -24,8 +24,6 @@ import editor.document.ClojureConstructDocument;
 import editor.document.ConstructDocument;
 import editor.document.JSONConstructDocument;
 
-import clojure.ClojureController;
-
 import json.JSONController;
 import json.JSONHotkeyListener;
 public class Application extends VisualEditorFrame

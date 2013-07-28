@@ -2,12 +2,11 @@ package clojure.constructs.meta;
 
 import java.util.LinkedList;
 
-import clojure.ClojureConstruct;
-import clojure.ClojureConstruct.Placeholder;
 import clojure.constructs.ListConstruct;
 import clojure.constructs.SymbolConstruct;
 import clojure.constructs.VectorConstruct;
-import clojure.constructs.special.PlaceholderConstruct;
+import clojure.constructs.placeholder.Placeholder;
+import clojure.constructs.placeholder.PlaceholderConstruct;
 import editor.Construct;
 
 public class IfThenElseConstruct extends ListConstruct {
@@ -15,13 +14,11 @@ public class IfThenElseConstruct extends ListConstruct {
 	public IfThenElseConstruct(Construct parent) {
 		super(parent, null);
 
-		LinkedList<ClojureConstruct.Placeholder> placeholders = new LinkedList<ClojureConstruct.Placeholder>();
-		
+		LinkedList<Placeholder> placeholders = new LinkedList<Placeholder>();
 		placeholders.add(Placeholder.createPermanentPlaceholder(new SymbolConstruct(this, "if", false)));
 		placeholders.add(Placeholder.createPlaceholder("test"));
 		placeholders.add(Placeholder.createPlaceholder("then"));
 		placeholders.add(Placeholder.createOptionalPlaceholder("else"));
-		
 		setPlaceholders(placeholders);
 	}
 

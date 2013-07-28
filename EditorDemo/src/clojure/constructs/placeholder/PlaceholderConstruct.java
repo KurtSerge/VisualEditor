@@ -1,4 +1,4 @@
-package clojure.constructs.special;
+package clojure.constructs.placeholder;
 
 import java.awt.Color;
 
@@ -8,17 +8,21 @@ import editor.Construct;
 
 public class PlaceholderConstruct extends ClojureConstruct {
 	
-	public PlaceholderConstruct(Construct parent, String literal) { 
+	public PlaceholderConstruct(Construct parent, Placeholder placeholder) { 
 		super("placeholder", parent);
 		
-		mString = literal;
+		String displayText = placeholder.getHint();
+		if(placeholder.isVariadic()) { 
+			displayText = displayText.concat("*");
+		} else if(placeholder.isOptional()) { 
+			displayText = displayText.concat("?");
+		}		
+		
+		mString = displayText;
+		mDescriptor = placeholder;
 	}
 	
-	public void setDescriptor(ClojureConstruct.Placeholder descriptor) { 
-		mDescriptor = descriptor;
-	}
-	
-	public ClojureConstruct.Placeholder getDescriptor() { 
+	public Placeholder getDescriptor() { 
 		return mDescriptor;
 	}
 
@@ -40,10 +44,10 @@ public class PlaceholderConstruct extends ClojureConstruct {
 	
 	@Override
 	public Construct deepCopy(Construct parent) {
-		PlaceholderConstruct newCopy = new PlaceholderConstruct(parent, mString);
+		PlaceholderConstruct newCopy = new PlaceholderConstruct(parent, mDescriptor);
 		super.deepCopy(newCopy);
 		return newCopy;
 	}
-	
-	private ClojureConstruct.Placeholder mDescriptor;
+
+	private Placeholder mDescriptor;
 }

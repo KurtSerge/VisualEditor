@@ -3,137 +3,42 @@ package clojure;
 import java.util.List;
 
 import clojure.constructs.meta.IfThenElseConstruct;
-import clojure.constructs.special.PlaceholderConstruct;
+import clojure.constructs.placeholder.Placeholder;
+import clojure.constructs.placeholder.PlaceholderConstruct;
 
 import editor.Construct;
 
+/**
+ * TODO: setPlaceholders() replacing previous setPlaceholders()
+ * TODO: validate() should ensure all required placeholders are replaced
+ * 
+ * @author Christopher Lord
+ */
 public abstract class ClojureConstruct extends Construct
 {
-	public static class Placeholder {
-		public static Placeholder createVariadicPlaceholder(String hint) {
-			return new Placeholder(hint, true, true, null);
-		}
-		
-		public static Placeholder createOptionalPlaceholder(String hint) { 
-			return new Placeholder(hint, true, false, null);
-		}
-		
-		public static Placeholder createOptionalPlaceholder(String hint, Class<?> restriction) {
-			return new Placeholder(hint, true, false, restriction);
-		}
-		
-		public static Placeholder createPermanentPlaceholder(ClojureConstruct permanentInstance) {
-			return new Placeholder(permanentInstance);
-		}
-		
-		public static Placeholder createPlaceholder(String hint) { 
-			return new Placeholder(hint, false, false, null);
-		}
-		
-		public static Placeholder createPlaceholder(String hint, Class<?> restriction) { 
-			return new Placeholder(hint, false, false, restriction);
-		}
-		
-		protected Placeholder(ClojureConstruct permanentInstance) { 
-			this.mPermanentConstruct = permanentInstance;
-			this.mIsPermanent = true;
-			this.mIsOptional = false;	
-			this.mIsVariadic = false;
-			this.mHint = null;			
-		}
-		
-		protected Placeholder(String hint, boolean optional) {
-			this(hint, optional, false, null);
-		}
-		
-		protected Placeholder(String hint, boolean optional, boolean variadic, Class<?> restriction) {
-			this.mIsPermanent = false;
-			this.mClassRestriction = restriction;
-			this.mIsOptional = optional;
-			this.mIsVariadic = variadic;
-			this.mHint = hint;			
-		}
-		
-		public boolean isPermanent() { 
-			return mIsPermanent;
-		}
-		
-		public ClojureConstruct getPermanentConstruct() { 
-			return mPermanentConstruct;
-		}
-		
-		public String getHint() { 
-			return mHint;
-		}
-		
-		public boolean isOptional() { 
-			return mIsOptional;
-		}
-		
-		public boolean isVariadic() { 
-			return mIsVariadic;
-		}
-		
-		public boolean isAllowed(Class<?> obj) { 
-			if(mClassRestriction == null) 
-				return true;
-			
-			return obj.equals(mClassRestriction);
-		}
-		
-		private Class<?> mClassRestriction;
-		private ClojureConstruct mPermanentConstruct;
-		private boolean mIsPermanent;
-		private boolean mIsOptional;
-		private boolean mIsVariadic;
-		private String mHint;
-	}
-	
 	public ClojureConstruct(String type, Construct parent) {
 		super(type, parent);
 		
 		mPlaceholders = null;
 	}
 	
-	public void setPlaceholders(List<Placeholder> placeholders) {
-		assert(mPlaceholders == null);	// TODO: Updating placeholders
-		 
-		mPlaceholders = placeholders;
-
-//		
-//		// Add placeholders as children to this node
-		for(int i = 0; i < mPlaceholders.size(); i++) { 
-			Placeholder placeholder = mPlaceholders.get(i);
-			
-			if(placeholder.isPermanent()) {
-				addChild(i, placeholder.getPermanentConstruct());
-			} else { 
-				String displayText = placeholder.getHint();
-				if(placeholder.isVariadic()) { 
-					displayText = displayText.concat("*");
-				} else if(placeholder.isOptional()) { 
-					displayText = displayText.concat("?");
-				}
-				
-				PlaceholderConstruct construct = new PlaceholderConstruct(this, displayText);
-				construct.setDescriptor(placeholder);
-				addChild(i, construct);	
-			}
-			
-		}
-	}
-
-	public boolean canInsertChildren() { 
-		return false;
+	@Override
+	public Construct deepCopy(Construct parent) {
+		super.deepCopy(parent);
+		
+		return null;
 	}
 	
+	/**
+	 * If placeholders are set, prevent deletion of permanent & 
+	 * placeholder constructs.
+	 */
 	public boolean canDeleteChild(int index, Construct child) { 
-		
 		if(mPlaceholders == null) {
-			return true;
+			return super.canDeleteChild(index, child);
 		}
 		
-		Placeholder descriptor = descriptorForConstruct(child);
+		Placeholder descriptor = getPlaceholderForConstruct(child);
 		if(descriptor == null) {
 			// No descriptor with mPlaceholders set is an error,
 			// no deletion when it comes down to the error.
@@ -145,64 +50,40 @@ public abstract class ClojureConstruct extends Construct
 		{ 
 			return true;
 		}
-		
-		
+
 		return false;
 	}
 
-	private List<Placeholder> mPlaceholders;
-	
-	@Override
-	public Construct deepCopy(Construct parent) {
-		super.deepCopy(parent);
-		
-		if(parent.getClass().isInstance(ClojureConstruct.class)) {  
-//			((ClojureConstruct) parent).setPlaceholders(mPlaceholders, mPlaceholdersOffset);
-		}
-		
-		return null;
-	}
-	
-	private Placeholder descriptorForIndex(int indexOfObject) { 
-		Placeholder descriptor = null;
-		if(indexOfObject >= mPlaceholders.size()) { 
-			descriptor = mPlaceholders.get(mPlaceholders.size() - 1);
-			if(!descriptor.isVariadic()) {
-				return null;
-			}
-		} else { 
-			descriptor = mPlaceholders.get(indexOfObject);
-		}
-		
-		return descriptor;
-	}
-	
-	private Placeholder descriptorForConstruct(Construct object) {
-		int indexOfObject = this.children.indexOf(object);
-		return descriptorForIndex(indexOfObject);
+	/**
+	 * By default, no ClojureConstruct can have insert children.
+	 * This needs to be overriden by container constructs such
+	 * as Vector, Map and List.
+	 * 
+	 * @return If a child can be inserted or not.
+	 */
+	public boolean canInsertChildren() { 
+		return false;
 	}
 
-	
+	/**
+	 * If placeholders are set, post-deletion of a child should
+	 * restore the placeholder object.
+	 */
 	@Override
 	public void handleDeleteChild(int index, Construct deleted) {
 		if(getPlaceholders() != null) {
-			Placeholder descriptor = descriptorForIndex(index);
-			String displayText = descriptor.getHint();
-			
-			if(descriptor.isVariadic()) { 
-				return ;
-			}
-			
-			if(descriptor.isOptional()) { 
-				displayText = displayText.concat("?");
-			}
-
-			PlaceholderConstruct construct = new PlaceholderConstruct(this, displayText);
-			construct.setDescriptor(descriptor);
+			Placeholder descriptor = getPlaceholderForIndex(index);
+			PlaceholderConstruct construct = new PlaceholderConstruct(this, descriptor);
 			this.addChild(index, construct);
 		}		
 	}
 	
+	/**
+	 * ClojureConstruct's can have Placeholders, in which case we need
+	 * to manage what can replace a Placeholder according to the rules 
+	 * laid out by it. This includes variadic arguments, class type
+	 * restrictions and permanent constructs.
+	 */
 	@Override
 	public boolean replaceChild(Construct replaceMe, Construct newCon)
 	{
@@ -217,7 +98,7 @@ public abstract class ClojureConstruct extends Construct
 				// Fetch the last descriptor and verify that it is variadic
 				descriptor = mPlaceholders.get(mPlaceholders.size() - 1);
 				if(!descriptor.isVariadic()) {
-					System.err.println("Variadic check failure 11342707");
+					System.err.println("<ClojureConstruct> Index of replaceChild exceeds mPlaceholders.size() but last placeholder is NOT variadic.");
 					return false;
 				}
 			} else { 
@@ -225,11 +106,12 @@ public abstract class ClojureConstruct extends Construct
 			}
 			
 			if(!descriptor.isAllowed(newCon.getClass())) { 
+				System.err.println("<ClojureConstruct> Placeholder expects " + descriptor.getClassRestriction() + " got " + newCon.getClass());
 				return false;
 			}
 
 			if(descriptor.isPermanent()) {
-				System.err.println("Cannot replace permanent placeholder.");
+				System.err.println("<ClojureConstruct> Cannot replace, Placeholder is flagged permanent.");
 				return false;
 			}
 			
@@ -245,7 +127,51 @@ public abstract class ClojureConstruct extends Construct
 		return super.replaceChild(replaceMe, newCon);
 	}
 	
-	public List<Placeholder> getPlaceholders() { 
+	protected void setPlaceholders(List<Placeholder> placeholders) {
+		assert(mPlaceholders == null);
+		 
+		mPlaceholders = placeholders;
+		
+		// Add placeholders as children to this node
+		for(int i = 0; i < mPlaceholders.size(); i++) { 
+			Placeholder placeholder = mPlaceholders.get(i);
+			
+			if(placeholder.isPermanent()) {
+				addChild(i, placeholder.getPermanentConstruct());
+			} else { 
+				PlaceholderConstruct construct = new PlaceholderConstruct(this, placeholder);
+				addChild(i, construct);	
+			}
+		}
+	}
+	
+	protected Placeholder getPlaceholderForIndex(int indexOfObject) { 
+		Placeholder descriptor = null;
+		if(indexOfObject >= mPlaceholders.size()) { 
+			descriptor = mPlaceholders.get(mPlaceholders.size() - 1);
+			if(!descriptor.isVariadic()) {
+				return null;
+			}
+		} else { 
+			descriptor = mPlaceholders.get(indexOfObject);
+		}
+		
+		return descriptor;
+	}
+	
+	protected Placeholder getPlaceholderForConstruct(Construct object) {
+		int indexOfObject = this.children.indexOf(object);
+		return getPlaceholderForIndex(indexOfObject);
+	}
+	
+	protected List<Placeholder> getPlaceholders() { 
 		return mPlaceholders;
 	}
+	
+	@Override
+	public boolean validate() {
+		return false;
+	}
+
+	private List<Placeholder> mPlaceholders;
 }

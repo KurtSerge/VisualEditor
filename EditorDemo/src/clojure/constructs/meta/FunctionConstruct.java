@@ -3,9 +3,10 @@ package clojure.constructs.meta;
 import java.util.LinkedList;
 
 import clojure.ClojureConstruct;
-import clojure.ClojureConstruct.Placeholder;
 import clojure.constructs.SymbolConstruct;
 import clojure.constructs.VectorConstruct;
+import clojure.constructs.placeholder.Placeholder;
+import clojure.constructs.special.VariadicVectorConstruct;
 import editor.Construct;
 
 public class FunctionConstruct extends ClojureConstruct {
@@ -13,21 +14,11 @@ public class FunctionConstruct extends ClojureConstruct {
 	public FunctionConstruct(Construct parent) {
 		super("fn", parent);
 		
-		LinkedList<ClojureConstruct.Placeholder> placeholders = new LinkedList<ClojureConstruct.Placeholder>();
-		
+		LinkedList<Placeholder> placeholders = new LinkedList<Placeholder>();
 		placeholders.add(Placeholder.createPermanentPlaceholder(new SymbolConstruct(this, "fn", false)));
 		placeholders.add(Placeholder.createOptionalPlaceholder("name", SymbolConstruct.class));
-		
-		// Setup the non-optional "parameters" placeholder
-		LinkedList<ClojureConstruct.Placeholder> paramsPlaceholders = new LinkedList<ClojureConstruct.Placeholder>();
-		paramsPlaceholders.add(ClojureConstruct.Placeholder.createVariadicPlaceholder("param"));
-		VectorConstruct paramsCostruct = new VectorConstruct(this, null);
-		paramsCostruct.setPlaceholders(paramsPlaceholders);
-
-		placeholders.add(Placeholder.createPermanentPlaceholder(paramsCostruct));
-		
-		placeholders.add(ClojureConstruct.Placeholder.createVariadicPlaceholder("exprs"));
-		
+		placeholders.add(Placeholder.createPermanentPlaceholder(new VariadicVectorConstruct(this, "param")));
+		placeholders.add(Placeholder.createVariadicPlaceholder("exprs"));
 		setPlaceholders(placeholders);
 	}
 

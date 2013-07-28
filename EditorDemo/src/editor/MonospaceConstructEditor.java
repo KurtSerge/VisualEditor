@@ -24,7 +24,6 @@ import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import clojure.ClojureController;
 import editor.document.ConstructDocument;
 
 import json.JSONController;
