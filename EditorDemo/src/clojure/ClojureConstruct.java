@@ -45,13 +45,19 @@ public abstract class ClojureConstruct extends Construct
 			return false; 
 		}
 		
-		if(descriptor.isPermanent() == false && 
-			child.getClass().equals(PlaceholderConstruct.class) == false)
+		if(descriptor.isPermanent()) { 
+			System.err.println("<ClojureConstruct> Cannot delete: this is a permanent construct");
+			return false;
+		}
+		
+		
+		if(child.getClass().equals(PlaceholderConstruct.class))
 		{ 
-			return true;
+			System.err.println("<ClojureConstruct> Cannot delete: this is a placeholder construct");
+			return false;
 		}
 
-		return false;
+		return true;
 	}
 
 	/**
@@ -73,8 +79,10 @@ public abstract class ClojureConstruct extends Construct
 	public void handleDeleteChild(int index, Construct deleted) {
 		if(getPlaceholders() != null) {
 			Placeholder descriptor = getPlaceholderForIndex(index);
-			PlaceholderConstruct construct = new PlaceholderConstruct(this, descriptor);
-			this.addChild(index, construct);
+			if(!descriptor.isVariadic()) { 
+				PlaceholderConstruct construct = new PlaceholderConstruct(this, descriptor);
+				this.addChild(index, construct);
+			}
 		}		
 	}
 	
