@@ -67,6 +67,7 @@ public class BaseController implements KeyListener {
 		// Internally handled hotkeys
 		this.registerHotkey(EKeyBinding.Bind_DeleteAll, String.format("%s%s", (char)KeyEvent.VK_D, (char)KeyEvent.VK_D));
 		this.registerHotkey(EKeyBinding.Bind_DeleteTopmost, String.format("%s%s", (char)KeyEvent.VK_D, (char)KeyEvent.VK_P));
+		this.registerHotkey(EKeyBinding.Bind_DebugPrint, String.format("%s", (char)KeyEvent.VK_P));
 		
 		this.registerHotkey(EKeyBinding.Bind_SelectParent, String.format("%s", (char)KeyEvent.VK_LEFT));
 		this.registerHotkey(EKeyBinding.Bind_SelectChild, String.format("%s", (char)KeyEvent.VK_RIGHT));

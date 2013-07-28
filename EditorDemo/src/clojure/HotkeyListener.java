@@ -31,6 +31,11 @@ public class HotkeyListener implements BaseControllerListener {
 			return ;
 		}
 		
+		if(binding == EKeyBinding.Bind_DebugPrint) {
+			mDocument.debugPrint();
+			return ;
+		}
+		
 		
 		handleInsert(controller, binding, keyEventCode);
 	}
@@ -72,6 +77,10 @@ public class HotkeyListener implements BaseControllerListener {
 				
 			case KeyEvent.VK_M:
 				newConstruct = new MapConstruct(parent, null);
+				break;
+				
+			case KeyEvent.VK_P:
+				newConstruct = new KeyValuePairConstruct(parent, null);
 				break;
 				
 			case KeyEvent.VK_B:

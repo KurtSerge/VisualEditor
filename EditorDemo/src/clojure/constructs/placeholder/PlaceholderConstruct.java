@@ -36,6 +36,7 @@ public class PlaceholderConstruct extends ClojureConstruct {
 		return false;
 	}
 	
+	@Override
 	public Color debug_getForegroundColor() { 
 		return Color.LIGHT_GRAY;
 	}
