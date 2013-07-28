@@ -36,7 +36,18 @@ public class CaseConstruct extends ClojureConstruct {
 
 	@Override
 	public String screen_text() {
-		return "($(node) $(node) $(node))";
+		StringBuilder builder = new StringBuilder();
+		builder.append("(");
+		
+		for(int i = 0; i < children.size(); ++i) {
+			if(i != 0 && i < children.size()) { 
+				builder.append(" ");
+			}
+			builder.append("$(node)");
+		}
+
+		builder.append(")");
+		return builder.toString();
 	}
 	
 	public boolean canInsertChildren() { 
