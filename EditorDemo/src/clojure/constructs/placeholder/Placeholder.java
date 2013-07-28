@@ -7,6 +7,10 @@ public class Placeholder {
 		return new Placeholder(hint, true, true, null);
 	}
 	
+	public static Placeholder createVariadicPlaceholder(String hint, Class<?> restriction) { 
+		return new Placeholder(hint, true, true, restriction);
+	}
+	
 	public static Placeholder createOptionalPlaceholder(String hint) { 
 		return new Placeholder(hint, true, false, null);
 	}

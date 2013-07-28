@@ -17,7 +17,7 @@ public class CaseConstruct extends ClojureConstruct {
 		LinkedList<Placeholder> placeholders = new LinkedList<Placeholder>();
 		placeholders.add(Placeholder.createPermanentPlaceholder(new SymbolConstruct(this, "case", false)));
 		placeholders.add(Placeholder.createPlaceholder("test"));
-		placeholders.add(Placeholder.createVariadicPlaceholder("conditions"));
+		placeholders.add(Placeholder.createVariadicPlaceholder("conditions", KeyValuePairConstruct.class));
 		setPlaceholders(placeholders);
 	}
 
