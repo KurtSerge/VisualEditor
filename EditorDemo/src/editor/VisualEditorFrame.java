@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 
@@ -16,6 +17,8 @@ public class VisualEditorFrame extends JFrame {
 	
 	public VisualEditorFrame(String in) {
 		super(in);
+		
+		Toolkit.getDefaultToolkit().setDynamicLayout(true);
 	}
 	
 	@Override

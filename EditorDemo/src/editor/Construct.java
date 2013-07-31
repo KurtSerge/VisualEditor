@@ -192,4 +192,22 @@ public abstract class Construct
 		else
 			return null;
 	}
+	
+	private boolean mIsMultilined;
+
+	public void setMultilined(boolean isMultilined) {
+		mIsMultilined = isMultilined;
+	}
+	
+	public boolean getIsMultilined() { 
+		return mIsMultilined;
+	}
+	
+	public String compact(String string) {
+		if(this.getIsMultilined()) { 
+			return string.replace("$(newline)", "\n");
+		} else { 
+			return string.replace("$(newline)", " ");
+		}
+	}
 }

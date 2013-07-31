@@ -204,7 +204,6 @@ public class BaseController implements KeyListener {
 
 	@Override
 	public void keyTyped(KeyEvent arg0) {
-		System.out.println("KeyTyped: " + arg0.getKeyCode());
 	}
 
 	// Delete construct and all children

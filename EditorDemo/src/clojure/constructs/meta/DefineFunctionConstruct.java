@@ -12,13 +12,13 @@ import clojure.constructs.special.VariadicVectorConstruct;
 import editor.Construct;
 import clojure.ClojureConstruct.*;
 
-public class DefineFunctionConstruct extends ClojureConstruct {
+public class DefineFunctionConstruct extends ListConstruct {
 
 	public DefineFunctionConstruct(Construct parent) {
-		super("DefineFunction", parent);
+		super("defn", parent);
 
 		LinkedList<Placeholder> placeholders = new LinkedList<Placeholder>();
-		placeholders.add(Placeholder.createPermanentPlaceholder(new SymbolConstruct(this, "defn", false)));
+//		placeholders.add(Placeholder.createPermanentPlaceholder(new SymbolConstruct(this, "defn", false)));
 		placeholders.add(Placeholder.createPlaceholder("name"));
 		placeholders.add(Placeholder.createOptionalPlaceholder("doc-string", StringConstruct.class));
 		placeholders.add(Placeholder.createOptionalPlaceholder("attr-map"));
@@ -38,20 +38,6 @@ public class DefineFunctionConstruct extends ClojureConstruct {
 		}
 		
 		return super.canDeleteChild(index, child);
-	}
-
-	@Override
-	public String screen_text() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("(");
-		for(int i = 0; i < this.children.size(); i++) { 
-			builder.append("$(node)");
-			if(i != this.children.size() - 1) 
-				builder.append(" ");
-		}
-		
-		builder.append(")");
-		return builder.toString();
 	}
 	
 	public boolean canInsertChildren() { 

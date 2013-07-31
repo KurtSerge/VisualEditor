@@ -172,7 +172,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 	}
 	
 	private String my_text()
-	{
+	{	
 		String screen_text = construct.screen_text();
 		
 		if(screen_text != null)
@@ -186,11 +186,12 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 			
 			int nextChildBegins = -1;
 			int childIndex = 0;
+			
 			while((nextChildBegins = screen_text.indexOf(child_string, lastChildEnd)) >= 0)
 			{
 				if(construct.children.size() == 0) // FIXME: Temp, I think this check might be necessary because I am not deleting something properly
 					return "";
-				
+
 				Construct constructChild = construct.children.get(childIndex);
 				WeakReference<ConstructEditor> editorChild = editorsByConstructs.get(constructChild);
 				if(editorChild == null)
@@ -201,7 +202,6 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 					continue;
 				
 				Dimension child_size = child.get_size();
-
 				int nWidth = (int)Math.ceil(((double)child_size.width) / ((double)metrics.stringWidth(" ")));
 				int nHeight = (int)Math.ceil(((double)child_size.height) / ((double)metrics.getHeight()));
 				
@@ -211,20 +211,20 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 				{
 					for(int col=0;col<nWidth;++col)
 						builder.append(' ');
-				
-					if(row != (nHeight-1))
-						builder.append('\n');
 				}
+				
+
 				
 				lastChildEnd = nextChildBegins + child_string.length();
 				++childIndex;
 			}
 			
 			// End
-			builder.append(screen_text.substring(lastChildEnd));
-			
+			builder.append(screen_text.substring(lastChildEnd));			
 			return builder.toString();
 		}
+		
+		
 		
 		return construct.literal;
 	}

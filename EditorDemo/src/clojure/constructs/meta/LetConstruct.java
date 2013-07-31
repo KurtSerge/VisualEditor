@@ -3,19 +3,20 @@ package clojure.constructs.meta;
 import java.util.LinkedList;
 
 import clojure.ClojureConstruct;
+import clojure.constructs.ListConstruct;
 import clojure.constructs.SymbolConstruct;
 import clojure.constructs.VectorConstruct;
 import clojure.constructs.placeholder.Placeholder;
 import clojure.constructs.special.VariadicVectorConstruct;
 import editor.Construct;
 
-public class LetConstruct extends ClojureConstruct {
+public class LetConstruct extends ListConstruct {
 
 	public LetConstruct(Construct parent) {
 		super("let", parent);
 
 		LinkedList<Placeholder> placeholders = new LinkedList<Placeholder>();
-		placeholders.add(Placeholder.createPermanentPlaceholder(new SymbolConstruct(this, "let", false)));
+//		placeholders.add(Placeholder.createPermanentPlaceholder(new SymbolConstruct(this, "let", false)));
 		placeholders.add(Placeholder.createPermanentPlaceholder(new VariadicVectorConstruct(this, "bindings")));
 		placeholders.add(Placeholder.createVariadicPlaceholder("exprs"));		
 		setPlaceholders(placeholders);
@@ -32,11 +33,6 @@ public class LetConstruct extends ClojureConstruct {
 		}
 		
 		return super.canDeleteChild(index, child);
-	}
-
-	@Override
-	public String screen_text() {
-		return "($(node) $(node) $(node))";
 	}
 	
 	public boolean canInsertChildren() { 

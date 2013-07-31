@@ -21,6 +21,10 @@ public abstract class ConstructEditor  {
 	public abstract Dimension getSize();
 	public abstract String toScreenText();
 	
+	public static ConstructEditor getConstructEditor(Construct construct) { 
+		return editorsByConstructs.get(construct).get();
+	}
+	
 	public void update() {
 		Construct parent = construct.node.getParent().getData().construct;
 		if(parent != null)

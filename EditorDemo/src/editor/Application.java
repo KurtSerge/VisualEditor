@@ -4,6 +4,10 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Toolkit;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.HierarchyBoundsListener;
+import java.awt.event.HierarchyEvent;
 import java.awt.event.KeyEvent;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -26,7 +30,7 @@ import editor.document.JSONConstructDocument;
 
 import json.JSONController;
 import json.JSONHotkeyListener;
-public class Application extends VisualEditorFrame
+public class Application extends VisualEditorFrame implements ComponentListener
 {
 	private void setupNewConstruct(Component top, BaseControllerListener listener) {
 		// Delete
@@ -37,6 +41,7 @@ public class Application extends VisualEditorFrame
 
 		this.add(top);
 		controller = new BaseController(this, mDocument);
+		layoutController = new LayoutController(mDocument, getSize(), 0.9f);
 		top.addKeyListener(controller);
 		top.requestFocus();
 		
@@ -59,14 +64,17 @@ public class Application extends VisualEditorFrame
 	private static final long serialVersionUID = 1L;
 	private ConstructDocument mDocument = null;
 	private BaseController controller = null;
+	private LayoutController layoutController = null;
 	
 
 	Application()
 	{
 		super("Editor Demo");
 		
-		boolean shouldLoadJson = true;	// Alt: Loads Clojure
+		boolean shouldLoadJson = false;	// Alt: Loads Clojure
 
+		
+		
 		this.setSize(800, 600);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
@@ -130,6 +138,8 @@ public class Application extends VisualEditorFrame
 			setupNewConstruct(rootDocumentComponent, keyListener);
 			Toolkit.getDefaultToolkit().addAWTEventListener(new BaseMouseController(controller, mDocument, window), AWTEvent.MOUSE_EVENT_MASK | AWTEvent.MOUSE_MOTION_EVENT_MASK);
 		}
+		
+		this.getContentPane().addComponentListener(this);
 
 		this.pack();
 		this.setSize(800, 600);
@@ -148,4 +158,21 @@ public class Application extends VisualEditorFrame
 		new Application();
 	}
 
+	@Override
+	public void componentHidden(ComponentEvent arg0) {
+	}
+
+	@Override
+	public void componentMoved(ComponentEvent arg0) {
+	}
+
+	@Override
+	public void componentResized(ComponentEvent arg0) {
+		layoutController.setDimensions(getSize());
+		layoutController.relayout();
+	}
+
+	@Override
+	public void componentShown(ComponentEvent arg0) {
+	}
 }

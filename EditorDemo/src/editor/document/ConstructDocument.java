@@ -86,6 +86,10 @@ public abstract class ConstructDocument {
 		return mRootComponent;
 	}
 	
+	public Construct getRootConstruct() { 
+		return mRootConstruct;
+	}
+	
 	public List<ConstructEditor> getEditors() { 
 		return mEditors;
 	}
