@@ -144,11 +144,14 @@ public abstract class ClojureConstruct extends Construct
 		for(int i = 0; i < mPlaceholders.size(); i++) { 
 			Placeholder placeholder = mPlaceholders.get(i);
 			
+//			if(placeholder.isOptional()) 
+//				continue;
+//			
 			if(placeholder.isPermanent()) {
-				addChild(i, placeholder.getPermanentConstruct());
+				addChild(children.size(), placeholder.getPermanentConstruct());
 			} else { 
 				PlaceholderConstruct construct = new PlaceholderConstruct(this, placeholder);
-				addChild(i, construct);	
+				addChild(children.size(), construct);	
 			}
 		}
 	}
@@ -182,4 +185,13 @@ public abstract class ClojureConstruct extends Construct
 	}
 
 	private List<Placeholder> mPlaceholders;
+	private boolean mIsSelected;
+	
+	public void onConstructSelected() {
+		mIsSelected = true;
+	}
+	
+	public void onConstructUnselected() { 
+		mIsSelected = false;
+	}
 }

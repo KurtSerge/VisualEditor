@@ -210,4 +210,10 @@ public abstract class Construct
 			return string.replace("$(newline)", " ");
 		}
 	}
+	
+	public void onConstructSelected() {
+	}
+	
+	public void onConstructUnselected() { 
+	}
 }
