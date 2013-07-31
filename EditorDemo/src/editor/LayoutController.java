@@ -37,13 +37,7 @@ public class LayoutController {
 		Dimension size = getSize(mDocument.getRootConstruct());
 		float ratio = (float)size.width / (float)mScreen.width;
 		while(ratio > mConstructRatioWidth) {
-			System.out.println("Width " + ratio + " is still bigger than " + mConstructRatioWidth);
-			
-
-			
-			
 			if(!layout(mDocument.getRootConstruct())) { 
-				System.out.println("No more nodes to set..");
 				break;
 			}
 			
@@ -72,17 +66,16 @@ public class LayoutController {
 	
 	protected boolean layout(Construct construct) {
 		if(construct == null || mConstructRatioWidth == 0.0f) {
-			System.err.println("Not setup to layout.");
 			return false;
 		}
 
 		if(construct.getIsMultilined() == false) {
 			construct.setMultilined(true);
-			
+
 			ConstructEditor editor = ConstructEditor.editorsByConstructs.get(construct).get();
 			mDocument.getRootComponent().repaint();			
 			editor.update();			
-			
+
 			return true;
 		} else { 
 			for(Construct child : construct.children) { 
