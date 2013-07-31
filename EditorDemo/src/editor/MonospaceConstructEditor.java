@@ -211,6 +211,9 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 				{
 					for(int col=0;col<nWidth;++col)
 						builder.append(' ');
+					
+					if(row != (nHeight-1))
+						builder.append('\n');
 				}
 				
 
