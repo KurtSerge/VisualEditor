@@ -71,8 +71,8 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 				// Find base
 				requestTopFocus();
 			}
-			
 		}
+		
 		@Override
 		public void keyReleased(KeyEvent e) {}
 		@Override
@@ -95,6 +95,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		}
 		else  {
 			text_area = new TransparentTextArea();
+			
 			// If not editable
 			if(construct.screen_text() != null) 
 				text_area.setFocusable(false);

@@ -219,7 +219,6 @@ public class BaseController implements KeyListener {
 			
 			// Keep track of how many siblings currently exist
 			int siblingsCount = parentConstruct.construct.children.size();			
-			
 			if(deleteMeEditor.deleteMe()) {
 				deleteMeEditor.getParent().update();
 				selector.selected.update();
