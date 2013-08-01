@@ -211,15 +211,34 @@ public class BaseController implements KeyListener {
 		ConstructEditor deleteMeEditor = selector.selected;
 		if(deleteMeEditor.getParent() != null) 
 		{
+			// Determine the index of the child being deleted
+			// in case we need it for selection later on
+			ConstructEditor parentConstruct = deleteMeEditor.getParent(); 
+			List<Construct> parentChildren = parentConstruct.construct.children;
+			int childIndex = parentChildren.indexOf(deleteMeEditor.construct);
+			
+			// Keep track of how many siblings currently exist
+			int siblingsCount = parentConstruct.construct.children.size();			
+			
 			if(deleteMeEditor.deleteMe()) {
 				deleteMeEditor.getParent().update();
+				selector.selected.update();
 				
-    			selector.selected.update();
-    			
-				if(selector.SelectAdjacentConstruct(false) == false)
-					selector.SelectParentConstruct();
+				int newSiblingsCount = parentConstruct.construct.children.size();
+    			if(siblingsCount != newSiblingsCount) {
+    				// Child was removed, move the selection
+					if(selector.SelectAdjacentConstruct(false) == false)
+						selector.SelectParentConstruct();
+    			} else {
+    				// 'Deleted' but children count didn't change, this implies
+    				// that the child was actually replaced (ie, placeholder restoration)
+    				Construct replacingConstruct = deleteMeEditor.getParent().construct.children.get(childIndex);
+    				ConstructEditor replacingEditor = ConstructEditor.editorsByConstructs.get(replacingConstruct).get();
+    				selector.Select(replacingEditor);
+    			}
+			} else { 
+				deleteMeEditor.getParent().update();
 			}
-			deleteMeEditor.getParent().update();
 		}
 	}
 
