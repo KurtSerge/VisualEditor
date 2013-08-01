@@ -73,8 +73,7 @@ public class LayoutController {
 			construct.setMultilined(true);
 
 			ConstructEditor editor = ConstructEditor.editorsByConstructs.get(construct).get();
-			mDocument.getRootComponent().repaint();			
-			editor.update();			
+			mDocument.getRootComponent().repaint();					
 
 			return true;
 		} else { 

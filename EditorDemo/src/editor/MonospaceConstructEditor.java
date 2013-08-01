@@ -196,6 +196,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 				WeakReference<ConstructEditor> editorChild = editorsByConstructs.get(constructChild);
 				if(editorChild == null)
 					throw(new RuntimeException("Probably forgot to add construct to editorsByConstructs with 'JSONController.editors_from_constructs'"));
+				
 				ConstructEditor child = editorChild.get();
 				
 				if(child == null)
@@ -369,14 +370,18 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 
 	void on_change()
 	{
+		System.out.println("on_change()");
+		
 		// Avoid Exception in thread "main" java.lang.IllegalStateException: Attempt to mutate in notification
 		SwingUtilities.invokeLater(new Runnable(){
 			@Override
 			public void run() {
 				if(construct.screen_text() == null)
 					construct.literal = text_area.getText();
-
 				MonospaceConstructEditor.this.update();
+				
+				System.out.println("onConstructModified");
+				ConstructPublisher.getInstance().onConstructModified(construct);				
 			}
 		});
 	}
@@ -459,4 +464,6 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		}
 		iter.requestFocus();
 	}
+	
+	private boolean isPerformingUpdate = false;
 }

@@ -15,6 +15,7 @@ import java.io.FileNotFoundException;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
@@ -24,6 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import editor.BaseController.EKeyBinding;
+import editor.ConstructPublisher.ConstructListener;
 import editor.document.ClojureConstructDocument;
 import editor.document.ConstructDocument;
 import editor.document.JSONConstructDocument;
@@ -117,6 +119,35 @@ public class Application extends VisualEditorFrame implements ComponentListener
 					}
 				});				
 			}
+			
+			ConstructPublisher.getInstance().setActiveDocument(mDocument);
+			ConstructPublisher.getInstance().addListener(new ConstructListener() {
+				
+				@Override
+				public void onConstructRemovedChild(Construct parent, Construct child, int index) {
+					layoutController.relayout();
+				}
+				
+				@Override
+				public void onConstructAddedChild(Construct parent, Construct child, int index) {
+					mDocument.editorsFromConstruct(child);
+					layoutController.relayout();
+				}
+
+				@Override
+				public void onConstructModified(Construct construct) {
+					final LayoutController lc = layoutController;
+					if(lc != null) { 
+						SwingUtilities.invokeLater(new Runnable() {
+							@Override
+							public void run() {
+								lc.relayout();
+							}
+						});
+					}
+				}
+			});
+			
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
 			return ;

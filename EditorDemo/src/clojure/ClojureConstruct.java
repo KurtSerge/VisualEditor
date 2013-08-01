@@ -78,6 +78,8 @@ public abstract class ClojureConstruct extends Construct
 	 */
 	@Override
 	public void handleDeleteChild(int index, Construct deleted) {
+		super.handleDeleteChild(index, deleted);
+		
 		if(getPlaceholders() != null) {
 			Placeholder descriptor = getPlaceholderForIndex(index);
 			if(!descriptor.isVariadic()) { 

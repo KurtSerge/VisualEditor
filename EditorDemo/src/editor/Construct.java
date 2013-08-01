@@ -98,6 +98,7 @@ public abstract class Construct
 	}
 
 	public void handleDeleteChild(int index, Construct deleted) {
+		ConstructPublisher.getInstance().onConstructRemovedChild(this, deleted, index);
 	}
 	
 	// Override this to set special conditions for when a child can be deleted
@@ -116,6 +117,7 @@ public abstract class Construct
 		if(validateAddChild(index, child) == true)  {
 			children.add(index, child);
 			AddToUndoBuffer();
+			ConstructPublisher.getInstance().onConstructAddedChild(this, child, index);
 			return true;
 		}
 		// Else consider making empty TODO:

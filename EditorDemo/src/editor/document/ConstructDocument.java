@@ -12,6 +12,7 @@ import java.util.List;
 
 import editor.Construct;
 import editor.ConstructEditor;
+import editor.ConstructPublisher.ConstructListener;
 import editor.MonospaceConstructEditor;
 
 /**
@@ -76,6 +77,8 @@ public abstract class ConstructDocument {
 		if(mEditors == null)
 			mEditors = new ArrayList<ConstructEditor>();
 		mEditors.add(newEditor);
+		
+		
 		
 		return newEditor;
 	}
