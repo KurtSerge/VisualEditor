@@ -406,6 +406,9 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 	@Override
 	public void setSelected(boolean bSelect) {
 		if(bSelect == true) {
+			construct.onConstructSelected();
+			update();
+			
 			text_area.setBackground(new Color(230, 230, 230));
 			textListener = new TextListener();
 			text_area.addKeyListener(textListener);
@@ -415,6 +418,9 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 			}
 		} 
 		else {
+			construct.onConstructUnselected();
+			update();
+			
 			text_area.select(0, 0);
 			text_area.setForeground(construct.debug_getForegroundColor());
 			text_area.setBackground(new Color(0,0,0,0));

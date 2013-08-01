@@ -18,7 +18,6 @@ public class DefineFunctionConstruct extends ListConstruct {
 		super("defn", parent);
 
 		LinkedList<Placeholder> placeholders = new LinkedList<Placeholder>();
-//		placeholders.add(Placeholder.createPermanentPlaceholder(new SymbolConstruct(this, "defn", false)));
 		placeholders.add(Placeholder.createPlaceholder("name"));
 		placeholders.add(Placeholder.createOptionalPlaceholder("doc-string", StringConstruct.class));
 		placeholders.add(Placeholder.createOptionalPlaceholder("attr-map"));

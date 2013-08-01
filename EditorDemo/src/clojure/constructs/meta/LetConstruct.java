@@ -16,7 +16,6 @@ public class LetConstruct extends ListConstruct {
 		super("let", parent);
 
 		LinkedList<Placeholder> placeholders = new LinkedList<Placeholder>();
-//		placeholders.add(Placeholder.createPermanentPlaceholder(new SymbolConstruct(this, "let", false)));
 		placeholders.add(Placeholder.createPermanentPlaceholder(new VariadicVectorConstruct(this, "bindings")));
 		placeholders.add(Placeholder.createVariadicPlaceholder("exprs"));		
 		setPlaceholders(placeholders);

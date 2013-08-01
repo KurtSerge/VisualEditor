@@ -1,5 +1,6 @@
 package clojure;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import clojure.constructs.meta.IfThenElseConstruct;
@@ -135,7 +136,7 @@ public abstract class ClojureConstruct extends Construct
 		return super.replaceChild(replaceMe, newCon);
 	}
 	
-	protected void setPlaceholders(List<Placeholder> placeholders) {
+	public void setPlaceholders(List<Placeholder> placeholders) {
 		assert(mPlaceholders == null);
 		 
 		mPlaceholders = placeholders;
@@ -154,6 +155,8 @@ public abstract class ClojureConstruct extends Construct
 				addChild(children.size(), construct);	
 			}
 		}
+		
+		mPlaceholdersAdded = true;
 	}
 	
 	protected Placeholder getPlaceholderForIndex(int indexOfObject) { 
@@ -185,13 +188,58 @@ public abstract class ClojureConstruct extends Construct
 	}
 
 	private List<Placeholder> mPlaceholders;
+	private boolean mPlaceholdersAdded;
 	private boolean mIsSelected;
 	
 	public void onConstructSelected() {
-		mIsSelected = true;
+		if(mPlaceholders == null || mPlaceholdersAdded == true) 
+			return ;
+		
+		// Add placeholders as children to this node
+		for(int i = 0; i < mPlaceholders.size(); i++) { 
+			Placeholder placeholder = mPlaceholders.get(i);
+			
+//			if(placeholder.isOptional()) 
+//				continue;
+//			
+			if(placeholder.isPermanent()) {
+				addChild(children.size(), placeholder.getPermanentConstruct());
+			} else { 
+				PlaceholderConstruct construct = new PlaceholderConstruct(this, placeholder);
+				addChild(children.size(), construct);	
+			}
+		}
 	}
 	
 	public void onConstructUnselected() { 
-		mIsSelected = false;
+		List<Construct> childrenToRemove = new LinkedList<Construct>();
+		
+		for(Construct construct : this.children) {
+//			construct.onConstructUnselected();
+		}
+		
+		
+		for(Construct construct : this.children) { 
+			if(construct.getClass().equals(PlaceholderConstruct.class)) {
+				PlaceholderConstruct placeholderConstruct = (PlaceholderConstruct) construct;
+				if(placeholderConstruct.getDescriptor().isOptional()) {
+					childrenToRemove.add(construct);
+				}
+				
+				if(placeholderConstruct.isSelected()) { 
+					return ;
+				}
+			}
+		}
+		
+		for(Construct construct : childrenToRemove) { 
+//			deleteChild(construct);
+		}
+		
+//		mPlaceholdersAdded = false;
+	}	
+	
+	public boolean isSelected() { 
+		return mIsSelected;
 	}
 }
