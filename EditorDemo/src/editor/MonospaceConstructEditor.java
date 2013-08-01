@@ -370,8 +370,6 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 
 	void on_change()
 	{
-		System.out.println("on_change()");
-		
 		// Avoid Exception in thread "main" java.lang.IllegalStateException: Attempt to mutate in notification
 		SwingUtilities.invokeLater(new Runnable(){
 			@Override
@@ -379,8 +377,6 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 				if(construct.screen_text() == null)
 					construct.literal = text_area.getText();
 				MonospaceConstructEditor.this.update();
-				
-				System.out.println("onConstructModified");
 				ConstructPublisher.getInstance().onConstructModified(construct);				
 			}
 		});
