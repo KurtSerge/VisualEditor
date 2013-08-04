@@ -370,6 +370,7 @@ public class BaseController implements KeyListener {
 			}
 			selected = newSel;
 			selected.setSelected(true);
+			Application.resetError();
 			frame.repaint();
 		}
 

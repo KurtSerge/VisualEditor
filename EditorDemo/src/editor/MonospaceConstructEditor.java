@@ -137,7 +137,6 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 			for(Construct child : construct.children)
 			{
 				if(editorsByConstructs.get(child) == null) {
-					System.out.println("ClojureController.. editors_from_constructs(child) .. " + child);
 					mDocument.editorsFromConstruct(child); 
 				}
 				

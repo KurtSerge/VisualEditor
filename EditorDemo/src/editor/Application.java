@@ -15,6 +15,7 @@ import java.io.FileNotFoundException;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
@@ -41,7 +42,7 @@ public class Application extends VisualEditorFrame implements ComponentListener
 			this.removeKeyListener(controller);
 		}
 
-		this.add(top);
+		this.getDocumentPane().add(top);
 		controller = new BaseController(this, mDocument);
 		layoutController = new LayoutController(mDocument, getSize(), 0.9f);
 		top.addKeyListener(controller);
@@ -67,7 +68,7 @@ public class Application extends VisualEditorFrame implements ComponentListener
 	private ConstructDocument mDocument = null;
 	private BaseController controller = null;
 	private LayoutController layoutController = null;
-	
+	private JTextArea lastError;
 
 	Application()
 	{
@@ -82,7 +83,7 @@ public class Application extends VisualEditorFrame implements ComponentListener
 		this.setVisible(true);
 		this.setBackground(Color.white);
 		
-		this.getRootPane().setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+	
 		
 		final VisualEditorFrame window = this;
 		try {
@@ -156,8 +157,7 @@ public class Application extends VisualEditorFrame implements ComponentListener
 			ex.printStackTrace();
 		}
 		
-		Component rootDocumentComponent = mDocument.getRootComponent();
-		this.add(rootDocumentComponent);
+		Component rootDocumentComponent = mDocument.getRootComponent();			
 
 		if(shouldLoadJson == false) {
 			clojure.HotkeyListener keyListener = new clojure.HotkeyListener(mDocument);
@@ -174,8 +174,28 @@ public class Application extends VisualEditorFrame implements ComponentListener
 
 		this.pack();
 		this.setSize(800, 600);
+	
+		
+		SwingUtilities.invokeLater(new Runnable(){
+			@Override
+			public void run() {
+//				presentError("ERROR: Does not support children");
+			}
+		});
 	}
 
+	private static Application sApplication = null;
+	
+	
+	public static void resetError() { 
+		if(sApplication != null)
+			sApplication._resetError();
+	}
+	
+	public static void showError(ConstructEditor editor, String error) { 
+		sApplication.presentError(editor, error);
+	}
+	
 	/**
 	 * @param args
 	 */
@@ -186,7 +206,7 @@ public class Application extends VisualEditorFrame implements ComponentListener
 			e.printStackTrace();
 		}
 		
-		new Application();
+		sApplication = new Application();
 	}
 
 	@Override

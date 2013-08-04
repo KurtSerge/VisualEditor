@@ -9,6 +9,7 @@ import clojure.constructs.meta.*;
 
 import editor.BaseController;
 import editor.BaseController.EKeyBinding;
+import editor.Application;
 import editor.BaseControllerListener;
 import editor.ConstructEditor;
 import editor.document.ConstructDocument;
@@ -146,13 +147,34 @@ public class HotkeyListener implements BaseControllerListener {
 		
 		return parent;
 	}
+	
+	private String stringForBinding(EKeyBinding binding) { 
+		switch(binding) { 
+		case Bind_DeleteAll:
+			return "delete";
+			
+		case Bind_InsertChild:
+			return "insert child";
+			
+		case Bind_InsertAfter:
+			return "insert after";
+			
+		case Bind_InsertBefore:
+			return "insert before";
+			
+		case Bind_InsertReplace:
+			return "replace";
+		}
+		
+		return "(unknown)";
+	}
 
 	private void handleInsert(BaseController controller, EKeyBinding binding, int keyEventCode) {
 		// Determine the parent for the new construct, this is 
 		// based on the initial input (IA, IA, IC)
 		ClojureConstruct parent = getParentForBinding(controller.getSelectedEditor(), binding);
-		if(parent == null) { 
-			System.out.println("handleInsert: Failed to determine parent for new construct.");
+		if(parent == null) {
+			Application.showError(controller.getSelectedEditor(), "Cannot " + stringForBinding(binding) + " with selected construct");			
 			return ;
 		}
 
@@ -160,7 +182,7 @@ public class HotkeyListener implements BaseControllerListener {
 		// children that the construct will have
 		ClojureConstruct newConstruct = getConstructFromKey(parent, keyEventCode);
 		if(newConstruct == null) {
-			System.out.println("handleInsert: Construct not created for wildcard key.");
+			Application.showError(controller.getSelectedEditor(), "Failed to " + stringForBinding(binding) + ": unknown construct type");
 			return ;
 		}
 		
