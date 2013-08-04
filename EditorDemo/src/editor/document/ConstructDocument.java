@@ -72,14 +72,19 @@ public abstract class ConstructDocument {
 		for(Construct child : root.children)
 			editorsFromConstruct(child);
 		
-		MonospaceConstructEditor newEditor = new MonospaceConstructEditor(root, this);
+		// TODO: Make this a hashmap ~ Chris Lord
+		if(this.mEditors != null) { 
+			for(ConstructEditor editor : this.mEditors) {
+				if(editor.construct.equals(root)) 
+					return editor;
+			}
+		}
 		
+		MonospaceConstructEditor newEditor = new MonospaceConstructEditor(root, this);
 		if(mEditors == null)
 			mEditors = new ArrayList<ConstructEditor>();
 		mEditors.add(newEditor);
-		
-		
-		
+
 		return newEditor;
 	}
 	
