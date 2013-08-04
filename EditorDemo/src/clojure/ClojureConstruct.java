@@ -118,7 +118,7 @@ public abstract class ClojureConstruct extends Construct
 			}
 			
 			if(!descriptor.isAllowed(newCon.getClass())) { 
-				Application.showError(replaceMe, "Cannot set placeholder to this type" + descriptor.getClassRestriction());
+				Application.showError(replaceMe, "Cannot set placeholder to " + descriptor.getClassRestriction());
 				return false;
 			}
 
