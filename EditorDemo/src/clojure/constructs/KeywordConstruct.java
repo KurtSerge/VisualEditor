@@ -7,17 +7,13 @@ public class KeywordConstruct extends ClojureConstruct {
 	public KeywordConstruct(Construct parent, String literal) {
 		super("keyword", parent);
 		
-		this.literal = literal;
+		
+		this.addChild(0, new StringLiteralConstruct(this, literal));
 	}
 
 	@Override
 	public String screen_text() {
-		return null;
-	}
-
-	@Override
-	public boolean validate() {
-		return this.literal.matches("^[a-zA-Z]([a-zA-Z0-9\\*\\?!+_-]+)?$");
+		return ":$(node)";
 	}
 	
 	@Override

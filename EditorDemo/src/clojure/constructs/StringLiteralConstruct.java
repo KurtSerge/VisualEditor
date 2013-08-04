@@ -5,7 +5,7 @@ import java.awt.Color;
 import clojure.ClojureConstruct;
 import editor.Construct;
 public class StringLiteralConstruct extends ClojureConstruct {
-	public StringLiteralConstruct(StringConstruct parent, String literal) { 
+	public StringLiteralConstruct(ClojureConstruct parent, String literal) { 
 		super("stringliteral", parent);
 		this.literal = literal;
 	}
