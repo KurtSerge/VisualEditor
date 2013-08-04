@@ -47,7 +47,8 @@ public class VisualEditorFrame extends JFrame {
 			@Override
 			public void componentResized(ComponentEvent arg0) {
 				mDocumentPresentationPanel.setSize(VisualEditorFrame.this.getSize());
-				mModalPresentationPanel.setSize(VisualEditorFrame.this.getSize());
+				mModalPresentationPanel.setSize(VisualEditorFrame.this.getSize().width, 30);
+				mModalTextArea.setSize(new Dimension(VisualEditorFrame.this.getSize().width-20, 30));
 			}			
 			
 			@Override
