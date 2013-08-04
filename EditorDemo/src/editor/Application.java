@@ -174,14 +174,6 @@ public class Application extends VisualEditorFrame implements ComponentListener
 
 		this.pack();
 		this.setSize(800, 600);
-	
-		
-		SwingUtilities.invokeLater(new Runnable(){
-			@Override
-			public void run() {
-//				presentError("ERROR: Does not support children");
-			}
-		});
 	}
 
 	private static Application sApplication = null;
