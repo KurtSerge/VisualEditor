@@ -66,7 +66,7 @@ public class VisualEditorFrame extends JFrame {
 		
 		mModalPresentationPanel = new JPanel();
 		mModalPresentationPanel.setLayout(null);
-		mModalPresentationPanel.setBackground(new Color(0, 171, 235));
+		mModalPresentationPanel.setBackground(new Color(202, 28, 43));
 		mModalPresentationPanel.setSize(0, 0);
 		mModalPresentationPanel.setVisible(false);
 		
