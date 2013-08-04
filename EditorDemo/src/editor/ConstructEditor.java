@@ -54,6 +54,11 @@ public abstract class ConstructEditor
 	protected static Map<Construct, WeakReference<ConstructEditor> > editorsByConstructs =
 			Collections.synchronizedMap(new HashMap<Construct, WeakReference<ConstructEditor> >());
 
+	
+	public static ConstructEditor getEditorByConstruct(Construct construct) { 
+		return editorsByConstructs.get(construct).get();
+	}
+	
 	public abstract void setSelected(boolean bSelect);
 	
 	// Editor-specific cleanup - per editor instance

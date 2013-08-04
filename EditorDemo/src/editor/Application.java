@@ -192,6 +192,10 @@ public class Application extends VisualEditorFrame implements ComponentListener
 			sApplication._resetError();
 	}
 	
+	public static void showError(Construct editor, String error) { 
+		sApplication.presentError(ConstructEditor.getEditorByConstruct(editor), error);
+	}
+	
 	public static void showError(ConstructEditor editor, String error) { 
 		sApplication.presentError(editor, error);
 	}

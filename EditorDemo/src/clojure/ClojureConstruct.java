@@ -7,6 +7,7 @@ import clojure.constructs.meta.IfThenElseConstruct;
 import clojure.constructs.placeholder.Placeholder;
 import clojure.constructs.placeholder.PlaceholderConstruct;
 
+import editor.Application;
 import editor.Construct;
 
 /**
@@ -47,14 +48,14 @@ public abstract class ClojureConstruct extends Construct
 		}
 		
 		if(descriptor.isPermanent()) { 
-			System.err.println("<ClojureConstruct> Cannot delete: this is a permanent construct");
+			Application.showError(child, "Cannot delete this construct");
 			return false;
 		}
 		
 		
 		if(child.getClass().equals(PlaceholderConstruct.class))
 		{ 
-			System.err.println("<ClojureConstruct> Cannot delete: this is a placeholder construct");
+			Application.showError(child, "Cannot delete this construct");
 			return false;
 		}
 
@@ -117,12 +118,12 @@ public abstract class ClojureConstruct extends Construct
 			}
 			
 			if(!descriptor.isAllowed(newCon.getClass())) { 
-				System.err.println("<ClojureConstruct> Placeholder expects " + descriptor.getClassRestriction() + " got " + newCon.getClass());
+				Application.showError(replaceMe, "Cannot set placeholder to this type" + descriptor.getClassRestriction());
 				return false;
 			}
 
 			if(descriptor.isPermanent()) {
-				System.err.println("<ClojureConstruct> Cannot replace, Placeholder is flagged permanent.");
+				Application.showError(replaceMe, "Cannot delete this construct");
 				return false;
 			}
 			
