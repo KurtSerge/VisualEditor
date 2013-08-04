@@ -51,7 +51,7 @@ public class ListConstruct extends ClojureConstruct {
 	
 	@Override 
 	public boolean canInsertChildren() { 
-		return true;
+		return mCall == null;
 	}
 	
 	@Override

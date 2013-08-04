@@ -10,6 +10,11 @@ import clojure.constructs.placeholder.Placeholder;
 import clojure.constructs.special.VariadicVectorConstruct;
 import editor.Construct;
 
+/**
+ * Syntax: (let [bindings*] exprs*)
+ * 
+ * @author Christopher Lord
+ */
 public class LetConstruct extends ListConstruct {
 
 	public LetConstruct(Construct parent) {
@@ -22,26 +27,10 @@ public class LetConstruct extends ListConstruct {
 	}
 
 	@Override
-	public boolean validate() {
-		return false;
-	}
-	
-	public boolean canDeleteChild(int index, Construct child) {  
-		if(index == 0) { 
-			return false;
-		}
-		
-		return super.canDeleteChild(index, child);
-	}
-	
-	public boolean canInsertChildren() { 
-		return false;
-	}
-	
-	@Override
 	public Construct deepCopy(Construct parent) {
 		LetConstruct newCopy = new LetConstruct(parent);
 		super.deepCopy(newCopy);
 		return newCopy;
 	}
+	
 }

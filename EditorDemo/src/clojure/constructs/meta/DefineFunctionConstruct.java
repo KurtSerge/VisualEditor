@@ -12,6 +12,13 @@ import clojure.constructs.special.VariadicVectorConstruct;
 import editor.Construct;
 import clojure.ClojureConstruct.*;
 
+/**
+ * Syntax: (defn name doc-string? attr-map? [params*] exprs*)
+ * Where:
+ * 		- `doc-string` is clojure.constructs.StringConstruct
+ * 
+ * @author Christopher Lord
+ */
 public class DefineFunctionConstruct extends ListConstruct {
 
 	public DefineFunctionConstruct(Construct parent) {
@@ -25,23 +32,6 @@ public class DefineFunctionConstruct extends ListConstruct {
 		placeholders.add(Placeholder.createVariadicPlaceholder("exprs"));
 		setPlaceholders(placeholders);
 	}
-
-	@Override
-	public boolean validate() {
-		return false;
-	}
-	
-	public boolean canDeleteChild(int index, Construct child) {  
-		if(index == 0) { 
-			return false;
-		}
-		
-		return super.canDeleteChild(index, child);
-	}
-	
-	public boolean canInsertChildren() { 
-		return false;
-	}	
 	
 	@Override
 	public Construct deepCopy(Construct parent) {
@@ -49,4 +39,5 @@ public class DefineFunctionConstruct extends ListConstruct {
 		super.deepCopy(newCopy);
 		return newCopy;
 	}
+	
 }

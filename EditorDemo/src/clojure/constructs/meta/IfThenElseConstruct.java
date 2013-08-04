@@ -9,6 +9,11 @@ import clojure.constructs.placeholder.Placeholder;
 import clojure.constructs.placeholder.PlaceholderConstruct;
 import editor.Construct;
 
+/**
+ * Syntax: (if test then else?)
+ * 
+ * @author Christopher Lord
+ */
 public class IfThenElseConstruct extends ListConstruct {
 
 	public IfThenElseConstruct(Construct parent) {
@@ -20,23 +25,6 @@ public class IfThenElseConstruct extends ListConstruct {
 		placeholders.add(Placeholder.createOptionalPlaceholder("else"));
 		setPlaceholders(placeholders);
 	}
-
-	@Override
-	public boolean validate() {
-		return false;
-	}
-	
-	public boolean canDeleteChild(int index, Construct child) {  
-		if(index == 0) { 
-			return false;
-		}
-		
-		return super.canDeleteChild(index, child);
-	}
-	
-	public boolean canInsertChildren() { 
-		return false;
-	}
 	
 	@Override
 	public Construct deepCopy(Construct parent) {
@@ -44,4 +32,5 @@ public class IfThenElseConstruct extends ListConstruct {
 		super.deepCopy(newCopy);
 		return newCopy;
 	}
+	
 }
