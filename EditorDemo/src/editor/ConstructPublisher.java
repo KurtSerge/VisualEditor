@@ -55,7 +55,8 @@ public class ConstructPublisher {
 
 	public void onConstructModified(Construct construct) {
 		// TODO Auto-generated method stub
-		if(this.isConstructInDocument(construct)) { 
+		if(this.isConstructInDocument(construct) &&
+				mListener != null) { 
 			mListener.onConstructModified(construct);
 		}
 	}
