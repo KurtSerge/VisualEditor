@@ -50,7 +50,7 @@ public abstract class Construct
 	}
 	
 	public String literal = null;
-	public List<Construct> children = new LinkedList<Construct>();
+	protected List<Construct> children = new LinkedList<Construct>();
 	
 	
 	public void debugPrint() {
@@ -98,8 +98,11 @@ public abstract class Construct
 	public boolean delete() {
 		return delete(true);
 	}
+
+	final public boolean addChild(Construct child) { 
+		return addChild(this.children.size(), child);
+	}
 	
-	// TODO: How to force contract to use addChild instead of this.children.add
 	final public boolean addChild(int index, Construct child) {
 		if(canAddChild(index, child) == true)  {
 			children.add(index, child);
@@ -123,6 +126,10 @@ public abstract class Construct
 			}
 		}
 		return success;
+	}
+	
+	public List<Construct> getChildren() { 
+		return children;
 	}
 
 	// Each subclass must implement this.  

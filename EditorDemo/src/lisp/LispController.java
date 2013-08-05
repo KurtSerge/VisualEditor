@@ -29,7 +29,7 @@ public class LispController
 			{
 				Object child = json_array.get(i);
 				
-				sexp_construct.children.add(construct_for_json(child, sexp_construct));
+				sexp_construct.addChild(construct_for_json(child, sexp_construct));
 			}
 			
 			return sexp_construct;
@@ -44,7 +44,7 @@ public class LispController
 			
 			StringLiteralConstruct string_literal_construct = new StringLiteralConstruct(string_construct, json_string);
 			
-			string_construct.children.add(string_literal_construct);
+			string_construct.addChild(string_literal_construct);
 			
 			return string_construct;
 		}

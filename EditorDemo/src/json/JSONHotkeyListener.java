@@ -115,7 +115,7 @@ public class JSONHotkeyListener implements BaseControllerListener {
 			return;
 		
 		// Determine location of insertion
-		int selIndex = parent.children.indexOf(controller.getSelectedEditor().construct);
+		int selIndex = parent.getChildren().indexOf(controller.getSelectedEditor().construct);
 		switch(binding) {
 			case Bind_InsertAfter: {
 				parent.addChild(selIndex + 1, newConstruct);
@@ -131,7 +131,7 @@ public class JSONHotkeyListener implements BaseControllerListener {
 				break;
 			}
 			case Bind_InsertChild: {
-				int lastIndex = controller.getSelectedEditor().construct.children.size();
+				int lastIndex = controller.getSelectedEditor().construct.getChildren().size();
 				controller.getSelectedEditor().construct.addChild(lastIndex, newConstruct);
 				break;
 			}
@@ -142,9 +142,9 @@ public class JSONHotkeyListener implements BaseControllerListener {
 				
 				parent.addChild(selIndex + 1, newConstruct);// TODO: delete this if usurp fails
 				// Copy children
-				for(Construct child : controller.getSelectedEditor().construct.children)  {
+				for(Construct child : controller.getSelectedEditor().construct.getChildren())  {
 					Construct usurp = child.deepCopy(newConstruct);
-					int addIndex = newConstruct.children.size();
+					int addIndex = newConstruct.getChildren().size();
 					parent.addChild(addIndex, usurp);
 				}
 				

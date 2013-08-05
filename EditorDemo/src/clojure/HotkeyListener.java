@@ -187,7 +187,7 @@ public class HotkeyListener implements BaseControllerListener {
 		}
 		
 		// Determine location of insertion
-		int selIndex = parent.children.indexOf(controller.getSelectedEditor().construct);
+		int selIndex = parent.getChildren().indexOf(controller.getSelectedEditor().construct);
 		switch(binding) {
 			case Bind_InsertAfter: {
 				parent.addChild(selIndex + 1, newConstruct);
@@ -210,7 +210,7 @@ public class HotkeyListener implements BaseControllerListener {
 			}
 			
 			case Bind_InsertChild: {
-				int lastIndex = controller.getSelectedEditor().construct.children.size();
+				int lastIndex = controller.getSelectedEditor().construct.getChildren().size();
 				controller.getSelectedEditor().construct.addChild(lastIndex, newConstruct);
 				break;
 			}

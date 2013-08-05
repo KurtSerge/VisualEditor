@@ -45,8 +45,8 @@ public class JSONController
 			return null;
 		
 		json.KeyValueConstruct key_value_construct = new json.KeyValueConstruct(parent);
-		key_value_construct.children.add(construct_for_json("EmptyString", key_value_construct));
-		key_value_construct.children.add(new EmptyConstruct(key_value_construct));
+		key_value_construct.addChild(construct_for_json("EmptyString", key_value_construct));
+		key_value_construct.addChild(new EmptyConstruct(key_value_construct));
 		return key_value_construct;
 	}
 
@@ -76,16 +76,16 @@ public class JSONController
 	
 		if(con.type == "object") {
 			ret = new JSONObject();
-			for(Construct child : con.children) {
+			for(Construct child : con.getChildren()) {
 				json_for_construct(child, (JSONObject)ret);
 			}
 		}
 		else if(con.type == "key_value_pair") {
-			assert(con.children.get(0).type == "string");
-			parent.put((String)json_for_construct(con.children.get(0), parent), json_for_construct(con.children.get(1), parent));
+			assert(con.getChildren().get(0).type == "string");
+			parent.put((String)json_for_construct(con.getChildren().get(0), parent), json_for_construct(con.getChildren().get(1), parent));
 		}
 		else if(con.type == "string") {
-			ret = json_for_construct(con.children.get(0), parent);
+			ret = json_for_construct(con.getChildren().get(0), parent);
 		}
 		else if(con.type == "integer") {
 			ret = Integer.valueOf(con.literal);
@@ -105,7 +105,7 @@ public class JSONController
 		else if(con.type == "array") {
 			JSONArray  array = new JSONArray();
 			
-			for(Construct child : con.children) 
+			for(Construct child : con.getChildren()) 
 				array.put(json_for_construct(child, parent));
 			ret = array;
 		}
@@ -129,10 +129,10 @@ public class JSONController
 				Object child = ((JSONObject)object).get(key);
 				
 				json.KeyValueConstruct key_value_construct = new json.KeyValueConstruct(object_construct);
-				key_value_construct.children.add(construct_for_json(key, key_value_construct));
-				key_value_construct.children.add(construct_for_json(child, key_value_construct));
+				key_value_construct.addChild(construct_for_json(key, key_value_construct));
+				key_value_construct.addChild(construct_for_json(child, key_value_construct));
 				
-				object_construct.children.add(key_value_construct);
+				object_construct.addChild(key_value_construct);
 		      }
 	      }
 	      return object_construct;
@@ -147,7 +147,7 @@ public class JSONController
 			{
 				Object child = json_array.get(i);
 				
-				object_construct.children.add(construct_for_json(child, object_construct));
+				object_construct.addChild(construct_for_json(child, object_construct));
 			}
 			
 			return object_construct;
@@ -160,7 +160,7 @@ public class JSONController
 			
 			json.StringLiteralConstruct string_literal_construct = new json.StringLiteralConstruct(string_construct, json_string);
 			
-			string_construct.children.add(string_literal_construct);
+			string_construct.addChild(string_literal_construct);
 			
 			return string_construct;
 		}

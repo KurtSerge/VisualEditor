@@ -69,7 +69,7 @@ public abstract class ConstructDocument {
 	}
 	
 	public ConstructEditor editorsFromConstruct(Construct root) { 
-		for(Construct child : root.children)
+		for(Construct child : root.getChildren())
 			editorsFromConstruct(child);
 		
 		// TODO: Make this a hashmap ~ Chris Lord

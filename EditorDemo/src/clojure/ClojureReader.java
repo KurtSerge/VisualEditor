@@ -97,7 +97,7 @@ public class ClojureReader {
 		   		Object leafObject = vector.get(i);
 		   		Construct leafConstruct = recursiveCreateConstructFromObject(thisConstruct, leafObject);
 		   		if(leafConstruct != null) {
-		   			thisConstruct.children.add(leafConstruct);
+		   			thisConstruct.addChild(leafConstruct);
 		   		}
 		   	}
 	    } else if(name.equalsIgnoreCase("clojure.lang.PersistentList")) {
@@ -105,7 +105,7 @@ public class ClojureReader {
 		   	for(int i = 0; i < list.size(); i++) { 
 		   		Construct leafConstruct = recursiveCreateConstructFromObject(thisConstruct, list.get(i));
 		   		if(leafConstruct != null) {
-		   			thisConstruct.children.add(leafConstruct);
+		   			thisConstruct.addChild(leafConstruct);
 		   		}
 		   	}
 	    } else if(name.equalsIgnoreCase("clojure.lang.PersistentArrayMap")) {
@@ -114,8 +114,8 @@ public class ClojureReader {
 	    		Construct keyConstruct = recursiveCreateConstructFromObject(thisConstruct, key);
 	    		Construct valueConstruct = recursiveCreateConstructFromObject(thisConstruct, map.get(key));
 	    		if(keyConstruct != null && valueConstruct != null) {
-	    			thisConstruct.children.add(keyConstruct);
-	    			thisConstruct.children.add(valueConstruct);
+	    			thisConstruct.addChild(keyConstruct);
+	    			thisConstruct.addChild(valueConstruct);
 	    		}
 	    	}
 	    }
