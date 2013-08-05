@@ -27,7 +27,7 @@ public class ListConstruct extends ClojureConstruct {
 
 		for(int i = 0; i < children.size(); ++i) {
 			if(i != 0 && i < children.size()) { 
-				builder.append("$(newline)");
+				builder.append(BREAKING_SPACE);
 			}
 			
 			if(mCall != null && this.getIsMultilined() && i != 0) { 
@@ -41,7 +41,7 @@ public class ListConstruct extends ClojureConstruct {
 
 		builder.append(")");
 		
-		return super.compact(builder.toString());
+		return super.layout(builder.toString());
 	}
 
 	@Override

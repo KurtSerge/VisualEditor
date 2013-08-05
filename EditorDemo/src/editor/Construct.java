@@ -14,6 +14,8 @@ import json.JSONController;
 
 public abstract class Construct
 {
+	protected static final String BREAKING_SPACE = "$(break)";	
+	
 	protected Construct(String type, Construct parent)
 	{
 		this.type = type;
@@ -117,6 +119,7 @@ public abstract class Construct
 		if(validateAddChild(index, child) == true)  {
 			children.add(index, child);
 			AddToUndoBuffer();
+			onChildAdded(index, child);
 			ConstructPublisher.getInstance().onConstructAddedChild(this, child, index);
 			return true;
 		}
@@ -205,11 +208,14 @@ public abstract class Construct
 		return mIsMultilined;
 	}
 	
-	public String compact(String string) {
+	/**
+	 * @return Adds support for breaking space in screen_text()
+	 */
+	public String layout(String string) {
 		if(this.getIsMultilined()) { 
-			return string.replace("$(newline)", "\n");
+			return string.replace(BREAKING_SPACE, "\n");
 		} else { 
-			return string.replace("$(newline)", " ");
+			return string.replace(BREAKING_SPACE, " ");
 		}
 	}
 	
@@ -217,5 +223,8 @@ public abstract class Construct
 	}
 	
 	public void onConstructUnselected() { 
+	}
+	
+	public void onChildAdded(int index, Construct child) { 
 	}
 }

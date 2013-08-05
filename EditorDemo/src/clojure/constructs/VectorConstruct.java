@@ -15,13 +15,13 @@ public class VectorConstruct extends ClojureConstruct {
 		
 		for(int i = 0; i < children.size(); ++i) {
 			if(i != 0 && i < children.size()) { 
-				builder.append("$(newline)");
+				builder.append(BREAKING_SPACE);
 			}
 			builder.append("$(node)");
 		}
 
 		builder.append("]");
-		return super.compact(builder.toString());
+		return super.layout(builder.toString());
 	}
 
 	@Override

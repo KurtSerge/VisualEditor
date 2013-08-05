@@ -1,6 +1,7 @@
 package clojure.constructs.placeholder;
 
 import clojure.ClojureConstruct;
+import editor.Construct;
 
 public class Placeholder {
 	public static Placeholder createVariadicPlaceholder(String hint) {
@@ -80,6 +81,10 @@ public class Placeholder {
 	
 	public Class<?> getClassRestriction() { 
 		return mClassRestriction;
+	}
+	
+	public PlaceholderConstruct createConstruct(Construct parent) { 
+		return new PlaceholderConstruct(parent, this);
 	}
 	
 	private Class<?> mClassRestriction;
