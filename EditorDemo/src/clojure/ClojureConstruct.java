@@ -35,7 +35,8 @@ public abstract class ClojureConstruct extends Construct
 	 * If placeholders are set, prevent deletion of permanent & 
 	 * placeholder constructs.
 	 */
-	public boolean canDeleteChild(int index, Construct child) { 
+	@Override
+	protected boolean canDeleteChild(int index, Construct child) { 
 		if(mPlaceholders == null) {
 			return super.canDeleteChild(index, child);
 		}

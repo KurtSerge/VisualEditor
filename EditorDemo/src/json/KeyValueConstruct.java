@@ -49,7 +49,7 @@ public class KeyValueConstruct extends Construct {
 	}
 	
 	@Override
-	public boolean validateAddChild(int index, Construct child) {
+	protected boolean canAddChild(int index, Construct child) {
 		if(index == 0) {
 			// Key
 			if(child.getClass() == StringConstruct.class)

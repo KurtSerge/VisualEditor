@@ -100,19 +100,18 @@ public abstract class Construct
 	}
 	
 	// Override this to set special conditions for when a child can be deleted
-	public boolean canDeleteChild(int index, Construct child) {
+	protected boolean canDeleteChild(int index, Construct child) {
 		return true;
 	}
 
-	
 	// Check that child being added at the specified index is valid
-	public /*FIXME:abstract*/ boolean validateAddChild(int index, Construct child) {
+	protected boolean canAddChild(int index, Construct child) {
 		return true;
 	}
 	
 	// TODO: How to force contract to use addChild instead of this.children.add
 	final public boolean addChild(int index, Construct child) {
-		if(validateAddChild(index, child) == true)  {
+		if(canAddChild(index, child) == true)  {
 			children.add(index, child);
 			AddToUndoBuffer();
 			onChildAdded(index, child);

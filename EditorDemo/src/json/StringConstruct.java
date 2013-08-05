@@ -25,7 +25,7 @@ public class StringConstruct extends Construct {
 	}
 
 	@Override
-	public boolean validateAddChild(int index, Construct child) {
+	protected boolean canAddChild(int index, Construct child) {
 		if(child.getClass() == StringLiteralConstruct.class)
 			return true;
 		

@@ -47,7 +47,7 @@ public class ArrayConstruct extends Construct {
 	}
 	
 	@Override
-	public boolean validateAddChild(int index, Construct child) {
+	protected boolean canAddChild(int index, Construct child) {
 		// TODO: can I add an array to an array? Look into all these values
 		if(child.getClass() == StringConstruct.class ||
 		   child.getClass() == BooleanConstruct.class ||

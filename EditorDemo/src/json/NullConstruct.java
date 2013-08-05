@@ -24,7 +24,7 @@ public class NullConstruct extends Construct{
 	}
 	
 	@Override
-	public boolean validateAddChild(int index, Construct child) {
+	protected boolean canAddChild(int index, Construct child) {
 		return false;
 	}
 	
