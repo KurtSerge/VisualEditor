@@ -78,8 +78,8 @@ public abstract class ClojureConstruct extends Construct
 	 * restore the placeholder object.
 	 */
 	@Override
-	public void handleDeleteChild(int index, Construct deleted) {
-		super.handleDeleteChild(index, deleted);
+	protected void onChildDeleted(int index, Construct deleted) {
+		super.onChildDeleted(index, deleted);
 		
 		if(getPlaceholders() != null) {
 			Placeholder descriptor = getPlaceholderForIndex(index);

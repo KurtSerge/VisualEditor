@@ -70,8 +70,8 @@ public class MapConstruct extends ClojureConstruct {
 	}
 	
 	@Override
-	public void handleDeleteChild(int index, Construct deleted) {
-		super.handleDeleteChild(index, deleted);
+	protected void onChildDeleted(int index, Construct deleted) {
+		super.onChildDeleted(index, deleted);
 		
 		// Delete the value next to the keyword construct
 		if(deleted.getClass().equals(clojure.constructs.KeywordConstruct.class)) {

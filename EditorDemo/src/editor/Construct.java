@@ -81,7 +81,7 @@ public abstract class Construct
 			if(parent.canDeleteChild(index, this) == false)
 				return false;
 			parent.children.remove(this);
-			parent.handleDeleteChild(index, this);
+			parent.onChildDeleted(index, this);
 			AddToUndoBuffer();
 		}
 		else {
@@ -97,10 +97,6 @@ public abstract class Construct
 		int childIndex = this.children.indexOf(child);
 		this.children.remove(childIndex);
 		return true;
-	}
-
-	public void handleDeleteChild(int index, Construct deleted) {
-		ConstructPublisher.getInstance().onConstructRemovedChild(this, deleted, index);
 	}
 	
 	// Override this to set special conditions for when a child can be deleted
@@ -220,6 +216,10 @@ public abstract class Construct
 	}
 	
 	public void onChildAdded(int index, Construct child) { 
+	}
+	
+	protected void onChildDeleted(int index, Construct deleted) {
+		ConstructPublisher.getInstance().onConstructRemovedChild(this, deleted, index);
 	}
 
 	/* ----- NOTIFICATIONS ----- */
