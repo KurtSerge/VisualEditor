@@ -36,9 +36,11 @@ public abstract class ClojureConstruct extends Construct
 	 * placeholder constructs.
 	 */
 	@Override
-	protected boolean canDeleteChild(int index, Construct child) { 
+	protected boolean canDeleteChild(int index, Construct child, boolean isUser) { 
+		System.out.println(child.type);
+		
 		if(mPlaceholders == null) {
-			return super.canDeleteChild(index, child);
+			return super.canDeleteChild(index, child, isUser);
 		}
 		
 		Placeholder descriptor = getPlaceholderForConstruct(child);
@@ -52,9 +54,8 @@ public abstract class ClojureConstruct extends Construct
 			Application.showError(child, "Cannot delete this construct");
 			return false;
 		}
-		
-		
-		if(child.getClass().equals(PlaceholderConstruct.class))
+
+		if(isUser == true && child.getClass().equals(PlaceholderConstruct.class))
 		{ 
 			Application.showError(child, "Cannot delete this construct");
 			return false;
@@ -82,7 +83,9 @@ public abstract class ClojureConstruct extends Construct
 	protected void onChildDeleted(int index, Construct deleted) {
 		super.onChildDeleted(index, deleted);
 		
-		if(getPlaceholders() != null) {
+		if(getPlaceholders() != null && 
+				deleted.getClass().equals(PlaceholderConstruct.class) == false)	// Forced, internal deletion
+		{
 			Placeholder descriptor = getPlaceholderForIndex(index);
 			if(!descriptor.isVariadic()) { 
 				PlaceholderConstruct construct = new PlaceholderConstruct(this, descriptor);
@@ -199,7 +202,7 @@ public abstract class ClojureConstruct extends Construct
 
 		// Now remove the identified children
 		for(Construct deleted : deletingConstructs) { 
-			deleted.delete(false);
+			deleted.delete();
 		}
 		
 		mPlaceholdersAdded = false;
@@ -259,6 +262,6 @@ public abstract class ClojureConstruct extends Construct
 	}
 	
 	public void onBranchUnhighlighted() {
-		removePlaceholders(false);
+		removePlaceholders(true);
 	}
 }

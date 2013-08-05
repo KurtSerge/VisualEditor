@@ -56,6 +56,7 @@ public abstract class Construct
 	public void debugPrint() {
 		debugPrintNode(this, 0);
 	}
+	
 	public void debugPrintNode(Construct con, int depth) {
 		for(int i = 0; i < depth; i++)
 			System.out.print("\t");
@@ -74,19 +75,24 @@ public abstract class Construct
 	
 	public abstract boolean validate();
 
-	public boolean delete(boolean shouldValidate) { 
+	public boolean delete(boolean shouldValidate, boolean isUser) { 
 		if(parent != null)  {
 			// Validate the deletion of this child
 			int index = parent.children.indexOf(this);
-			if(shouldValidate == true && 
-				parent.canDeleteChild(index, this) == false) 
-			{
-				return false;
+			
+			boolean canDeleteChild = true;
+			if(shouldValidate == true) { 
+				canDeleteChild = parent.canDeleteChild(index, this, isUser);
 			}
 			
-			parent.children.remove(this);
-			parent.onChildDeleted(index, this);
-			AddToUndoBuffer();
+			if(canDeleteChild) {
+				parent.children.remove(index);
+				parent.onChildDeleted(index, this);
+				AddToUndoBuffer();		
+				return true;
+			}
+
+			return false;
 		}
 		else {
 			// FIXME: how to delete top from inside?
@@ -96,7 +102,7 @@ public abstract class Construct
 	}
 
 	public boolean delete() {
-		return delete(true);
+		return delete(true, false);
 	}
 
 	final public boolean addChild(Construct child) { 
@@ -214,7 +220,7 @@ public abstract class Construct
 	/* ----- DERRIVED FUNCTIONALITY ----- */
 
 	// Override this to set special conditions for when a child can be deleted
-	protected boolean canDeleteChild(int index, Construct child) {
+	protected boolean canDeleteChild(int index, Construct child, boolean isUser) {
 		return true;
 	}
 

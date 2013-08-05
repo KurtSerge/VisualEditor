@@ -79,7 +79,7 @@ public class KeyValueConstruct extends Construct {
 	}
 
 	@Override
-	public boolean canDeleteChild(int index, Construct child) {
+	public boolean canDeleteChild(int index, Construct child, boolean isUser) {
 		if(index != 0)  {
 			return true; // FIXME: necessary? some more general way to force this behaviour?
 		}

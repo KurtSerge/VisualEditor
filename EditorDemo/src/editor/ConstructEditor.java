@@ -71,7 +71,7 @@ public abstract class ConstructEditor
 		getAllConstructs(construct);
 		// Delete Constructs
 		System.out.println();
-		if(construct.delete() == true) {
+		if(construct.delete(true, true) == true) {
 			for(Construct del : deleteList) {
 				//del.parent.children.remove(del);// FIXME: When I comment this, crashes go away.  wtf? 
 				editorsByConstructs.get(del).get().delete();
