@@ -164,9 +164,7 @@ public abstract class ClojureConstruct extends Construct
 		return getPlaceholderForIndex(indexOfObject);
 	}
 	
-	protected List<Placeholder> getPlaceholders() { 
-		return mPlaceholders;
-	}
+
 	
 	@Override
 	public boolean validate() {
@@ -177,18 +175,20 @@ public abstract class ClojureConstruct extends Construct
 	private boolean mPlaceholdersAdded;
 	private boolean mPlaceholdersAddedOnce;
 	private boolean mPlaceholdersAddedOptionals;
-	private boolean mIsSelected;
 	
-	
-	public boolean isSelected() { 
-		return mIsSelected;
+	protected List<Placeholder> getPlaceholders() { 
+		return mPlaceholders;
 	}
 	
+	/**
+	 * Removes the specified placeholders. Set removeNonOptional to true
+	 * to remove all of the placeholders on display.
+	 */
 	protected void removePlaceholders(boolean removeNonOptional) { 
 		// Iterate over all the children, removing any placeholders
 		LinkedList<Construct> deletingConstructs = new LinkedList<Construct>();
 		for(Construct construct : this.children) { 
-			if(construct.getClass().equals(clojure.constructs.placeholder.PlaceholderConstruct.class)) {
+			if(construct.getClass().equals(PlaceholderConstruct.class)) {
 				PlaceholderConstruct placeholderConstruct = (PlaceholderConstruct) construct;
 				if(placeholderConstruct.getDescriptor().isOptional() || removeNonOptional) {
 					deletingConstructs.add(construct);
@@ -207,7 +207,8 @@ public abstract class ClojureConstruct extends Construct
 	}
 	
 	/**
-	 * Inserts placeholders if they are required to be inserted.
+	 * Inserts all placeholders where required. This includes
+	 * permanent, optional and regular placeholders.
 	 */
 	protected void insertPlaceholders() { 
 		if(mPlaceholders != null && !mPlaceholdersAdded) { 
@@ -221,7 +222,9 @@ public abstract class ClojureConstruct extends Construct
 				}
 				
 				if(mPlaceholdersAddedOptionals == true && 
-						placeholder.isOptional() == false) { 
+						placeholder.isOptional() == false) {
+					// Skip adding any optional placeholders if the
+					// optional placeholders already exist
 					continue;
 				}
 					
@@ -235,8 +238,9 @@ public abstract class ClojureConstruct extends Construct
 				} else { 
 					// This placeholder needs to be filled, add it in now
 					PlaceholderConstruct construct = new PlaceholderConstruct(this, placeholder);
-					
 					if(placeholder.isVariadic()) { 
+						// Variadic placeholders always reside at the end
+						// of the specified form, treat them like so..
 						addChild(children.size(), construct);
 					} else { 
 						addChild(i, construct);
@@ -254,13 +258,6 @@ public abstract class ClojureConstruct extends Construct
 	}
 	
 	public void onConstructUnselected() {
-		removePlaceholders(true);
-		
-		for(Construct construct : this.children) {
-			// TODO: Assumed..
-			// TODO: Recurse..
-			ClojureConstruct cConstruct = (ClojureConstruct) construct;
-			cConstruct.removePlaceholders(false);
-		}
+		removePlaceholders(false);
 	}
 }
