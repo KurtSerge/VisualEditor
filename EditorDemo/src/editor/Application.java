@@ -184,7 +184,8 @@ public class Application extends VisualEditorFrame implements ComponentListener
 			sApplication._resetError();
 	}
 	
-	public static void showError(Construct editor, String error) { 
+	public static void showError(Construct editor, String error) {
+		System.out.println("Show modal error: " + error);
 		sApplication.presentError(ConstructEditor.getEditorByConstruct(editor), error);
 	}
 	
