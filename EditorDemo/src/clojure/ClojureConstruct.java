@@ -190,7 +190,7 @@ public abstract class ClojureConstruct extends Construct
 		for(Construct construct : this.children) { 
 			if(construct.getClass().equals(clojure.constructs.placeholder.PlaceholderConstruct.class)) {
 				PlaceholderConstruct placeholderConstruct = (PlaceholderConstruct) construct;
-				if(placeholderConstruct.getDescriptor().isOptional()) {
+				if(placeholderConstruct.getDescriptor().isOptional() || removeNonOptional) {
 					deletingConstructs.add(construct);
 				}
 			}
@@ -202,8 +202,13 @@ public abstract class ClojureConstruct extends Construct
 		}
 		
 		mPlaceholdersAdded = false;
+		if(mPlaceholdersAddedOptionals && removeNonOptional) 
+			mPlaceholdersAddedOptionals = false;
 	}
 	
+	/**
+	 * Inserts placeholders if they are required to be inserted.
+	 */
 	protected void insertPlaceholders() { 
 		if(mPlaceholders != null && !mPlaceholdersAdded) { 
 			// Add placeholders as children to this node
@@ -249,7 +254,7 @@ public abstract class ClojureConstruct extends Construct
 	}
 	
 	public void onConstructUnselected() {
-		removePlaceholders(false);
+		removePlaceholders(true);
 		
 		for(Construct construct : this.children) {
 			// TODO: Assumed..
