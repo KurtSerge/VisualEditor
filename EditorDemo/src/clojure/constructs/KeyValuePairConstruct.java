@@ -32,7 +32,14 @@ public class KeyValuePairConstruct extends ClojureConstruct {
 
 	@Override
 	public String screen_text() {
-		return "$(node) $(node)";
+		StringBuilder stringBuilder = new StringBuilder();
+		for(int i = 0; i < this.children.size(); i++) { 
+			stringBuilder.append("$(node)");
+			if(i != this.children.size() - 1) 
+				stringBuilder.append(BREAKING_SPACE);
+		}
+		
+		return super.layout(stringBuilder.toString());
 	}
 	
 	@Override
