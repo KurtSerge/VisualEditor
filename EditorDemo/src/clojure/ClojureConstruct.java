@@ -1,7 +1,12 @@
 package clojure;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import clojure.constructs.meta.IfThenElseConstruct;
 import clojure.constructs.placeholder.Placeholder;
@@ -22,6 +27,7 @@ public abstract class ClojureConstruct extends Construct
 		super(type, parent);
 		
 		mPlaceholders = null;
+		mConstructsToPlaceholders = new HashMap<Construct, Placeholder>();
 	}
 	
 	@Override
@@ -37,19 +43,11 @@ public abstract class ClojureConstruct extends Construct
 	 */
 	@Override
 	protected boolean canDeleteChild(int index, Construct child, boolean isUser) { 
-		System.out.println(child.type);
-		
 		if(mPlaceholders == null) {
 			return super.canDeleteChild(index, child, isUser);
 		}
-		
-		Placeholder descriptor = getPlaceholderForConstruct(child);
-		if(descriptor == null) {
-			// No descriptor with mPlaceholders set is an error,
-			// no deletion when it comes down to the error.
-			return false; 
-		}
-		
+
+		Placeholder descriptor = getPlaceholderForConstruct(child);		
 		if(descriptor.isPermanent()) { 
 			Application.showError(child, "Cannot delete this construct");
 			return false;
@@ -57,6 +55,7 @@ public abstract class ClojureConstruct extends Construct
 
 		if(isUser == true && child.getClass().equals(PlaceholderConstruct.class))
 		{ 
+			System.out.println(child.getClass());
 			Application.showError(child, "Cannot delete this construct");
 			return false;
 		}
@@ -90,6 +89,15 @@ public abstract class ClojureConstruct extends Construct
 			if(!descriptor.isVariadic()) { 
 				PlaceholderConstruct construct = new PlaceholderConstruct(this, descriptor);
 				descriptor.setPopulated(false);
+
+			    Iterator<Entry<Construct, Placeholder>> it = mConstructsToPlaceholders.entrySet().iterator();
+			    while (it.hasNext()) {
+			    	Map.Entry<Construct, Placeholder> pairs = (Map.Entry<Construct, Placeholder>)it.next();
+			        if(pairs.getValue().equals(descriptor)) { 
+			        	it.remove();
+			        }
+			    }
+				
 				this.addChild(index, construct);
 			}
 		}		
@@ -138,8 +146,9 @@ public abstract class ClojureConstruct extends Construct
 				this.addChild(indexOfOldConstruct, newCon);
 				return true;
 			}
-			
+
 			descriptor.setPopulated(true);
+			mConstructsToPlaceholders.put(newCon, descriptor);			
 		}
 				
 		return super.replaceChild(replaceMe, newCon);
@@ -149,7 +158,7 @@ public abstract class ClojureConstruct extends Construct
 		mPlaceholders = placeholders;
 	}
 	
-	protected Placeholder getPlaceholderForIndex(int indexOfObject) { 
+	protected Placeholder getPlaceholderForIndex(int indexOfObject) {
 		Placeholder descriptor = null;
 		if(indexOfObject >= mPlaceholders.size()) { 
 			descriptor = mPlaceholders.get(mPlaceholders.size() - 1);
@@ -164,8 +173,12 @@ public abstract class ClojureConstruct extends Construct
 	}
 	
 	protected Placeholder getPlaceholderForConstruct(Construct object) {
-		int indexOfObject = this.children.indexOf(object);
-		return getPlaceholderForIndex(indexOfObject);
+		Placeholder descriptor = mConstructsToPlaceholders.get(object);
+		if(descriptor == null && mPlaceholders.get(mPlaceholders.size() - 1).isVariadic()) {
+			return mPlaceholders.get(mPlaceholders.size() - 1);
+		}
+		
+		return descriptor;
 	}
 	
 
@@ -179,6 +192,7 @@ public abstract class ClojureConstruct extends Construct
 	private boolean mPlaceholdersAdded;
 	private boolean mPlaceholdersAddedOnce;
 	private boolean mPlaceholdersAddedOptionals;
+	private HashMap<Construct, Placeholder> mConstructsToPlaceholders;
 	
 	protected List<Placeholder> getPlaceholders() { 
 		return mPlaceholders;
@@ -236,6 +250,7 @@ public abstract class ClojureConstruct extends Construct
 					// Only add permanent placeholders once, ignore
 					// them every other time we pass through
 					if(mPlaceholdersAddedOnce == false) { 
+						mConstructsToPlaceholders.put(placeholder.getPermanentConstruct(), placeholder);
 						addChild(children.size(), placeholder.getPermanentConstruct());
 						mPlaceholdersAddedOnce = true;
 					}
@@ -247,6 +262,7 @@ public abstract class ClojureConstruct extends Construct
 						// of the specified form, treat them like so..
 						addChild(children.size(), construct);
 					} else { 
+						mConstructsToPlaceholders.put(construct, placeholder);						
 						addChild(i, construct);
 					}
 				}
@@ -262,6 +278,6 @@ public abstract class ClojureConstruct extends Construct
 	}
 	
 	public void onBranchUnhighlighted() {
-		removePlaceholders(true);
+		removePlaceholders(false);
 	}
 }
