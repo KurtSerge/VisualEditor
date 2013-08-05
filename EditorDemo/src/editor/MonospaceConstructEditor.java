@@ -404,8 +404,9 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 
 
 	private TextListener textListener;
+	
 	@Override
-	public void setSelected(boolean bSelect) {
+	public void setSelected(ConstructEditor currentOrNewlySelected, boolean bSelect) {
 		if(bSelect == true) {
 			construct.onConstructSelected();
 			update();
@@ -419,7 +420,18 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 			}
 		} 
 		else {
-			construct.onConstructUnselected();
+			
+			if(currentOrNewlySelected != null) {
+				if(currentOrNewlySelected.construct.parent == null || 
+					currentOrNewlySelected.construct.parent.equals(this.construct) == false)
+				{
+					construct.onConstructUnselected();
+				}
+					
+			} else { 
+//				construct.onConstructUnselected();
+			}
+			
 			update();
 			
 			text_area.select(0, 0);

@@ -365,11 +365,14 @@ public class BaseController implements KeyListener {
 		public void Select(ConstructEditor newSel) {
 			if(newSel == null)
 				return;
+			
+			ConstructEditor lastSelected = selected;
 			if(selected != null)   {
-				selected.setSelected(false);
+				selected.setSelected(newSel, false);
 			}
+			
 			selected = newSel;
-			selected.setSelected(true);
+			selected.setSelected(lastSelected, true);
 			Application.resetError();
 			frame.repaint();
 		}

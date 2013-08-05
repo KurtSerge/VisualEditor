@@ -59,7 +59,7 @@ public abstract class ConstructEditor
 		return editorsByConstructs.get(construct).get();
 	}
 	
-	public abstract void setSelected(boolean bSelect);
+	public abstract void setSelected(ConstructEditor lastSelected, boolean bSelect);
 	
 	// Editor-specific cleanup - per editor instance
 	public abstract void delete();

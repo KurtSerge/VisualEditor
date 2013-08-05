@@ -85,6 +85,7 @@ public abstract class ClojureConstruct extends Construct
 			Placeholder descriptor = getPlaceholderForIndex(index);
 			if(!descriptor.isVariadic()) { 
 				PlaceholderConstruct construct = new PlaceholderConstruct(this, descriptor);
+				descriptor.setPopulated(false);
 				this.addChild(index, construct);
 			}
 		}		
@@ -133,35 +134,15 @@ public abstract class ClojureConstruct extends Construct
 				this.addChild(indexOfOldConstruct, newCon);
 				return true;
 			}
-
+			
+			descriptor.setPopulated(true);
 		}
 				
 		return super.replaceChild(replaceMe, newCon);
 	}
 	
 	public void setPlaceholders(List<Placeholder> placeholders) {
-		assert(mPlaceholders == null);
-		 
 		mPlaceholders = placeholders;
-		
-		// Add placeholders as children to this node
-		for(int i = 0; i < mPlaceholders.size(); i++) { 
-			Placeholder placeholder = mPlaceholders.get(i);
-			
-//			if(placeholder.isOptional()) 
-//				continue;
-//			
-			if(placeholder.isPermanent()) {
-				if(mPlaceholdersAddedOnce == false)
-					addChild(children.size(), placeholder.getPermanentConstruct());
-			} else { 
-				PlaceholderConstruct construct = new PlaceholderConstruct(this, placeholder);
-				addChild(children.size(), construct);	
-			}
-		}
-		
-		mPlaceholdersAdded = true;
-		mPlaceholdersAddedOnce = true;
 	}
 	
 	protected Placeholder getPlaceholderForIndex(int indexOfObject) { 
@@ -195,10 +176,86 @@ public abstract class ClojureConstruct extends Construct
 	private List<Placeholder> mPlaceholders;
 	private boolean mPlaceholdersAdded;
 	private boolean mPlaceholdersAddedOnce;
+	private boolean mPlaceholdersAddedOptionals;
 	private boolean mIsSelected;
 	
 	
 	public boolean isSelected() { 
 		return mIsSelected;
+	}
+	
+	protected void removePlaceholders(boolean removeNonOptional) { 
+		// Iterate over all the children, removing any placeholders
+		LinkedList<Construct> deletingConstructs = new LinkedList<Construct>();
+		for(Construct construct : this.children) { 
+			if(construct.getClass().equals(clojure.constructs.placeholder.PlaceholderConstruct.class)) {
+				PlaceholderConstruct placeholderConstruct = (PlaceholderConstruct) construct;
+				if(placeholderConstruct.getDescriptor().isOptional()) {
+					deletingConstructs.add(construct);
+				}
+			}
+		}
+
+		// Now remove the identified children
+		for(Construct deleted : deletingConstructs) { 
+			deleteChild(deleted);
+		}
+		
+		mPlaceholdersAdded = false;
+	}
+	
+	protected void insertPlaceholders() { 
+		if(mPlaceholders != null && !mPlaceholdersAdded) { 
+			// Add placeholders as children to this node
+			for(int i = 0; i < mPlaceholders.size(); i++) { 
+				Placeholder placeholder = mPlaceholders.get(i);
+				if(placeholder.getIsPopulated() == true) {
+					// The slot where this placeholder was going to sit
+					// is currently occupied by a construct, do not refill
+					continue;
+				}
+				
+				if(mPlaceholdersAddedOptionals == true && 
+						placeholder.isOptional() == false) { 
+					continue;
+				}
+					
+				if(placeholder.isPermanent()) {
+					// Only add permanent placeholders once, ignore
+					// them every other time we pass through
+					if(mPlaceholdersAddedOnce == false) { 
+						addChild(children.size(), placeholder.getPermanentConstruct());
+						mPlaceholdersAddedOnce = true;
+					}
+				} else { 
+					// This placeholder needs to be filled, add it in now
+					PlaceholderConstruct construct = new PlaceholderConstruct(this, placeholder);
+					
+					if(placeholder.isVariadic()) { 
+						addChild(children.size(), construct);
+					} else { 
+						addChild(i, construct);
+					}
+				}
+			}
+			
+			mPlaceholdersAdded = true;
+			mPlaceholdersAddedOptionals = true;
+		}
+	}
+	
+	public void onConstructSelected() {
+		insertPlaceholders();
+	}
+	
+	public void onConstructUnselected() {
+		removePlaceholders(false);
+		
+		for(Construct construct : this.children) {
+			// TODO: Assumed..
+			// TODO: Recurse..
+			ClojureConstruct cConstruct = (ClojureConstruct) construct;
+			cConstruct.removePlaceholders(false);
+		}
 	}
 }

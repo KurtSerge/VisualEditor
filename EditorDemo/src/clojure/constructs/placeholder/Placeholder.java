@@ -79,6 +79,14 @@ public class Placeholder {
 		return obj.equals(mClassRestriction);
 	}
 	
+	public void setPopulated(boolean isPopulated) { 
+		mIsPopulated = isPopulated;
+	}
+	
+	public boolean getIsPopulated() { 
+		return mIsPopulated;
+	}
+	
 	public Class<?> getClassRestriction() { 
 		return mClassRestriction;
 	}
@@ -92,5 +100,6 @@ public class Placeholder {
 	private boolean mIsPermanent;
 	private boolean mIsOptional;
 	private boolean mIsVariadic;
+	private boolean mIsPopulated;
 	private String mHint;
 }
