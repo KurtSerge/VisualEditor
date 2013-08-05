@@ -219,12 +219,25 @@ public abstract class Construct
 		}
 	}
 	
-	public void onConstructSelected() {
-	}
-	
-	public void onConstructUnselected() { 
-	}
-	
 	public void onChildAdded(int index, Construct child) { 
+	}
+
+	/* ----- NOTIFICATIONS ----- */
+	
+	/**
+	 * When this becomes a part of the branch selection. For instance,
+	 * it may be called while manually descending the tree or when a
+	 * descendant of this construct is selected. Meaning, this construct
+	 * *may* be the selected node, but it is at least in the selected 
+	 * branch of the tree.
+	 */
+	public void onBranchHighlighted() {
+	}
+	
+	/**
+	 * This is called when this construct is no longer part of the
+	 * branches selection (ie, the parent is now selected).
+	 */
+	public void onBranchUnhighlighted() { 
 	}
 }

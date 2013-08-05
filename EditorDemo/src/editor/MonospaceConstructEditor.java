@@ -405,10 +405,24 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 
 	private TextListener textListener;
 	
+	private void propagateHighlightSelection(ConstructEditor parent) { 
+		parent.construct.onBranchHighlighted();
+		
+		// Set the parent as highlighted
+		Construct construct = parent.construct.parent;
+		if(construct != null) { 
+			ConstructEditor editor = ConstructEditor.getEditorByConstruct(construct);
+			if(editor != null) { 	
+				propagateHighlightSelection(editor);
+			}
+		}
+	}
+	
 	@Override
 	public void setSelected(ConstructEditor currentOrNewlySelected, boolean bSelect) {
 		if(bSelect == true) {
-			construct.onConstructSelected();
+			propagateHighlightSelection(this);
+			
 			update();
 			
 			text_area.setBackground(new Color(230, 230, 230));
@@ -425,7 +439,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 				if(currentOrNewlySelected.construct.parent == null || 
 					currentOrNewlySelected.construct.parent.equals(this.construct) == false)
 				{
-					construct.onConstructUnselected();
+					construct.onBranchUnhighlighted();
 				}
 					
 			} else { 

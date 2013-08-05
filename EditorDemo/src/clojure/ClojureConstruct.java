@@ -253,11 +253,11 @@ public abstract class ClojureConstruct extends Construct
 		}
 	}
 	
-	public void onConstructSelected() {
+	public void onBranchHighlighted() {
 		insertPlaceholders();
 	}
 	
-	public void onConstructUnselected() {
+	public void onBranchUnhighlighted() {
 		removePlaceholders(false);
 	}
 }
