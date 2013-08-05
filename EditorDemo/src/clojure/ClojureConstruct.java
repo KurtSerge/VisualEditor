@@ -199,7 +199,7 @@ public abstract class ClojureConstruct extends Construct
 
 		// Now remove the identified children
 		for(Construct deleted : deletingConstructs) { 
-			deleteChild(deleted);
+			deleted.delete(false);
 		}
 		
 		mPlaceholdersAdded = false;

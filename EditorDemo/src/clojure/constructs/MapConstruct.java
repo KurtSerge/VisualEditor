@@ -75,7 +75,7 @@ public class MapConstruct extends ClojureConstruct {
 		
 		// Delete the value next to the keyword construct
 		if(deleted.getClass().equals(clojure.constructs.KeywordConstruct.class)) {
-			deleteChild(this.children.get(index));
+			this.children.get(index).delete(false);
 		}
 		
 		// Restore placeholder for deleted children next to KeywordConstruct's
@@ -95,7 +95,8 @@ public class MapConstruct extends ClojureConstruct {
 		return super.canDeleteChild(index, child);
 	}
 	
-	public boolean validateAddChild(int index, Construct child) {
+	@Override
+	public boolean canAddChild(int index, Construct child) {
 		if(index % 2 == 0)
 			return child.getClass().equals(clojure.constructs.KeywordConstruct.class);
 

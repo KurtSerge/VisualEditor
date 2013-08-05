@@ -74,12 +74,16 @@ public abstract class Construct
 	
 	public abstract boolean validate();
 
-	// Returns true if deleted
-	public boolean delete() {
+	public boolean delete(boolean shouldValidate) { 
 		if(parent != null)  {
+			// Validate the deletion of this child
 			int index = parent.children.indexOf(this);
-			if(parent.canDeleteChild(index, this) == false)
+			if(shouldValidate == true && 
+				parent.canDeleteChild(index, this) == false) 
+			{
 				return false;
+			}
+			
 			parent.children.remove(this);
 			parent.onChildDeleted(index, this);
 			AddToUndoBuffer();
@@ -88,25 +92,11 @@ public abstract class Construct
 			// FIXME: how to delete top from inside?
 		}
 	
-		return true; 
+		return true; 		
 	}
 
-	
-	// Override this for special rules, example: KV-Pair must have at least 2 children
-	public boolean deleteChild(Construct child) {
-		int childIndex = this.children.indexOf(child);
-		this.children.remove(childIndex);
-		return true;
-	}
-	
-	// Override this to set special conditions for when a child can be deleted
-	protected boolean canDeleteChild(int index, Construct child) {
-		return true;
-	}
-
-	// Check that child being added at the specified index is valid
-	protected boolean canAddChild(int index, Construct child) {
-		return true;
+	public boolean delete() {
+		return delete(true);
 	}
 	
 	// TODO: How to force contract to use addChild instead of this.children.add
@@ -214,14 +204,26 @@ public abstract class Construct
 		}
 	}
 	
+	/* ----- DERRIVED FUNCTIONALITY ----- */
+
+	// Override this to set special conditions for when a child can be deleted
+	protected boolean canDeleteChild(int index, Construct child) {
+		return true;
+	}
+
+	// Check that child being added at the specified index is valid
+	protected boolean canAddChild(int index, Construct child) {
+		return true;
+	}
+
+	/* ----- NOTIFICATIONS ----- */
+	
 	public void onChildAdded(int index, Construct child) { 
 	}
 	
 	protected void onChildDeleted(int index, Construct deleted) {
 		ConstructPublisher.getInstance().onConstructRemovedChild(this, deleted, index);
-	}
-
-	/* ----- NOTIFICATIONS ----- */
+	}	
 	
 	/**
 	 * When this becomes a part of the branch selection. For instance,
