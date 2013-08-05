@@ -44,7 +44,7 @@ public class Application extends VisualEditorFrame implements ComponentListener
 
 		this.getDocumentPane().add(top);
 		controller = new BaseController(this, mDocument);
-		layoutController = new LayoutController(mDocument, getSize(), 0.9f);
+		layoutController = new LayoutController(mDocument, this, getSize(), 0.9f);
 		top.addKeyListener(controller);
 		top.requestFocus();
 		

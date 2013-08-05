@@ -9,8 +9,11 @@ public class LayoutController {
 	private float mConstructRatioWidth;
 	private ConstructDocument mDocument;
 	private Dimension mScreen;	
+	private VisualEditorFrame mFrame;
 	
-	public LayoutController(ConstructDocument document, Dimension screen, float initialMaxRatio) {
+	public LayoutController(ConstructDocument document, VisualEditorFrame frame, Dimension screen, float initialMaxRatio) {
+		mFrame = frame;
+		
 		setConstructDisplayWidth(initialMaxRatio);		
 		setDimensions(screen);
 		
@@ -71,9 +74,9 @@ public class LayoutController {
 
 		if(construct.getIsMultilined() == false) {
 			construct.setMultilined(true);
-
-			ConstructEditor editor = ConstructEditor.editorsByConstructs.get(construct).get();
-			mDocument.getRootComponent().repaint();					
+			
+			mFrame.invalidate();
+			mFrame.repaint();
 
 			return true;
 		} else { 
