@@ -22,4 +22,9 @@ public class KeywordConstruct extends ClojureConstruct {
 		super.deepCopy(newCopy);
 		return newCopy;
 	}
+	
+	@Override
+	protected boolean canDeleteChild(int index, Construct child, boolean isUser) {
+		return false;
+	}
 }

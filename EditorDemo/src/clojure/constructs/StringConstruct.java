@@ -38,4 +38,9 @@ public class StringConstruct extends ClojureConstruct {
 	public Color debug_getForegroundColor() {
 		return new Color(144, 33, 104);
 	}
+	
+	@Override
+	protected boolean canDeleteChild(int index, Construct child, boolean isUser) {
+		return false;
+	}	
 }
