@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import json.JSONController;
@@ -109,15 +110,45 @@ public abstract class Construct
 		return addChild(this.children.size(), child);
 	}
 	
+	/**
+	 * Adds a child to this construct allowing for multiple children to
+	 * be added as a side-along effect. 
+	 *
+	 * @return True if child was sucessfully added
+	 */
 	final public boolean addChild(int index, Construct child) {
 		if(canAddChild(index, child) == true)  {
+			List<Construct> previousChildren = Collections.unmodifiableList(this.children);
+
+			// Perform basic add, and do callback
 			children.add(index, child);
-			AddToUndoBuffer();
 			onChildAdded(index, child);
-			ConstructPublisher.getInstance().onConstructAddedChild(this, child, index);
+			AddToUndoBuffer();
+			
+			// Check to see how many children were actually added as the 
+			// callback may, in some cases, add additional children
+			ConstructPublisher publisher = ConstructPublisher.getInstance();
+			if(previousChildren.size() + 1 == children.size()) { 
+				publisher.onConstructAddedChild(this, child, index);
+			} else { 
+				// Keep a map of new children and their index
+				Map<Construct, Integer> newChildren = new HashMap<Construct, Integer>();			
+				for(int i = 0; i < this.children.size(); i++) { 
+					if(previousChildren.contains(this.children.get(i)) == false) { 
+						newChildren.put(children.get(i), i);
+					}
+				}
+
+				// Publish each of the added children
+				Set<Construct> set = newChildren.keySet();
+				for(Construct key : set) { 
+					publisher.onConstructAddedChild(this, key, newChildren.get(key));				
+				}
+			}
+
 			return true;
 		}
-		// Else consider making empty TODO:
+
 		return false;
 	}
 	
