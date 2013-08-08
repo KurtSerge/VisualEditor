@@ -1,8 +1,11 @@
 package clojure.constructs.placeholder;
 
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 
 import clojure.ClojureConstruct;
+import clojure.constructs.StringConstruct;
+import clojure.constructs.SymbolConstruct;
 import clojure.constructs.meta.IfThenElseConstruct;
 import editor.Construct;
 
@@ -49,6 +52,43 @@ public class PlaceholderConstruct extends ClojureConstruct {
 		super.deepCopy(newCopy);
 		return newCopy;
 	}
+
+	@Override
+	public boolean onReceivedRawKey(KeyEvent e) {
+		int keyCode = e.getKeyCode();
+
+		if(keyCode == KeyEvent.VK_QUOTE) { 
+			return parent.replaceChild(this, new StringConstruct(parent, this.getDescriptor().getHint()));
+		}
+		
+		if(keyCode >= KeyEvent.VK_A && keyCode <= KeyEvent.VK_Z) {
+			// This is alphabetic and should be translated as the start of a symbol
+			String keyEventText = KeyEvent.getKeyText(keyCode);
+			if(e.isShiftDown() == false) { 
+				keyEventText = keyEventText.toLowerCase();
+			}
+			
+			SymbolConstruct replacementConstruct = new SymbolConstruct(parent, keyEventText);
+			return parent.replaceChild(this, replacementConstruct);
+		}
+		
+		if(getDescriptor().getClassRestriction() != null) { 
+			if(getDescriptor().getClassRestriction().equals(StringConstruct.class) &&
+					keyCode >= KeyEvent.VK_A && keyCode <= KeyEvent.VK_Z) {
+				// If we have a string restriction then take the
+				// key text and throw it into a new StringConstruct 
+				String keyEventText = KeyEvent.getKeyText(keyCode); 
+				if(e.isShiftDown() == false) { 
+					keyEventText = keyEventText.toLowerCase();
+				}
+				
+				StringConstruct replacementConstruct = new StringConstruct(parent, keyEventText);
+				return parent.replaceChild(this, replacementConstruct);
+			}
+		}
+
+		return false;
+	}	
 
 	private Placeholder mDescriptor;
 }

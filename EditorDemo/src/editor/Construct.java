@@ -1,5 +1,6 @@
 package editor;
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -118,7 +119,8 @@ public abstract class Construct
 	 */
 	final public boolean addChild(int index, Construct child) {
 		if(canAddChild(index, child) == true)  {
-			List<Construct> previousChildren = Collections.unmodifiableList(this.children);
+			List<Construct> previousChildren = new ArrayList<Construct>(this.children);
+			Collections.copy(previousChildren, this.children);
 
 			// Perform basic add, and do callback
 			children.add(index, child);
@@ -284,5 +286,13 @@ public abstract class Construct
 	 * branches selection (ie, the parent is now selected).
 	 */
 	public void onBranchUnhighlighted() { 
+	}
+	
+	/**
+	 * An unhandled key was typed whilst this construct was selected.
+	 * Give this construct a chance to handle the keystroke.
+	 */
+	public boolean onReceivedRawKey(KeyEvent e) {
+		return false;
 	}
 }

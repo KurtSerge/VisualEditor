@@ -23,26 +23,31 @@ public class HotkeyListener implements BaseControllerListener {
 	
 	
 	@Override
-	public void receivedHotkey(BaseController controller, EKeyBinding binding, int keyEventCode) {
+	public boolean receivedHotkey(BaseController controller, EKeyBinding binding, int keyEventCode) {
 		if(binding == EKeyBinding.Bind_Undo) { 
 			mDocument.undo();
-			return ;
+			return true;
 		} else if(binding == EKeyBinding.Bind_Redo) { 
 			mDocument.redo();
-			return ;
+			return true;
 		}
 		
 		if(binding == EKeyBinding.Bind_DebugPrint) {
 			mDocument.debugPrint();
-			return ;
+			return true;
 		}
 		
 		
 		handleInsert(controller, binding, keyEventCode);
+		
+		return true;
 	}
 	
 	private ClojureConstruct getConstructFromKey(ClojureConstruct parent, int keyEventCode) {
 		ClojureConstruct newConstruct = null;
+
+		System.out.println("Key is " + KeyEvent.VK_M);
+		
 		switch(keyEventCode) {
 			case KeyEvent.VK_6:
 				newConstruct = new FunctionConstruct(parent);
@@ -130,6 +135,7 @@ public class HotkeyListener implements BaseControllerListener {
 				break;
 				
 			default:
+				System.out.println(binding.toString());
 				throw new RuntimeException("Unhandled hotkey");
 		}
 		
@@ -221,7 +227,7 @@ public class HotkeyListener implements BaseControllerListener {
 		
 		ConstructEditor added = mDocument.editorsFromConstruct(newConstruct);
 		if(added != null)  {
-			controller.selector.Select(added);
+			controller.mConstructSelector.Select(added);
 		}
 	}
 }

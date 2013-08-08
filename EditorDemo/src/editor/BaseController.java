@@ -2,7 +2,9 @@ package editor;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -10,14 +12,78 @@ import java.util.Random;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import com.sun.tools.javac.util.Pair;
+
 import editor.document.ConstructDocument;
 
-public class BaseController implements KeyListener {
-	public EditSelection selector = null;
-	private BaseControllerListener theListener = null;// TODO: allow for more listeners
-	private String currentInput = null;
-	private Map<String, EKeyBinding> keyMap = null;
+public class BaseController implements KeyListener, BaseControllerListener {
+
+	private LinkedList<BaseControllerListener> mActionListeners;
+	private LinkedList<Pair<Hotkey, EKeyBinding>> mHotkeys;
+	private List<Pair<Hotkey, EKeyBinding>> mCandidateKeys;
+	private boolean mIsCapturingAlphaNumeric = false;
+	
+	// TODO: Code formatting
 	private ConstructFinder finder = null;
+	public EditSelection mConstructSelector = null;	
+
+	public static class Hotkey { 
+		public Hotkey(int key) { 
+			mIsControlPressed = false;
+			mKey = key;
+		}
+		
+		public Hotkey(int key, boolean isControlPressed) {
+			mIsControlPressed = isControlPressed;
+			mKey = key;
+		}
+		
+		public void setCaptureAlphaNumeric(boolean value) { 
+			mIsAlphaNumericGlobal = value;
+		}
+		
+		public boolean getCapturesAlphaNumeric() { 
+			return mIsAlphaNumericGlobal;
+		}
+		
+		public int getKey() { 
+			return mKey;
+		}
+		
+		public boolean isControlPressed() { 
+			return mIsControlPressed;
+		}
+		
+		public Hotkey setNext(Hotkey hotkey) { 
+			mNext = hotkey;
+			return hotkey;
+		}
+		
+		public Hotkey getNext() { 
+			return mNext;
+		}
+		
+		public String serialize() { 
+			String allMembers = "" + mKey + mIsControlPressed;			
+			return allMembers;
+		}
+		
+		@Override 
+		public int hashCode() { 
+			String serialized = serialize();
+			return serialized.hashCode();
+		}
+		
+		@Override
+		public boolean equals(Object hotkey) { 
+			return hotkey.hashCode() == this.hashCode();
+		}
+		
+		private boolean mIsControlPressed;
+		private Hotkey mNext;
+		private boolean mIsAlphaNumericGlobal;
+		private int mKey;
+	}
 	
 	public enum EKeyBinding {
 		Bind_Insert,
@@ -52,119 +118,158 @@ public class BaseController implements KeyListener {
 	
 	private ConstructDocument mDocument;
 	
-	public void setListener(BaseControllerListener listener) {
-		theListener = listener;
+	
+	public void addListener(BaseControllerListener listener) {
+		mActionListeners.add(listener);
+		
+	}
+	
+	public void removeListener(BaseControllerListener listener) { 
+		mActionListeners.remove(listener);
 	}
 	
 	public BaseController(JFrame frame, ConstructDocument document) {
-		System.out.println("Setup BaseController");
-		selector = new EditSelection(frame, document);
-	    selector.SelectRandom();
-		currentInput = "";
+		mActionListeners = new LinkedList<BaseControllerListener>();
+		mConstructSelector = new EditSelection(frame, document);
+		mHotkeys = new LinkedList<Pair<Hotkey, EKeyBinding>>();		
 		mDocument = document;
-		keyMap = new HashMap<String, EKeyBinding>();
 
-		// Internally handled hotkeys
-		this.registerHotkey(EKeyBinding.Bind_DeleteAll, String.format("%s", (char)KeyEvent.VK_BACK_SPACE));
-		this.registerHotkey(EKeyBinding.Bind_SelectNextSibling, String.format("%s", (char)KeyEvent.VK_1));
+		addListener(mConstructSelector);
+		addListener(this);
 		
-		this.registerHotkey(EKeyBinding.Bind_DeleteAll, String.format("%s%s", (char)KeyEvent.VK_D, (char)KeyEvent.VK_D));
-		this.registerHotkey(EKeyBinding.Bind_DeleteTopmost, String.format("%s%s", (char)KeyEvent.VK_D, (char)KeyEvent.VK_P));
-		this.registerHotkey(EKeyBinding.Bind_DebugPrint, String.format("%s", (char)KeyEvent.VK_P));
+		mConstructSelector.SelectRandom();
+
+		// System hotkeys
+		addHotkey(EKeyBinding.Bind_SelectNextSibling, KeyEvent.VK_TAB);
+		addHotkey(EKeyBinding.Bind_DeleteAll, KeyEvent.VK_BACK_SPACE);
+		addHotkey(EKeyBinding.Bind_SelectPrevSibling, KeyEvent.VK_UP);
+		addHotkey(EKeyBinding.Bind_SelectNextSibling, KeyEvent.VK_DOWN);
+		addHotkey(EKeyBinding.Bind_SelectParent, KeyEvent.VK_LEFT);
+		addHotkey(EKeyBinding.Bind_SelectChild, KeyEvent.VK_RIGHT);
 		
-		this.registerHotkey(EKeyBinding.Bind_SelectParent, String.format("%s", (char)KeyEvent.VK_LEFT));
-		this.registerHotkey(EKeyBinding.Bind_SelectChild, String.format("%s", (char)KeyEvent.VK_RIGHT));
-		this.registerHotkey(EKeyBinding.Bind_SelectNextSibling, String.format("%s", (char)KeyEvent.VK_DOWN));
-		this.registerHotkey(EKeyBinding.Bind_SelectPrevSibling, String.format("%s", (char)KeyEvent.VK_UP));
-		this.registerHotkey(EKeyBinding.Bind_Save, String.format("%s%s", (char)KeyEvent.VK_S, (char)KeyEvent.VK_S));
-		this.registerHotkey(EKeyBinding.Bind_Find, String.format("%s%s", (char)KeyEvent.VK_F, (char)KeyEvent.VK_F));
-		this.registerHotkey(EKeyBinding.Bind_FindNext, String.format("%s%s", (char)KeyEvent.VK_F, (char)KeyEvent.VK_N));
-		//this.registerHotkey(EKeyBinding.Bind_SelectRandom, String.format("%s", (char)KeyEvent.VK_R));
+		// System Control-events
+		addHotkey(EKeyBinding.Bind_DebugPrint, KeyEvent.VK_P, true);
+		addHotkey(EKeyBinding.Bind_Save, KeyEvent.VK_S, true);
+		addHotkey(EKeyBinding.Bind_DeleteTopmost, KeyEvent.VK_D, true).setNext(new Hotkey(KeyEvent.VK_P, true));
+		addHotkey(EKeyBinding.Bind_Find, KeyEvent.VK_F, true).setNext(new Hotkey(KeyEvent.VK_F, true));
+		addHotkey(EKeyBinding.Bind_FindNext, KeyEvent.VK_F, true).setNext(new Hotkey(KeyEvent.VK_N, true));
 	}
 	
-	// Important:Use the '?' character to indicate that an "autocomplete char" comes after the hotkey
-	// Must write hotkey code in whatever form KeyEvent.getKeyText(code) uses.  Usually this means using capital letters
-	public void registerHotkey(EKeyBinding binding, String code) {
-		keyMap.put(code, binding);
+	public Hotkey addHotkey(EKeyBinding bind, int key) { 
+		Hotkey hotkey = new Hotkey(key, false);
+		return addHotkey(bind, hotkey);
 	}
 	
-	private void clearBindings() {
-		currentInput = "";
+	public Hotkey addHotkey(EKeyBinding bind, int key, boolean isControlPressed) {
+		Hotkey hotkey = new Hotkey(key, isControlPressed);
+		return addHotkey(bind, hotkey);
 	}
 	
+	public Hotkey addHotkey(EKeyBinding bind, Hotkey hotkey) {
+		mHotkeys.add(new Pair<Hotkey, EKeyBinding>(hotkey, bind));
+		return hotkey;
+	}
+
+	
+	
+	
+	
+	
+	private int getIndexOfSelectedConstruct() { 
+		return mConstructSelector.selected.construct.parent.getChildren().indexOf(mConstructSelector.selected.construct);
+	}
+	
+	private List<Pair<Hotkey, EKeyBinding>> getListOfCandiatesForRootKey(Hotkey key) {
+		LinkedList<Pair<Hotkey, EKeyBinding>> hotkeys = new LinkedList<Pair<Hotkey, EKeyBinding>>();
+		for(Pair<Hotkey, EKeyBinding> pair : mHotkeys) {
+			if(pair.fst.equals(key)) { 
+				hotkeys.add(pair);
+			}
+		}
+		
+		return hotkeys;
+	}
 
 	@Override
-	public void keyPressed(KeyEvent arg0) {
-		// Handle combo bindings***************
-		if (arg0.getID() == KeyEvent.KEY_PRESSED && arg0.getKeyCode() == KeyEvent.VK_ESCAPE) {
-			clearBindings();
-			return;
+	public void keyPressed(KeyEvent event) {
+		if(event.getKeyCode() == KeyEvent.VK_ALT || 
+				event.getKeyCode() == KeyEvent.VK_CONTROL || 
+				event.getKeyCode() == KeyEvent.VK_META || 
+				event.getKeyCode() == KeyEvent.VK_SHIFT) { 
+			// If the primary key state change code is 
+			// alt, control, meta or shift then ignore it
+			return ;
 		}
 		
-		// We assume all registered key bindings are 2 chars in length, but some take KeyEvent as a parameter
-		if(currentInput.length() < 2)
-			currentInput += (char)arg0.getKeyCode();
-		else
-			currentInput += (char)KeyEvent.VK_UNDEFINED; // ? For KeyEvent
-
-		EKeyBinding bindingCheck = keyMap.get(currentInput);
-		if(bindingCheck != null) {
-			switch(bindingCheck) {
-				case Bind_DeleteAll:
-					DeleteAllSelected();
-					break;
-				case Bind_DeleteTopmost:
-					DeleteTopmost();
-					break;
-				case Bind_SelectParent:
-					System.out.println("Left");
-        			selector.SelectParentConstruct();
-					break;
-				case Bind_SelectChild:
-					System.out.println("Right");
-        			selector.SelectFirstChildConstruct();
-					break;
-				case Bind_SelectNextSibling:
-					System.out.println("Down");
-        			selector.SelectAdjacentConstruct(true);
-					break;
-				case Bind_SelectPrevSibling:
-					System.out.println("Up");
-        			selector.SelectAdjacentConstruct(false);
-					break;
-				case Bind_SelectRandom:
-					selector.SelectRandom();
-					break;
-				case Bind_Save:
-					SaveToFile();
-					break;
-				case Bind_Find:
-					Find();
-					break;
-				case Bind_FindNext:
-					FindNext();
-					break;
-				default:
-					if(theListener != null)
-						theListener.receivedHotkey(this, bindingCheck, arg0.getKeyCode());
-					break;
-			}
-
-			clearBindings();
-			return;
+		if(event.getKeyCode() == KeyEvent.VK_ESCAPE)  {
+			// Escape should cancel the hotkey stack
+			mIsCapturingAlphaNumeric = false;
+			mCandidateKeys = null;
+			return ;
 		}
-		else {
-			// See if we are on the right path
-			int len = currentInput.length();
-			for(String str : keyMap.keySet()) {
-				if(len > str.length())
-					continue;
-				String check = str.substring(0, len);
-				if(check.contains(currentInput))
-					return;
+		
+		if(mIsCapturingAlphaNumeric == true) {
+			// Publish this key 
+			publishKeyIfAvailable(event);
+			return ;
+		}
+		
+		Hotkey emulatedHotkey = new Hotkey(event.getKeyCode(), event.isMetaDown());
+
+		if(mCandidateKeys == null) { 
+			// Fetch the parent Hotkey chains for this key
+			mCandidateKeys = getListOfCandiatesForRootKey(emulatedHotkey);
+			publishKeyIfAvailable(null);
+		} else { 
+			// Filter down the list of candidate keys that
+			// have a next parameter that matches this key
+			List<Pair<Hotkey, EKeyBinding>> filteredBindings = new LinkedList<Pair<Hotkey, EKeyBinding>>();
+			for(Pair<Hotkey, EKeyBinding> bindings : mCandidateKeys) { 
+				if(bindings.fst.getNext() != null && 
+						bindings.fst.getNext().equals(emulatedHotkey) == true) {
+					filteredBindings.add(new Pair<Hotkey, EKeyBinding>(bindings.fst.getNext(), bindings.snd));					
+				}
 			}
-			clearBindings();
-			return;
+
+			// Filter down to the next children
+			mCandidateKeys = filteredBindings;
+			publishKeyIfAvailable(null);
+		}
+	}
+
+	private void publishKeyIfAvailable(KeyEvent keyEvent) { 		
+		if(mCandidateKeys != null && 
+				mCandidateKeys.size() == 1 && 
+				mCandidateKeys.get(0).fst.getNext() == null)
+		{ 
+			Hotkey hotkey = mCandidateKeys.get(0).fst;
+			EKeyBinding binding = mCandidateKeys.get(0).snd;
+			int publishKeyCode = hotkey.getKey(); 
+			if(keyEvent != null) {
+				publishKeyCode = keyEvent.getKeyCode();
+			}
+			
+			// Does this key have an alpha numeric capture?
+			if(mCandidateKeys.get(0).fst.getCapturesAlphaNumeric() && !mIsCapturingAlphaNumeric) {
+				mIsCapturingAlphaNumeric = true;
+				return ;
+			}
+
+			// Publish to all known listeners
+			for(BaseControllerListener listener : mActionListeners) {
+				if(listener.receivedHotkey(this, binding, publishKeyCode) == true) { 
+					break;
+				}		
+			}
+
+			// Reset the candidate keys
+			mIsCapturingAlphaNumeric = false;
+			mCandidateKeys = null;
+		}
+		
+		if(mCandidateKeys != null && 
+			mCandidateKeys.size() == 0) {  
+			mCandidateKeys = null;
 		}
 	}
 	
@@ -176,7 +281,7 @@ public class BaseController implements KeyListener {
 	private void Find() {
 		String findme = JOptionPane.showInputDialog(null,"Find:");
 		if(findme != null) {
-			finder = new ConstructFinder(selector.selected.construct, findme);
+			finder = new ConstructFinder(mConstructSelector.selected.construct, findme);
 			FindNext();
 		}
 	}
@@ -185,12 +290,12 @@ public class BaseController implements KeyListener {
 		if(finder != null) {
 			Construct lit = finder.nextLiteral();
 			if(lit != null)
-				selector.Select(ConstructEditor.editorsByConstructs.get(lit).get());
+				mConstructSelector.Select(ConstructEditor.editorsByConstructs.get(lit).get());
 		}
 	}
 	
 	private Construct getTopConstruct() {
-		Construct iter = selector.selected.construct;
+		Construct iter = mConstructSelector.selected.construct;
 		while(iter.parent != null)
 			iter = iter.parent;
 			
@@ -198,7 +303,7 @@ public class BaseController implements KeyListener {
 	}
 	
     public ConstructEditor getSelectedEditor() {
-    	return selector.selected;
+    	return mConstructSelector.selected;
     }
 
 	@Override
@@ -211,7 +316,7 @@ public class BaseController implements KeyListener {
 
 	// Delete construct and all children
 	public void DeleteAllSelected() {
-		ConstructEditor deleteMeEditor = selector.selected;
+		ConstructEditor deleteMeEditor = mConstructSelector.selected;
 		if(deleteMeEditor.getParent() != null) 
 		{
 			// Determine the index of the child being deleted
@@ -224,19 +329,19 @@ public class BaseController implements KeyListener {
 			int siblingsCount = parentConstruct.construct.children.size();			
 			if(deleteMeEditor.deleteMe()) {
 				deleteMeEditor.getParent().update();
-				selector.selected.update();
+				mConstructSelector.selected.update();
 				
 				int newSiblingsCount = parentConstruct.construct.children.size();
     			if(siblingsCount != newSiblingsCount) {
     				// Child was removed, move the selection
-					if(selector.SelectAdjacentConstruct(false) == false)
-						selector.SelectParentConstruct();
+					if(mConstructSelector.SelectAdjacentConstruct(false) == false)
+						mConstructSelector.SelectParentConstruct();
     			} else {
     				// 'Deleted' but children count didn't change, this implies
     				// that the child was actually replaced (ie, placeholder restoration)
     				Construct replacingConstruct = deleteMeEditor.getParent().construct.children.get(childIndex);
     				ConstructEditor replacingEditor = ConstructEditor.editorsByConstructs.get(replacingConstruct).get();
-    				selector.Select(replacingEditor);
+    				mConstructSelector.Select(replacingEditor);
     			}
 			} else { 
 				deleteMeEditor.getParent().update();
@@ -247,7 +352,7 @@ public class BaseController implements KeyListener {
 	
 	// Delete topmost construct of selected
 	public void DeleteTopmost() {
-		ConstructEditor deleteMeEditor = selector.selected;
+		ConstructEditor deleteMeEditor = mConstructSelector.selected;
 		if(deleteMeEditor.getParent() != null) 
 		{
 			int index = deleteMeEditor.construct.parent.children.indexOf(deleteMeEditor.construct);
@@ -257,9 +362,9 @@ public class BaseController implements KeyListener {
 			if(added > 0) {
 				boolean deleted = deleteMeEditor.deleteMe();
 				if(deleted == true) {
-	    			selector.selected.update();
-					if(selector.SelectAdjacentConstruct(false) == false)
-						selector.SelectParentConstruct();
+					mConstructSelector.selected.update();
+					if(mConstructSelector.SelectAdjacentConstruct(false) == false)
+						mConstructSelector.SelectParentConstruct();
 				}
 			}
 		}
@@ -281,7 +386,7 @@ public class BaseController implements KeyListener {
 				childrenAdded++;
 				index++;
 				if(added != null)  {
-					selector.Select(added);
+					mConstructSelector.Select(added);
 				}
 			}
 		}
@@ -291,7 +396,7 @@ public class BaseController implements KeyListener {
 	
 	
 	// Handles keyboard selection of constructs
-	public class EditSelection {
+	public static class EditSelection implements BaseControllerListener {
 		private final JFrame frame;
 		private final ConstructDocument mDocument;
 		private ConstructEditor selected = null;
@@ -380,5 +485,72 @@ public class BaseController implements KeyListener {
 			frame.repaint();
 		}
 
+		@Override
+		public boolean receivedHotkey(BaseController baseController, EKeyBinding binding, int keyEventCode) {
+			switch(binding) {
+				case Bind_SelectParent:
+					System.out.println("Left");
+	    			SelectParentConstruct();
+					break;
+					
+				case Bind_SelectChild:
+					System.out.println("Right");
+	    			SelectFirstChildConstruct();
+					break;
+					
+				case Bind_SelectNextSibling:
+					System.out.println("Down");
+	    			SelectAdjacentConstruct(true);
+					break;
+					
+				case Bind_SelectPrevSibling:
+					System.out.println("Up");
+	    			SelectAdjacentConstruct(false);
+					break;
+					
+				case Bind_SelectRandom:
+					SelectRandom();
+					break;
+					
+				case Bind_DebugPrint:
+					selected.construct.debugPrint();
+					break;
+					
+				default:
+					return false;
+			}
+			
+			return true;
+		}
+	}
+	
+	@Override
+	public boolean receivedHotkey(BaseController controller, EKeyBinding binding, int keyCode) {
+		switch(binding) { 
+			case Bind_DeleteAll:
+				DeleteAllSelected();
+				break;
+				
+			case Bind_DeleteTopmost:
+				DeleteTopmost();
+				break;				
+				
+			case Bind_Save:
+				SaveToFile();
+				break;
+				
+			case Bind_Find:
+				Find();
+				break;
+				
+			case Bind_FindNext:
+				FindNext();
+				break;
+				
+			default: 
+				return false;
+		}
+		
+		return true;
 	}
 }

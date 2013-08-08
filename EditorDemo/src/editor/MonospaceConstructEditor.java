@@ -66,7 +66,9 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		}
 		
 		@Override
-		public void keyPressed(KeyEvent e) {
+		public void keyPressed(KeyEvent e) {	
+			System.out.println(e);
+			
 			if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 				// Find base
 				requestTopFocus();
@@ -74,9 +76,13 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		}
 		
 		@Override
-		public void keyReleased(KeyEvent e) {}
+		public void keyReleased(KeyEvent e) {
+		}
+		
 		@Override
-		public void keyTyped(KeyEvent e) {}
+		public void keyTyped(KeyEvent e) {
+			System.out.println(e);
+		}
 	}
 	
 	private ConstructDocument mDocument = null;
@@ -425,25 +431,25 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 			
 			update();
 			
+			System.out.println("Selected " + construct.type);
+			
 			text_area.setBackground(new Color(230, 230, 230));
 			textListener = new TextListener();
+			
 			text_area.addKeyListener(textListener);
+
 			if(construct != null && construct.screen_text() == null) { // editable
 				get_component().requestFocus();
 				//text_area.selectAll();
 			}
 		} 
 		else {
-			
 			if(currentOrNewlySelected != null) {
 				if(currentOrNewlySelected.construct.parent == null || 
 					currentOrNewlySelected.construct.parent.equals(this.construct) == false)
 				{
 					construct.onBranchUnhighlighted();
 				}
-					
-			} else { 
-//				construct.onConstructUnselected();
 			}
 			
 			update();

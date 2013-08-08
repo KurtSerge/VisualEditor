@@ -26,6 +26,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import editor.BaseController.EKeyBinding;
+import editor.BaseController.Hotkey;
 import editor.ConstructPublisher.ConstructListener;
 import editor.document.ClojureConstructDocument;
 import editor.document.ConstructDocument;
@@ -45,22 +46,23 @@ public class Application extends VisualEditorFrame implements ComponentListener
 		this.getDocumentPane().add(top);
 		controller = new BaseController(this, mDocument);
 		layoutController = new LayoutController(mDocument, this, getSize(), 0.9f);
+		top.setFocusTraversalKeysEnabled(false);
 		top.addKeyListener(controller);
 		top.requestFocus();
-		
-		controller.setListener(listener);
-		controller.registerHotkey(EKeyBinding.Bind_InsertAfter, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_A, (char)KeyEvent.VK_UNDEFINED));
-		controller.registerHotkey(EKeyBinding.Bind_InsertBefore, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_B, (char)KeyEvent.VK_UNDEFINED));
-		controller.registerHotkey(EKeyBinding.Bind_InsertReplace, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_R, (char)KeyEvent.VK_UNDEFINED));
-		controller.registerHotkey(EKeyBinding.Bind_InsertChild, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_C, (char)KeyEvent.VK_UNDEFINED));
-		controller.registerHotkey(EKeyBinding.Bind_InsertUsurp, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_U, (char)KeyEvent.VK_UNDEFINED));
-		controller.registerHotkey(EKeyBinding.Bind_Undo, String.format("%s", (char)KeyEvent.VK_U));
-		controller.registerHotkey(EKeyBinding.Bind_Redo, String.format("%s", (char)KeyEvent.VK_R));
-		
-		controller.registerHotkey(EKeyBinding.Bind_Copy, String.format("%s", (char)KeyEvent.VK_C));
+
+		controller.addListener(listener);
+		controller.addHotkey(EKeyBinding.Bind_Undo, KeyEvent.VK_Z, true);
+		controller.addHotkey(EKeyBinding.Bind_Redo, KeyEvent.VK_Y, true);
+		controller.addHotkey(EKeyBinding.Bind_InsertAfter, KeyEvent.VK_I, true).setNext(new Hotkey(KeyEvent.VK_A, true)).setCaptureAlphaNumeric(true);
+		controller.addHotkey(EKeyBinding.Bind_InsertBefore, KeyEvent.VK_I, true).setNext(new Hotkey(KeyEvent.VK_B, true)).setCaptureAlphaNumeric(true);
+		controller.addHotkey(EKeyBinding.Bind_InsertReplace, KeyEvent.VK_I, true).setNext(new Hotkey(KeyEvent.VK_R, true)).setCaptureAlphaNumeric(true);
+		controller.addHotkey(EKeyBinding.Bind_InsertChild, KeyEvent.VK_I, true).setNext(new Hotkey(KeyEvent.VK_C, true)).setCaptureAlphaNumeric(true);
+
+		// TODO: Restore
+		//controller.registerHotkey(EKeyBinding.Bind_InsertUsurp, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_U, (char)KeyEvent.VK_UNDEFINED));
+		//controller.registerHotkey(EKeyBinding.Bind_Copy, String.format("%s", (char)KeyEvent.VK_C));
 	}
 
-	
 	/**
 	 * 
 	 */
@@ -131,6 +133,7 @@ public class Application extends VisualEditorFrame implements ComponentListener
 				
 				@Override
 				public void onConstructAddedChild(Construct parent, Construct child, int index) {
+					System.out.println("Added a child..");
 					mDocument.editorsFromConstruct(child);
 					layoutController.relayout();
 				}

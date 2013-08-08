@@ -27,8 +27,9 @@ public class JSONHotkeyListener implements BaseControllerListener {
 	}
 	
 	@Override
-	public void receivedHotkey(BaseController controller, EKeyBinding binding, int keyEventCode) {
+	public boolean receivedHotkey(BaseController controller, EKeyBinding binding, int keyEventCode) {
 		handleInsert(controller, binding, keyEventCode);
+		return true;
 	}
 
 	private void handleInsert(BaseController controller, EKeyBinding binding, int keyEventCode) {
@@ -164,7 +165,7 @@ public class JSONHotkeyListener implements BaseControllerListener {
 		ConstructEditor added = mDocument.editorsFromConstruct(newConstruct);
 		if(added != null)  {
 			controller.getSelectedEditor().update();
-			controller.selector.Select(added);
+			controller.mConstructSelector.Select(added);
 		}
 	}
 }
