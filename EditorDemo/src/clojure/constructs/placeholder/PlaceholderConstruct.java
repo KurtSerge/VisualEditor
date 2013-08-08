@@ -88,6 +88,20 @@ public class PlaceholderConstruct extends ClojureConstruct {
 				return parent.replaceChild(this, replacementConstruct);
 			}
 		}
+		
+		if(keyCode == KeyEvent.VK_ENTER) { 
+			if(getDescriptor().getClassRestriction() != null) {
+				// We'll autobox this selection				
+				Class<?> restrictedClass = getDescriptor().getClassRestriction();
+				if(restrictedClass.equals(StringConstruct.class)) {
+					StringConstruct replacingConstruct = new StringConstruct(parent, "");
+					return parent.replaceChild(this, replacingConstruct);
+				} else if(restrictedClass.equals(SymbolConstruct.class)) { 
+					SymbolConstruct replacingConstruct = new SymbolConstruct(parent, null);
+					return parent.replaceChild(this, replacingConstruct);
+				}
+			}
+		}
 
 		return false;
 	}	
