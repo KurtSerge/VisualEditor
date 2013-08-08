@@ -36,10 +36,8 @@ public class HotkeyListener implements BaseControllerListener {
 			mDocument.debugPrint();
 			return true;
 		}
-		
-		
+
 		handleInsert(controller, binding, keyEventCode);
-		
 		return true;
 	}
 	

@@ -257,9 +257,13 @@ public class BaseController implements KeyListener, BaseControllerListener {
 
 			// Publish to all known listeners
 			for(BaseControllerListener listener : mActionListeners) {
-				if(listener.receivedHotkey(this, binding, publishKeyCode) == true) { 
-					break;
-				}		
+				try { 
+					if(listener.receivedHotkey(this, binding, publishKeyCode) == true) { 
+						break;
+					}
+				} catch(Exception ex) { 
+					ex.printStackTrace();
+				}
 			}
 
 			// Reset the candidate keys
