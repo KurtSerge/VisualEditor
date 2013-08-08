@@ -8,6 +8,7 @@ import json.JSONController;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import editor.BaseController;
 import editor.Construct;
 import editor.document.ConstructDocument;
 

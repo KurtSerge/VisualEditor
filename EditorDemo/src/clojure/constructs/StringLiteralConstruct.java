@@ -24,4 +24,9 @@ public class StringLiteralConstruct extends ClojureConstruct {
 	public Color debug_getForegroundColor() {
 		return new Color(144, 33, 104);
 	}
+	
+	@Override
+	public boolean isSoleDependantConstruct() { 
+		return true;
+	}
 }

@@ -10,6 +10,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import editor.BaseController;
 import editor.Construct;
 import editor.ConstructEditor;
 import editor.ConstructPublisher.ConstructListener;
@@ -32,6 +33,7 @@ public abstract class ConstructDocument {
 	private Construct mRootConstruct;
 	private Component mRootComponent;
 	private ConstructDocumentListener mListener;
+	private BaseController mController;
 
 	public ConstructDocument(String filename) 
 		throws FileNotFoundException
@@ -64,6 +66,10 @@ public abstract class ConstructDocument {
 		setRootComponent(editorFromRoot.get_component());
 	}
 	
+	public void setController(BaseController controller) { 
+		mController = controller;
+	}
+	
 	public void setListener(ConstructDocumentListener newListener) { 
 		mListener = newListener;
 	}
@@ -80,7 +86,7 @@ public abstract class ConstructDocument {
 			}
 		}
 		
-		MonospaceConstructEditor newEditor = new MonospaceConstructEditor(root, this);
+		MonospaceConstructEditor newEditor = new MonospaceConstructEditor(mController, root, this);
 		if(mEditors == null)
 			mEditors = new ArrayList<ConstructEditor>();
 		mEditors.add(newEditor);

@@ -58,10 +58,12 @@ public class PlaceholderConstruct extends ClojureConstruct {
 		int keyCode = e.getKeyCode();
 
 		if(keyCode == KeyEvent.VK_QUOTE) { 
-			return parent.replaceChild(this, new StringConstruct(parent, this.getDescriptor().getHint()));
+			return parent.replaceChild(this, new StringConstruct(parent, ""));
 		}
 		
-		if(keyCode >= KeyEvent.VK_A && keyCode <= KeyEvent.VK_Z) {
+		if(keyCode >= KeyEvent.VK_A && keyCode <= KeyEvent.VK_Z &&
+				getDescriptor().isAllowed(SymbolConstruct.class))
+		{
 			// This is alphabetic and should be translated as the start of a symbol
 			String keyEventText = KeyEvent.getKeyText(keyCode);
 			if(e.isShiftDown() == false) { 

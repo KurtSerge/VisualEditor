@@ -9,6 +9,7 @@ import clojure.ClojureReader;
 import clojure.constructs.ListConstruct;
 import clojure.constructs.placeholder.Placeholder;
 import clojure.constructs.special.VariadicVectorConstruct;
+import editor.BaseController;
 import editor.Construct;
 
 public class ClojureConstructDocument extends ConstructDocument {

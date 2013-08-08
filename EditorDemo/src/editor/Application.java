@@ -44,7 +44,12 @@ public class Application extends VisualEditorFrame implements ComponentListener
 		}
 
 		this.getDocumentPane().add(top);
+		
+		
+		// TODO: ! Cyclic
 		controller = new BaseController(this, mDocument);
+		mDocument.setController(controller);
+		
 		layoutController = new LayoutController(mDocument, this, getSize(), 0.9f);
 		top.setFocusTraversalKeysEnabled(false);
 		top.addKeyListener(controller);
@@ -78,15 +83,11 @@ public class Application extends VisualEditorFrame implements ComponentListener
 		
 		boolean shouldLoadJson = false;	// Alt: Loads Clojure
 
-		
-		
 		this.setSize(800, 600);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
 		this.setBackground(Color.white);
-		
-	
-		
+
 		final VisualEditorFrame window = this;
 		try {
 			if(shouldLoadJson) {

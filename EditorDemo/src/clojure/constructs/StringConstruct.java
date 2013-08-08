@@ -43,4 +43,13 @@ public class StringConstruct extends ClojureConstruct {
 	protected boolean canDeleteChild(int index, Construct child, boolean isUser) {
 		return false;
 	}	
+	
+	@Override
+	public Construct getConstructForSelection(SelectionType type) { 
+		if(type == SelectionType.AutoboxedReplacement) { 
+			return this.children.get(0);
+		}
+		
+		return super.getConstructForSelection(type);
+	}
 }

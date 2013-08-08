@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 
 import com.sun.tools.javac.util.Pair;
 
+import editor.Construct.SelectionType;
 import editor.document.ConstructDocument;
 
 public class BaseController implements KeyListener, BaseControllerListener {
@@ -215,10 +216,23 @@ public class BaseController implements KeyListener, BaseControllerListener {
 		}
 		
 		Hotkey emulatedHotkey = new Hotkey(event.getKeyCode(), event.isMetaDown());
-
 		if(mCandidateKeys == null) { 
 			// Fetch the parent Hotkey chains for this key
 			mCandidateKeys = getListOfCandiatesForRootKey(emulatedHotkey);
+			if(mCandidateKeys.size() == 0) { 
+
+				// TODO: Support insert/remove/add (currently only 'replace')
+				Construct parent = mConstructSelector.selected.construct.parent;
+				int indexOfSelectedConstruct = getIndexOfSelectedConstruct();
+				mConstructSelector.selected.construct.onReceivedRawKey(event);
+				
+				if(getIndexOfSelectedConstruct() == -1) { 
+					Construct newChild = parent.getChildren().get(indexOfSelectedConstruct);
+					ConstructEditor editor = mDocument.editorsFromConstruct(newChild);
+					mConstructSelector.Select(SelectionType.AutoboxedReplacement, editor);
+				}
+			}			
+			
 			publishKeyIfAvailable(null);
 		} else { 
 			// Filter down the list of candidate keys that
@@ -294,7 +308,7 @@ public class BaseController implements KeyListener, BaseControllerListener {
 		if(finder != null) {
 			Construct lit = finder.nextLiteral();
 			if(lit != null)
-				mConstructSelector.Select(ConstructEditor.editorsByConstructs.get(lit).get());
+				mConstructSelector.Select(Construct.SelectionType.Default, ConstructEditor.editorsByConstructs.get(lit).get());
 		}
 	}
 	
@@ -321,7 +335,13 @@ public class BaseController implements KeyListener, BaseControllerListener {
 	// Delete construct and all children
 	public void DeleteAllSelected() {
 		ConstructEditor deleteMeEditor = mConstructSelector.selected;
-		if(deleteMeEditor.getParent() != null) 
+		if(deleteMeEditor.construct.isSoleDependantConstruct()) { 
+			Construct parentConstruct = mConstructSelector.selected.construct.parent;
+			deleteMeEditor = mDocument.editorsFromConstruct(parentConstruct);
+		}
+
+		if(deleteMeEditor != null && 
+				deleteMeEditor.getParent() != null) 
 		{
 			// Determine the index of the child being deleted
 			// in case we need it for selection later on
@@ -345,7 +365,7 @@ public class BaseController implements KeyListener, BaseControllerListener {
     				// that the child was actually replaced (ie, placeholder restoration)
     				Construct replacingConstruct = deleteMeEditor.getParent().construct.children.get(childIndex);
     				ConstructEditor replacingEditor = ConstructEditor.editorsByConstructs.get(replacingConstruct).get();
-    				mConstructSelector.Select(replacingEditor);
+    				mConstructSelector.Select(Construct.SelectionType.Default, replacingEditor);
     			}
 			} else { 
 				deleteMeEditor.getParent().update();
@@ -390,7 +410,7 @@ public class BaseController implements KeyListener, BaseControllerListener {
 				childrenAdded++;
 				index++;
 				if(added != null)  {
-					mConstructSelector.Select(added);
+					mConstructSelector.Select(Construct.SelectionType.Default, added);
 				}
 			}
 		}
@@ -415,7 +435,7 @@ public class BaseController implements KeyListener, BaseControllerListener {
 			
 			int select = Math.abs((new Random()).nextInt()) % editors.size();
 			ConstructEditor toSelect = editors.get(select);
-			Select(toSelect);
+			Select(Construct.SelectionType.Default, toSelect);
 		}
 		
 		public void SelectParentConstruct() {
@@ -426,7 +446,7 @@ public class BaseController implements KeyListener, BaseControllerListener {
 			if(parent == null)
 				return;
 			
-			 Select(parent);
+			 Select(Construct.SelectionType.Default, parent);
 		}
 		
 		public void SelectFirstChildConstruct() {
@@ -439,7 +459,7 @@ public class BaseController implements KeyListener, BaseControllerListener {
 			if(child == null)
 				return;
 			
-			 Select(ConstructEditor.editorsByConstructs.get(child).get());
+			 Select(Construct.SelectionType.Default, ConstructEditor.editorsByConstructs.get(child).get());
 		}
 		
 		public boolean SelectAdjacentConstruct(boolean next) {
@@ -469,12 +489,12 @@ public class BaseController implements KeyListener, BaseControllerListener {
 			if(edit == selected)
 				return false;
 			
-			Select(edit);
+			Select(Construct.SelectionType.Default, edit);
 			
 			return true;
 		}
 		
-		public void Select(ConstructEditor newSel) {
+		public void Select(Construct.SelectionType selectionType, ConstructEditor newSel) {
 			if(newSel == null)
 				return;
 			
@@ -482,10 +502,14 @@ public class BaseController implements KeyListener, BaseControllerListener {
 			if(selected != null)   {
 				selected.setSelected(newSel, false);
 			}
-			
-			selected = newSel;
+
+			Construct constructForSelection = newSel.construct.getConstructForSelection(selectionType);
+			ConstructEditor constructEditor = mDocument.editorsFromConstruct(constructForSelection);
+			selected = constructEditor;
 			selected.setSelected(lastSelected, true);
+			
 			Application.resetError();
+			
 			frame.repaint();
 		}
 
@@ -493,22 +517,18 @@ public class BaseController implements KeyListener, BaseControllerListener {
 		public boolean receivedHotkey(BaseController baseController, EKeyBinding binding, int keyEventCode) {
 			switch(binding) {
 				case Bind_SelectParent:
-					System.out.println("Left");
 	    			SelectParentConstruct();
 					break;
 					
 				case Bind_SelectChild:
-					System.out.println("Right");
 	    			SelectFirstChildConstruct();
 					break;
 					
 				case Bind_SelectNextSibling:
-					System.out.println("Down");
 	    			SelectAdjacentConstruct(true);
 					break;
 					
 				case Bind_SelectPrevSibling:
-					System.out.println("Up");
 	    			SelectAdjacentConstruct(false);
 					break;
 					

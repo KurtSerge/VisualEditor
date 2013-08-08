@@ -11,6 +11,7 @@ import editor.BaseController;
 import editor.BaseControllerListener;
 import editor.Clipboard;
 import editor.Construct;
+import editor.Construct.SelectionType;
 import editor.ConstructEditor;
 import editor.BaseController.EKeyBinding;
 import editor.document.ConstructDocument;
@@ -165,7 +166,7 @@ public class JSONHotkeyListener implements BaseControllerListener {
 		ConstructEditor added = mDocument.editorsFromConstruct(newConstruct);
 		if(added != null)  {
 			controller.getSelectedEditor().update();
-			controller.mConstructSelector.Select(added);
+			controller.mConstructSelector.Select(SelectionType.Default, added);
 		}
 	}
 }

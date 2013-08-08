@@ -18,6 +18,11 @@ public abstract class Construct
 {
 	protected static final String BREAKING_SPACE = "$(break)";	
 	
+	public static enum SelectionType { 
+		AutoboxedReplacement,
+		Default
+	}
+	
 	protected Construct(String type, Construct parent)
 	{
 		this.type = type;
@@ -293,6 +298,22 @@ public abstract class Construct
 	 * Give this construct a chance to handle the keystroke.
 	 */
 	public boolean onReceivedRawKey(KeyEvent e) {
+		return false;
+	}
+	
+	/**
+	 * Specify the construct that should be selected in a
+	 * specific type of selection situation.
+	 */
+	public Construct getConstructForSelection(SelectionType selection) { 
+		return this;
+	}
+	
+	/**
+	 * Indicate if the parent should be used when considering
+	 * core actions such as selection movement / deletion.
+	 */
+	public boolean isSoleDependantConstruct() { 
 		return false;
 	}
 }

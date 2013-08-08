@@ -67,8 +67,15 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		
 		@Override
 		public void keyPressed(KeyEvent e) {	
-			System.out.println(e);
-			
+			if(e.getKeyCode() == KeyEvent.VK_TAB) {
+				if(construct.isSoleDependantConstruct()) { 
+					mController.mConstructSelector.SelectParentConstruct();
+				}
+				
+				mController.mConstructSelector.SelectAdjacentConstruct(true);
+				e.consume();
+			}
+
 			if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 				// Find base
 				requestTopFocus();
@@ -86,11 +93,13 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 	}
 	
 	private ConstructDocument mDocument = null;
-
-	public MonospaceConstructEditor(Construct construct, ConstructDocument document)
+	private final BaseController mController;
+	
+	public MonospaceConstructEditor(BaseController controller, Construct construct, ConstructDocument document)
 	{
 		super(construct);
 		
+		mController = controller;
 		mDocument = document;
 		
 		if(construct.parent == null)  {
