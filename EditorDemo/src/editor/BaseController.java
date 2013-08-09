@@ -177,7 +177,13 @@ public class BaseController implements KeyListener, BaseControllerListener {
 	
 	
 	private int getIndexOfSelectedConstruct() { 
-		return mConstructSelector.selected.construct.parent.getChildren().indexOf(mConstructSelector.selected.construct);
+		if(mConstructSelector.selected != null &&
+				mConstructSelector.selected.construct.parent != null)
+		{ 
+			return mConstructSelector.selected.construct.parent.getChildren().indexOf(mConstructSelector.selected.construct);	
+		}
+		
+		return -2;
 	}
 	
 	private List<Pair<Hotkey, EKeyBinding>> getListOfCandiatesForRootKey(Hotkey key) {
