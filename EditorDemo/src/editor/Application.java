@@ -129,11 +129,6 @@ public class Application extends VisualEditorFrame implements ComponentListener
 				
 				@Override
 				public void onConstructRemovedChild(Construct parent, Construct child, int index) {
-					WeakReference<ConstructEditor> weakEditor = mDocument.getConstructEditorStore().get(parent);
-					if(weakEditor != null) { 
-						mDocument.getConstructEditorStore().unregister(weakEditor.get());	
-					}
-					
 					layoutController.relayout();
 				}
 				
