@@ -22,7 +22,7 @@ public class MapConstruct extends ClojureConstruct {
 		for(int i = 0; i < children.size(); ++i) {
 			
 			// Add spacing for opening prefix
-			if(i % 2 == 0 && i != 0 && this.getIsMultilined()) { 
+			if(i != 0 && this.getIsMultilined()) { 
 				for(int j = 0; j < PREFIX.length(); j++) 
 					builder.append(" ");
 			}
@@ -30,14 +30,10 @@ public class MapConstruct extends ClojureConstruct {
 			// Append the next node
 			builder.append("$(node)");
 			boolean isFinalNode = i == children.size() - 1;
-			if(i % 2 == 1 && !isFinalNode) {
+			if(!isFinalNode) {
 				// There is another node, and this node
 				// ended a pair of key-value nodes
 				builder.append("," + BREAKING_SPACE);
-			} else if(!isFinalNode) {
-				// This node starts a key-value pair
-				builder.append(" ");
-				
 			}
 		}
 
@@ -98,9 +94,13 @@ public class MapConstruct extends ClojureConstruct {
 	
 	@Override
 	public boolean canAddChild(int index, Construct child) {
+		return child.getClass().equals(clojure.constructs.KeywordExpressionPairConstruct.class);
+	}
+	
+	protected boolean canReplaceChild(int index, Construct oldConstruct, Construct newConstruct) {
 		if(index % 2 == 0)
-			return child.getClass().equals(clojure.constructs.KeywordConstruct.class);
-
+			return false;
+			
 		return true;
 	}
 }

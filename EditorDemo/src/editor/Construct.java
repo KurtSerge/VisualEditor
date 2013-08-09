@@ -98,7 +98,7 @@ public abstract class Construct
 		if(parent != null)  {
 			// Validate the deletion of this child
 			int index = parent.children.indexOf(this);
-			
+
 			boolean canDeleteChild = true;
 			if(shouldValidate == true) { 
 				canDeleteChild = parent.canDeleteChild(index, this, isUser);
@@ -171,17 +171,24 @@ public abstract class Construct
 		return false;
 	}
 	
-	// editor should call this
 	public boolean replaceChild(Construct replaceMe, Construct newCon) {
 		// FIXME: really you need to make the replacement first, then validate, then rollback if the replace is invalid
-		int newIndex = children.indexOf(replaceMe);
-		boolean success = addChild(newIndex, newCon);
-		if(success == true) {
-			if(children.remove(replaceMe) == false) {
-				//assert(1==0);
-			}
+		int replacementIndex = children.indexOf(replaceMe);
+		if(canReplaceChild(replacementIndex, replaceMe, newCon)) { 
+			// Perform the replacement
+			children.set(replacementIndex, newCon);
+			onChildAdded(replacementIndex, newCon);
+			AddToUndoBuffer();
+			
+			// Check to see how many children were actually added as the 
+			// callback may, in some cases, add additional children
+			ConstructPublisher publisher = ConstructPublisher.getInstance();
+			publisher.onConstructRemovedChild(parent, newCon, replacementIndex);
+			publisher.onConstructAddedChild(parent, newCon, replacementIndex);
+			return true;
 		}
-		return success;
+		
+		return false;
 	}
 	
 	public List<Construct> getChildren() { 
@@ -275,9 +282,8 @@ public abstract class Construct
 	}
 
 	// Check that child being added at the specified index is valid
-	protected boolean canAddChild(int index, Construct child) {
-		return true;
-	}
+	protected boolean canAddChild(int index, Construct child) { return true; }
+	protected boolean canReplaceChild(int index, Construct oldConstruct, Construct newConstruct) { return true; }
 
 	/* ----- NOTIFICATIONS ----- */
 	

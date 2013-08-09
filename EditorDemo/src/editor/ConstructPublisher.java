@@ -34,6 +34,9 @@ public class ConstructPublisher {
 		if(mDocument == null)
 			return false;
 		
+		if(construct == null)
+			return false;
+		
 		if(construct.parent != null) {
 			return isConstructInDocument(construct.parent);
 		}

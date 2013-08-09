@@ -86,7 +86,7 @@ public class HotkeyListener implements BaseControllerListener {
 				break;
 				
 			case KeyEvent.VK_P:
-				newConstruct = new KeyValuePairConstruct(parent, null);
+				newConstruct = new KeywordExpressionPairConstruct(parent, null);
 				break;
 				
 			case KeyEvent.VK_B:

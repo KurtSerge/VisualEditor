@@ -74,7 +74,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 				
 				if(mController != null && 
 						mController.mConstructSelector != null) { 
-					mController.mConstructSelector.SelectAdjacentConstruct(e.isShiftDown());
+					mController.mConstructSelector.SelectAdjacentConstruct(!e.isShiftDown());
 				}
 
 				e.consume();
