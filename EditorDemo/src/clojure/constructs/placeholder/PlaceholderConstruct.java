@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 
 import clojure.ClojureConstruct;
+import clojure.constructs.IntegerConstruct;
 import clojure.constructs.StringConstruct;
 import clojure.constructs.SymbolConstruct;
 import clojure.constructs.meta.IfThenElseConstruct;
@@ -54,8 +55,8 @@ public class PlaceholderConstruct extends ClojureConstruct {
 	}
 
 	@Override
-	public boolean onReceivedRawKey(KeyEvent e) {
-		if(getDescriptor().isVariadic()) { 
+	public boolean onReceivedKeyEvent(KeyEvent e, boolean isTyping) {
+		if(getDescriptor().isVariadic() || isTyping == true) { 
 			return false;
 		}
 		
@@ -63,6 +64,14 @@ public class PlaceholderConstruct extends ClojureConstruct {
 
 		if(keyCode == KeyEvent.VK_QUOTE) { 
 			return parent.replaceChild(this, new StringConstruct(parent, ""));
+		}
+		
+		if(keyCode >= KeyEvent.VK_0 && keyCode <= KeyEvent.VK_9 &&
+				getDescriptor().isAllowed(IntegerConstruct.class))
+		{ 
+			String keyEventText = KeyEvent.getKeyText(keyCode);
+			IntegerConstruct replacementConstruct = new IntegerConstruct(parent, keyEventText);
+			return parent.replaceChild(this, replacementConstruct);
 		}
 		
 		if(keyCode >= KeyEvent.VK_A && keyCode <= KeyEvent.VK_Z &&

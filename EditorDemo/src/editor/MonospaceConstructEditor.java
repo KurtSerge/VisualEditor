@@ -76,12 +76,13 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 						mController.mConstructSelector != null) { 
 					mController.mConstructSelector.SelectAdjacentConstruct(true);
 				}
+				
 				e.consume();
-			}
-
-			if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+			} else if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 				// Find base
 				requestTopFocus();
+			} else if(e.getKeyChar() == '\n') { 
+				e.consume();
 			}
 		}
 		
@@ -91,7 +92,11 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		
 		@Override
 		public void keyTyped(KeyEvent e) {
-			System.out.println(e);
+			if(construct != null) { 
+				if(construct.onReceivedKeyEvent(e, true) == true) {
+					e.consume();
+				}
+			}			
 		}
 	}
 	

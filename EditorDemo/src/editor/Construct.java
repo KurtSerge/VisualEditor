@@ -308,8 +308,12 @@ public abstract class Construct
 	/**
 	 * An unhandled key was typed whilst this construct was selected.
 	 * Give this construct a chance to handle the keystroke.
+	 * 
+	 * @param e The KeyEvent causing the trigger
+	 * @param isTyping True if editing this.literal
+	 * @return True to consume the event ( can also call e.consume() )
 	 */
-	public boolean onReceivedRawKey(KeyEvent e) {
+	public boolean onReceivedKeyEvent(KeyEvent e, boolean isTyping) {
 		return false;
 	}
 	

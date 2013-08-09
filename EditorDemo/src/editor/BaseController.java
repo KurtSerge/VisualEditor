@@ -224,7 +224,7 @@ public class BaseController implements KeyListener, BaseControllerListener {
 				// TODO: Support insert/remove/add (currently only 'replace')
 				Construct parent = mConstructSelector.selected.construct.parent;
 				int indexOfSelectedConstruct = getIndexOfSelectedConstruct();
-				mConstructSelector.selected.construct.onReceivedRawKey(event);
+				mConstructSelector.selected.construct.onReceivedKeyEvent(event, false);
 				
 				if(getIndexOfSelectedConstruct() == -1) { 
 					Construct newChild = parent.getChildren().get(indexOfSelectedConstruct);
