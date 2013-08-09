@@ -31,7 +31,7 @@ import json.JSONController;
 
 public class MonospaceConstructEditor extends ConstructEditor implements LayoutManager, DocumentListener
 {
-	private static boolean skDebug_ShowBorders = false;
+	private static boolean skDebug_ShowBorders = true;
 	
 	Color color_for_int(int x)
 	{
@@ -69,14 +69,17 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		public void keyPressed(KeyEvent e) {	
 			if(e.getKeyCode() == KeyEvent.VK_TAB) {
 				if(construct.isSoleDependantConstruct()) { 
+					System.out.println("isSoleDependantConstruct.. selecting parent first");
 					mController.mConstructSelector.SelectParentConstruct();
 				}
 				
 				if(mController != null && 
 						mController.mConstructSelector != null) { 
+					System.out.println("selectAdjacentConstruct(true)");
 					mController.mConstructSelector.SelectAdjacentConstruct(true);
 				}
 				
+				System.out.println("Tab is consumed.");
 				e.consume();
 			} else if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 				// Find base
@@ -220,14 +223,10 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 					return "";
 
 				Construct constructChild = construct.children.get(childIndex);
-				WeakReference<ConstructEditor> editorChild = editorsByConstructs.get(constructChild);
-				if(editorChild == null)
-					throw(new RuntimeException("Probably forgot to add construct to editorsByConstructs with 'JSONController.editors_from_constructs'"));
-				
-				ConstructEditor child = editorChild.get();
-				
+				ConstructEditor child = mDocument.editorsFromConstruct(constructChild);
 				if(child == null)
-					continue;
+					throw(new RuntimeException("Probably forgot to add construct to editorsByConstructs with 'JSONController.editors_from_constructs'"));
+
 				
 				Dimension child_size = child.get_size();
 				int nWidth = (int)Math.ceil(((double)child_size.width) / ((double)metrics.stringWidth(" ")));
@@ -451,8 +450,6 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 			propagateHighlightSelection(this);
 			
 			update();
-			
-			System.out.println("Selected " + construct.type);
 			
 			text_area.setBackground(new Color(230, 230, 230));
 			textListener = new TextListener();

@@ -472,29 +472,43 @@ public class BaseController implements KeyListener, BaseControllerListener {
 		public boolean SelectAdjacentConstruct(boolean next) {
 			if(selected == null)
 				return false;
+			
+			System.out.println("Selected Construct is '" + selected.construct.type + "'");
+			System.out.println("Selected Construct has " + selected.construct.getChildren().size() + " children");
+			
 			Construct parent = selected.construct.parent;
 			if(parent == null)
 				return false;
+			
+			System.out.println("Selected Construct Parent is '" + parent.type + "'");
+			System.out.println("Parent has " + parent.getChildren().size() + " children ");
 			
 			int myIndex = parent.children.indexOf(selected.construct);
 			int selectIndex = (next) ? ++myIndex : --myIndex;
 			if(selectIndex >= parent.children.size()) {
 				selectIndex = 0;
-			}	
-			else if(selectIndex < 0) {
+			} else if(selectIndex < 0) {
 				selectIndex = parent.children.size()-1;
 				if(selectIndex < 0)
 					return false;
 			}
 			
 			Construct newSelect = parent.children.get(selectIndex);
-			
+			System.out.println("Construct selected is now " + newSelect.type);
 			if(newSelect == null)
 				return false;
 		
-			ConstructEditor edit = ConstructEditor.editorsByConstructs.get(newSelect).get();
-			if(edit == selected)
+			ConstructEditor edit = mDocument.editorsFromConstruct(newSelect);
+			if(edit == null) {
+				System.err.println("Failed to selectAdjacentConstruct(), no entry in editorsByConstructs");
 				return false;
+			}
+			
+//			ConstructEditor edit = editWeak.get();
+//			if(edit == null) {
+//				System.err.println("Failed to selectAdjacentConstruct(), null WeakReference<ConstructEditor>");
+//				return false;
+//			}
 			
 			Select(Construct.SelectionCause.SelectedAdjacentConstruct, edit);
 			
@@ -505,18 +519,35 @@ public class BaseController implements KeyListener, BaseControllerListener {
 			if(newSel == null)
 				return;
 			
+			
 			ConstructEditor lastSelected = selected;
 			if(selected != null)   {
 				selected.setSelected(newSel, false);
 			}
-
+			
+			if(selected != null)
+			
+				selected.update();
+			
 			Construct constructForSelection = newSel.construct.getConstructForSelection(selectionType);
+			
+			
+			if(selectionType == SelectionCause.SelectedAdjacentConstruct)  { 
+				int a = 0;
+			}
+			
 			ConstructEditor constructEditor = mDocument.editorsFromConstruct(constructForSelection);
+			constructEditor.update();
 			selected = constructEditor;
-			selected.setSelected(lastSelected, true);
+			
+			
+				selected.setSelected(lastSelected, true);
 			
 			Application.resetError();
 			
+			
+
+			frame.invalidate();
 			frame.repaint();
 		}
 

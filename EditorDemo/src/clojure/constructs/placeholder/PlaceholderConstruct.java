@@ -69,6 +69,8 @@ public class PlaceholderConstruct extends ClojureConstruct {
 
 	@Override
 	public boolean onReceivedKeyEvent(KeyEvent e, boolean isTyping) {
+		System.out.println("PlaceholderConstruct::onReceivedKeyEvent('" + e.getKeyChar() + "', " + isTyping + ")");
+		
 		if(getDescriptor().isVariadic() || isTyping == true) { 
 			return false;
 		}

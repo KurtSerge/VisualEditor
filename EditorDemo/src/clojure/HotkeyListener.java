@@ -6,6 +6,7 @@ import json.JSONController;
 
 import clojure.constructs.*;
 import clojure.constructs.meta.*;
+import clojure.constructs.special.VariadicVectorConstruct;
 
 import editor.BaseController;
 import editor.BaseController.EKeyBinding;
@@ -111,6 +112,9 @@ public class HotkeyListener implements BaseControllerListener {
 			case KeyEvent.VK_T:
 				newConstruct = new StringConstruct(parent, "string");
 				break;
+				
+			case KeyEvent.VK_W:
+				newConstruct = new VariadicVectorConstruct(parent, "params");
 				
 			default:
 				System.out.println("Unknown keyEventCode: " + keyEventCode);
