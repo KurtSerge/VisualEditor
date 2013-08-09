@@ -87,7 +87,6 @@ public class SymbolConstruct extends ClojureConstruct {
 	public boolean onReceivedKeyEvent(KeyEvent e, boolean isTyping) {
 		if(isTyping) {
 			if(((int) e.getKeyChar() >= 48 && (int) e.getKeyChar() <= 57)) {
-				
 				if(this.literal.length() == 0) {
 					// Consume
 					return true;
@@ -95,13 +94,21 @@ public class SymbolConstruct extends ClojureConstruct {
 				
 				return false;
 			}
-			
-			
+
 			if(((int) e.getKeyChar() >= 97 && (int) e.getKeyChar() <= 122) ||   // a-z
 				((int) e.getKeyChar() >= 65 && (int) e.getKeyChar() <= 90))		// A-Z
 			{
 				return false;
 			} 
+			
+			if((int) e.getKeyChar() == 107 || 		// +
+					(int) e.getKeyChar() == 109 || 	// -
+					(int) e.getKeyChar() == 222 ||  // ' 
+					(int) e.getKeyCode() == 190)	// .
+			{ 
+				return false;
+			}
+					
 			
 			return true;
 		}
