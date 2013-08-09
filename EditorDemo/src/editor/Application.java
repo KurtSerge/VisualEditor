@@ -11,6 +11,7 @@ import java.awt.event.HierarchyEvent;
 import java.awt.event.KeyEvent;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.lang.ref.WeakReference;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
@@ -44,7 +45,6 @@ public class Application extends VisualEditorFrame implements ComponentListener
 		}
 
 		this.getDocumentPane().add(top);
-		
 		
 		// TODO: ! Cyclic
 		controller = new BaseController(this, mDocument);
@@ -129,6 +129,11 @@ public class Application extends VisualEditorFrame implements ComponentListener
 				
 				@Override
 				public void onConstructRemovedChild(Construct parent, Construct child, int index) {
+					WeakReference<ConstructEditor> weakEditor = mDocument.getConstructEditorStore().get(parent);
+					if(weakEditor != null) { 
+						mDocument.getConstructEditorStore().unregister(weakEditor.get());	
+					}
+					
 					layoutController.relayout();
 				}
 				
@@ -188,7 +193,7 @@ public class Application extends VisualEditorFrame implements ComponentListener
 	
 	public static void showError(Construct editor, String error) {
 		System.out.println("Show modal error: " + error);
-		sApplication.presentError(ConstructEditor.getEditorByConstruct(editor), error);
+		sApplication.presentError(sApplication.mDocument.editorsFromConstruct(editor), error);
 	}
 	
 	public static void showError(ConstructEditor editor, String error) { 

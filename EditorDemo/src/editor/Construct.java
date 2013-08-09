@@ -33,12 +33,12 @@ public abstract class Construct
 		SelectedDuringFind,
 		SelectedDirectlyWithMouse,
 		SelectedAfterInsert,
-		SelectedRandomly,
 		SelectedParent,
 		SelectedFirstChild,
 		SelectedAdjacentConstruct,
 		SelectedInPlaceOfDeletedConstruct,	
 		SelectedAfterDeletingChild,
+		SelectedRandomly,
 		
 		Selected, // Generic
 	}

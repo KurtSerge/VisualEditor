@@ -103,9 +103,9 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 	private ConstructDocument mDocument = null;
 	private final BaseController mController;
 	
-	public MonospaceConstructEditor(BaseController controller, Construct construct, ConstructDocument document)
+	public MonospaceConstructEditor(ConstructEditorStore bindingEditorStore, BaseController controller, Construct construct, ConstructDocument document)
 	{
-		super(construct);
+		super(construct, bindingEditorStore);
 		
 		mController = controller;
 		mDocument = document;
@@ -431,7 +431,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		// Set the parent as highlighted
 		Construct construct = parent.construct.parent;
 		if(construct != null) { 
-			ConstructEditor editor = ConstructEditor.getEditorByConstruct(construct);
+			ConstructEditor editor = mDocument.editorsFromConstruct(construct);
 			if(editor != null) { 	
 				propagateHighlightSelection(editor);
 			}
@@ -476,17 +476,17 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 	}
 	
 	private void removeEditors(ConstructEditor editor) {
-		mDocument.remove(editor);
+		mDocument.getConstructEditorStore().unregister(editor);
 		
 		for(Construct child : editor.construct.children) {		
 			ConstructEditor remove = mDocument.editorsFromConstruct(child);
 			removeEditors(remove);
-			mDocument.remove(remove);
+			mDocument.getConstructEditorStore().unregister(editor);
 		}		
 	}
 
 	public void delete() {
-		mDocument.remove(this);
+		mDocument.getConstructEditorStore().unregister(this);
 		
 		if(textListener != null)
 			text_area.removeKeyListener(textListener);

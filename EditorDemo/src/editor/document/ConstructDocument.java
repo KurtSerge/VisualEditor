@@ -13,6 +13,7 @@ import java.util.List;
 import editor.BaseController;
 import editor.Construct;
 import editor.ConstructEditor;
+import editor.ConstructEditorStore;
 import editor.ConstructPublisher.ConstructListener;
 import editor.MonospaceConstructEditor;
 
@@ -29,11 +30,11 @@ public abstract class ConstructDocument {
 		public void onDocumentRedo(ConstructDocument document);
 	}
 	
-	private ArrayList<ConstructEditor> mEditors;
 	private Construct mRootConstruct;
 	private Component mRootComponent;
-	private ConstructDocumentListener mListener;
 	private BaseController mController;
+	private ConstructDocumentListener mListener;
+	private ConstructEditorStore mConstructEditorStore;
 
 	public ConstructDocument(String filename) 
 		throws FileNotFoundException
@@ -41,6 +42,8 @@ public abstract class ConstructDocument {
 		if(filename == null) {
 			throw new IllegalArgumentException("filename cannot be null");
 		}
+		
+		mConstructEditorStore = new ConstructEditorStore();
 		
 		// Ensure we can access & read the file
 		File file = new File(filename);
@@ -66,6 +69,10 @@ public abstract class ConstructDocument {
 		setRootComponent(editorFromRoot.get_component());
 	}
 	
+	public ConstructEditorStore getConstructEditorStore() { 
+		return mConstructEditorStore;
+	}
+	
 	public void setController(BaseController controller) { 
 		mController = controller;
 	}
@@ -75,23 +82,21 @@ public abstract class ConstructDocument {
 	}
 	
 	public ConstructEditor editorsFromConstruct(Construct root) { 
-		for(Construct child : root.getChildren())
+		for(Construct child : root.getChildren()) { 
 			editorsFromConstruct(child);
-		
-		// TODO: Make this a hashmap ~ Chris Lord
-		if(this.mEditors != null) { 
-			for(ConstructEditor editor : this.mEditors) {
-				if(editor.construct.equals(root)) 
-					return editor;
-			}
 		}
 		
-		MonospaceConstructEditor newEditor = new MonospaceConstructEditor(mController, root, this);
-		if(mEditors == null)
-			mEditors = new ArrayList<ConstructEditor>();
-		mEditors.add(newEditor);
-
-		return newEditor;
+		ConstructEditor editor = null;
+		WeakReference<ConstructEditor> weakExistingEditor = mConstructEditorStore.get(root);
+		if(weakExistingEditor != null) {
+			editor = weakExistingEditor.get();
+		}
+		
+		if(editor == null) { 
+			editor = new MonospaceConstructEditor(mConstructEditorStore, mController, root, this);
+		}
+		
+		return editor;
 	}
 	
 	protected abstract Construct loadConstruct(InputStream in);
@@ -103,15 +108,6 @@ public abstract class ConstructDocument {
 	public Construct getRootConstruct() { 
 		return mRootConstruct;
 	}
-	
-	public List<ConstructEditor> getEditors() { 
-		return mEditors;
-	}
-	
-	public void remove(ConstructEditor editor) { 
-		mEditors.remove(editor);
-	}
-	
 	
 	public boolean undo() {
 		Construct undoneConstruct = Construct.getUndo();
@@ -159,4 +155,6 @@ public abstract class ConstructDocument {
 	protected void setRootComponent(Component component) { 
 		mRootComponent = component;
 	}
+	
+
 }

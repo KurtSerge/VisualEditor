@@ -10,6 +10,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.AWTEventListener;
 import java.awt.event.MouseEvent;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +46,12 @@ public class BaseMouseController implements AWTEventListener {
     			// Get clicked editors
     			Point click = MouseInfo.getPointerInfo().getLocation();
     			List<ConstructEditor> clickedEditors = new ArrayList<ConstructEditor>();
-            	for(ConstructEditor editor : mDocument.getEditors()) {
+            	for(WeakReference<ConstructEditor> weakEditor : mDocument.getConstructEditorStore().getEditors()) {
+            		ConstructEditor editor = weakEditor.get();
+            		if(editor == null)
+            			continue;
+            		
+            		
                		if(editor.get_component().isDisplayable()) { // TODO:Duplicate code
             			Point topleft = editor.get_component().getLocationOnScreen();
             			Dimension dim = editor.get_size();
@@ -94,7 +100,11 @@ public class BaseMouseController implements AWTEventListener {
     				return;
     			// Check for intersection Rect-Rect
     			List<ConstructEditor> clickedEditors = new ArrayList<ConstructEditor>();
-            	for(ConstructEditor editor : mDocument.getEditors()) {
+            	for(WeakReference<ConstructEditor> weakEditor : mDocument.getConstructEditorStore().getEditors()) {
+            		ConstructEditor editor = weakEditor.get();
+            		if(editor == null)
+            			continue;
+            		
                		if(editor.get_component().isDisplayable()) { // TODO:Duplicate code
             			Point topleft = editor.get_component().getLocationOnScreen();
             			Dimension dim = editor.get_size();

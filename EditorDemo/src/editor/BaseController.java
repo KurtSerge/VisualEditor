@@ -3,6 +3,7 @@ package editor;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.lang.ref.WeakReference;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -438,11 +439,12 @@ public class BaseController implements KeyListener, BaseControllerListener {
 		}
 		
 		public void SelectRandom() {
-			List<ConstructEditor> editors = mDocument.getEditors();
+			ConstructEditorStore constructStore = mDocument.getConstructEditorStore();
+			List<WeakReference<ConstructEditor>> constructEditors = constructStore.getEditors();
 			
-			int select = Math.abs((new Random()).nextInt()) % editors.size();
-			ConstructEditor toSelect = editors.get(select);
-			Select(Construct.SelectionCause.SelectedRandomly, toSelect);
+			int select = Math.abs((new Random()).nextInt()) % constructEditors.size();
+			WeakReference<ConstructEditor> toSelect = constructEditors.get(select);
+			Select(Construct.SelectionCause.SelectedRandomly, toSelect.get());
 		}
 		
 		public void SelectParentConstruct() {
