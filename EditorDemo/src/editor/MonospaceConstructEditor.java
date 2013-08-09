@@ -31,7 +31,7 @@ import json.JSONController;
 
 public class MonospaceConstructEditor extends ConstructEditor implements LayoutManager, DocumentListener
 {
-	private static boolean skDebug_ShowBorders = true;
+	private static boolean skDebug_ShowBorders = false;
 	
 	Color color_for_int(int x)
 	{
@@ -162,19 +162,16 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 			
 			for(Construct child : construct.children)
 			{
-				if(editorsByConstructs.get(child) == null) {
+				if(mDocument.editorsFromConstruct(child) == null) {
 					mDocument.editorsFromConstruct(child); 
 				}
 				
-				WeakReference<ConstructEditor> editor = editorsByConstructs.get(child);
-				if(editor == null) { 
+				ConstructEditor parent_editor = mDocument.editorsFromConstruct(child);
+				if(parent_editor == null) { 
 					System.err.println("WeakReference<ConstructEditor> for Child (" + child.type + ") not found");
 					continue;
 				}
-				ConstructEditor parent_editor = editor.get();
-				
-				if(parent_editor == null)
-					continue;
+
 				
 				Component child_component = parent_editor.get_component();
 				
@@ -361,7 +358,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 			int childIndex = 0;
 			while((nextChildBegins = screen_text.indexOf(child_string, lastChildEnd)) >= 0)
 			{
-				ConstructEditor child = editorsByConstructs.get(construct.children.get(childIndex)).get();
+				ConstructEditor child = mDocument.editorsFromConstruct(construct.children.get(childIndex));
 				
 				if(child == null)
 					continue;
@@ -485,7 +482,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		mDocument.remove(editor);
 		
 		for(Construct child : editor.construct.children) {		
-			ConstructEditor remove = editorsByConstructs.get(child).get();
+			ConstructEditor remove = mDocument.editorsFromConstruct(child);
 			removeEditors(remove);
 			mDocument.remove(remove);
 		}		

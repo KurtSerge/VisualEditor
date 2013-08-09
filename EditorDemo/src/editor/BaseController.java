@@ -314,7 +314,7 @@ public class BaseController implements KeyListener, BaseControllerListener {
 		if(finder != null) {
 			Construct lit = finder.nextLiteral();
 			if(lit != null)
-				mConstructSelector.Select(Construct.SelectionCause.SelectedDuringFind, ConstructEditor.editorsByConstructs.get(lit).get());
+				mConstructSelector.Select(Construct.SelectionCause.SelectedDuringFind, mDocument.editorsFromConstruct(lit));
 		}
 	}
 	
@@ -371,7 +371,7 @@ public class BaseController implements KeyListener, BaseControllerListener {
     				// 'Deleted' but children count didn't change, this implies
     				// that the child was actually replaced (ie, placeholder restoration)
     				Construct replacingConstruct = deleteMeEditor.getParent().construct.children.get(childIndex);
-    				ConstructEditor replacingEditor = ConstructEditor.editorsByConstructs.get(replacingConstruct).get();
+    				ConstructEditor replacingEditor = mDocument.editorsFromConstruct(replacingConstruct);
     				mConstructSelector.Select(Construct.SelectionCause.SelectedInPlaceOfDeletedConstruct, replacingEditor);
     			}
 			} else { 
@@ -466,7 +466,7 @@ public class BaseController implements KeyListener, BaseControllerListener {
 			if(child == null)
 				return;
 			
-			 Select(Construct.SelectionCause.SelectedFirstChild, ConstructEditor.editorsByConstructs.get(child).get());
+			 Select(Construct.SelectionCause.SelectedFirstChild, mDocument.editorsFromConstruct(child));
 		}
 		
 		public boolean SelectAdjacentConstruct(boolean next) {

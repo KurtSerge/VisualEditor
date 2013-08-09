@@ -51,7 +51,7 @@ public abstract class ConstructEditor
 		 return ConstructEditor.editorsByConstructs.get(construct.parent).get();
 	}
 	
-	protected static Map<Construct, WeakReference<ConstructEditor> > editorsByConstructs =
+	private static Map<Construct, WeakReference<ConstructEditor> > editorsByConstructs =
 			Collections.synchronizedMap(new HashMap<Construct, WeakReference<ConstructEditor> >());
 
 	

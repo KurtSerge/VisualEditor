@@ -50,7 +50,7 @@ public class LayoutController {
 	}
 	
 	protected Dimension getSize(Construct construct) { 
-		ConstructEditor editor = ConstructEditor.editorsByConstructs.get(construct).get();
+		ConstructEditor editor = mDocument.editorsFromConstruct(construct);
 		return editor.get_size();
 	}
 
