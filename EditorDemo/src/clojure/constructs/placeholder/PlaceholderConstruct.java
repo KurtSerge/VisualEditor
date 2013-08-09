@@ -53,6 +53,19 @@ public class PlaceholderConstruct extends ClojureConstruct {
 		super.deepCopy(newCopy);
 		return newCopy;
 	}
+	
+	private boolean isStartOfIntegerConstruct(KeyEvent e) { 
+		return e.getKeyCode() >= KeyEvent.VK_0 && e.getKeyCode() <= KeyEvent.VK_9;
+	}
+	
+	private boolean isStartOfSymbolConstruct(KeyEvent e) {
+		if((e.getKeyCode() >= KeyEvent.VK_A && e.getKeyCode() <= KeyEvent.VK_Z) ||
+				e.getKeyCode() == KeyEvent.VK_QUOTE) {
+			return true;
+		}
+		
+		return false;
+	}
 
 	@Override
 	public boolean onReceivedKeyEvent(KeyEvent e, boolean isTyping) {
@@ -61,23 +74,17 @@ public class PlaceholderConstruct extends ClojureConstruct {
 		}
 		
 		int keyCode = e.getKeyCode();
-
-		if(keyCode == KeyEvent.VK_QUOTE) { 
+		if(keyCode == KeyEvent.VK_QUOTE && e.isShiftDown()) { 
 			return parent.replaceChild(this, new StringConstruct(parent, ""));
 		}
 		
-		if(keyCode >= KeyEvent.VK_0 && keyCode <= KeyEvent.VK_9 &&
-				getDescriptor().isAllowed(IntegerConstruct.class))
-		{ 
+		if(getDescriptor().isAllowed(IntegerConstruct.class) && isStartOfIntegerConstruct(e)) { 
 			String keyEventText = KeyEvent.getKeyText(keyCode);
 			IntegerConstruct replacementConstruct = new IntegerConstruct(parent, keyEventText);
 			return parent.replaceChild(this, replacementConstruct);
 		}
 		
-		if(keyCode >= KeyEvent.VK_A && keyCode <= KeyEvent.VK_Z &&
-				getDescriptor().isAllowed(SymbolConstruct.class))
-		{
-			// This is alphabetic and should be translated as the start of a symbol
+		if(getDescriptor().isAllowed(SymbolConstruct.class) && isStartOfSymbolConstruct(e)) {
 			String keyEventText = KeyEvent.getKeyText(keyCode);
 			if(e.isShiftDown() == false) { 
 				keyEventText = keyEventText.toLowerCase();
@@ -87,6 +94,8 @@ public class PlaceholderConstruct extends ClojureConstruct {
 			return parent.replaceChild(this, replacementConstruct);
 		}
 		
+		// Auto swap this construct with a StringConstruct if
+		// that is the specified class restriction
 		if(getDescriptor().getClassRestriction() != null) { 
 			if(getDescriptor().getClassRestriction().equals(StringConstruct.class) &&
 					keyCode >= KeyEvent.VK_A && keyCode <= KeyEvent.VK_Z) {
