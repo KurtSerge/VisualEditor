@@ -27,6 +27,6 @@ public class VariadicVectorConstruct extends VectorConstruct {
 
 	@Override 
 	public boolean canInsertChildren() { 
-		return true;
+		return false;
 	}
 }

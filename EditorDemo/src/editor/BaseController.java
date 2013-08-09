@@ -14,7 +14,7 @@ import javax.swing.JOptionPane;
 
 import com.sun.tools.javac.util.Pair;
 
-import editor.Construct.SelectionType;
+import editor.Construct.SelectionCause;
 import editor.document.ConstructDocument;
 
 public class BaseController implements KeyListener, BaseControllerListener {
@@ -229,7 +229,7 @@ public class BaseController implements KeyListener, BaseControllerListener {
 				if(getIndexOfSelectedConstruct() == -1) { 
 					Construct newChild = parent.getChildren().get(indexOfSelectedConstruct);
 					ConstructEditor editor = mDocument.editorsFromConstruct(newChild);
-					mConstructSelector.Select(SelectionType.AutoboxedReplacement, editor);
+					mConstructSelector.Select(SelectionCause.SelectedReplacementDiscoveredDuringKeyEvent, editor);
 				}
 			}			
 			
@@ -308,7 +308,7 @@ public class BaseController implements KeyListener, BaseControllerListener {
 		if(finder != null) {
 			Construct lit = finder.nextLiteral();
 			if(lit != null)
-				mConstructSelector.Select(Construct.SelectionType.Default, ConstructEditor.editorsByConstructs.get(lit).get());
+				mConstructSelector.Select(Construct.SelectionCause.SelectedDuringFind, ConstructEditor.editorsByConstructs.get(lit).get());
 		}
 	}
 	
@@ -358,14 +358,15 @@ public class BaseController implements KeyListener, BaseControllerListener {
 				int newSiblingsCount = parentConstruct.construct.children.size();
     			if(siblingsCount != newSiblingsCount) {
     				// Child was removed, move the selection
-					if(mConstructSelector.SelectAdjacentConstruct(false) == false)
-						mConstructSelector.SelectParentConstruct();
+					if(mConstructSelector.SelectAdjacentConstruct(false) == false) {
+						mConstructSelector.Select(Construct.SelectionCause.SelectedAfterDeletingChild, deleteMeEditor.getParent());
+					}
     			} else {
     				// 'Deleted' but children count didn't change, this implies
     				// that the child was actually replaced (ie, placeholder restoration)
     				Construct replacingConstruct = deleteMeEditor.getParent().construct.children.get(childIndex);
     				ConstructEditor replacingEditor = ConstructEditor.editorsByConstructs.get(replacingConstruct).get();
-    				mConstructSelector.Select(Construct.SelectionType.Default, replacingEditor);
+    				mConstructSelector.Select(Construct.SelectionCause.SelectedInPlaceOfDeletedConstruct, replacingEditor);
     			}
 			} else { 
 				deleteMeEditor.getParent().update();
@@ -410,7 +411,7 @@ public class BaseController implements KeyListener, BaseControllerListener {
 				childrenAdded++;
 				index++;
 				if(added != null)  {
-					mConstructSelector.Select(Construct.SelectionType.Default, added);
+					mConstructSelector.Select(Construct.SelectionCause.SelectedAfterInsert, added);
 				}
 			}
 		}
@@ -435,7 +436,7 @@ public class BaseController implements KeyListener, BaseControllerListener {
 			
 			int select = Math.abs((new Random()).nextInt()) % editors.size();
 			ConstructEditor toSelect = editors.get(select);
-			Select(Construct.SelectionType.Default, toSelect);
+			Select(Construct.SelectionCause.SelectedRandomly, toSelect);
 		}
 		
 		public void SelectParentConstruct() {
@@ -446,7 +447,7 @@ public class BaseController implements KeyListener, BaseControllerListener {
 			if(parent == null)
 				return;
 			
-			 Select(Construct.SelectionType.Default, parent);
+			 Select(Construct.SelectionCause.SelectedParent, parent);
 		}
 		
 		public void SelectFirstChildConstruct() {
@@ -459,7 +460,7 @@ public class BaseController implements KeyListener, BaseControllerListener {
 			if(child == null)
 				return;
 			
-			 Select(Construct.SelectionType.Default, ConstructEditor.editorsByConstructs.get(child).get());
+			 Select(Construct.SelectionCause.SelectedFirstChild, ConstructEditor.editorsByConstructs.get(child).get());
 		}
 		
 		public boolean SelectAdjacentConstruct(boolean next) {
@@ -489,12 +490,12 @@ public class BaseController implements KeyListener, BaseControllerListener {
 			if(edit == selected)
 				return false;
 			
-			Select(Construct.SelectionType.Default, edit);
+			Select(Construct.SelectionCause.SelectedAdjacentConstruct, edit);
 			
 			return true;
 		}
 		
-		public void Select(Construct.SelectionType selectionType, ConstructEditor newSel) {
+		public void Select(Construct.SelectionCause selectionType, ConstructEditor newSel) {
 			if(newSel == null)
 				return;
 			

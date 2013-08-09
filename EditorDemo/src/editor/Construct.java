@@ -16,12 +16,33 @@ import json.JSONController;
 
 public abstract class Construct
 {
-	protected static final String BREAKING_SPACE = "$(break)";	
+	protected static final String BREAKING_SPACE = "$(break)";
 	
-	public static enum SelectionType { 
-		AutoboxedReplacement,
-		Default
+	public final String type;
+	public final Construct parent;
+	public UUID workspace;
+	public final UUID instance;	
+	
+	/**
+	 * When calling getConstructForSelection(), specify a purpose for
+	 * selection. This allows constructs to override which construct 
+	 * should get selected during certain selection causes.
+	 */
+	public static enum SelectionCause { 
+		SelectedReplacementDiscoveredDuringKeyEvent,
+		SelectedDuringFind,
+		SelectedDirectlyWithMouse,
+		SelectedAfterInsert,
+		SelectedRandomly,
+		SelectedParent,
+		SelectedFirstChild,
+		SelectedAdjacentConstruct,
+		SelectedInPlaceOfDeletedConstruct,	
+		SelectedAfterDeletingChild,
+		
+		Selected, // Generic
 	}
+
 	
 	protected Construct(String type, Construct parent)
 	{
@@ -29,23 +50,14 @@ public abstract class Construct
 		this.parent = parent;
 		instance = UUID.randomUUID();
 	}
-	
-	public final String type;
-	public final Construct parent;
-	public UUID workspace; // Each construct will have user-defined rules for formatting.  example: a function with too many parameters goes onto a new line
-	public UUID instance;
-	
-	//@Override
-	//public boolean equals(Object o) {
-		//Construct compare = (Construct)o;
-		//boolean uuidcompare = this.instance.compareTo(compare.instance) == 0;
-		//return (uuidcompare);
-	//}
+
 	
 	/**
 	 * @return null if the literal should be used instead
 	 */
 	public abstract String screen_text();
+	
+	public abstract boolean validate();
 	
 	public int nesting_level()
 	{
@@ -80,7 +92,7 @@ public abstract class Construct
 		}
 	}
 	
-	public abstract boolean validate();
+	
 
 	public boolean delete(boolean shouldValidate, boolean isUser) { 
 		if(parent != null)  {
@@ -305,7 +317,7 @@ public abstract class Construct
 	 * Specify the construct that should be selected in a
 	 * specific type of selection situation.
 	 */
-	public Construct getConstructForSelection(SelectionType selection) { 
+	public Construct getConstructForSelection(SelectionCause selection) { 
 		return this;
 	}
 	

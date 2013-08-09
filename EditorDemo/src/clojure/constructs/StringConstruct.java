@@ -45,8 +45,8 @@ public class StringConstruct extends ClojureConstruct {
 	}	
 	
 	@Override
-	public Construct getConstructForSelection(SelectionType type) { 
-		if(type == SelectionType.AutoboxedReplacement) { 
+	public Construct getConstructForSelection(SelectionCause type) { 
+		if(type == SelectionCause.SelectedReplacementDiscoveredDuringKeyEvent) { 
 			return this.children.get(0);
 		}
 		

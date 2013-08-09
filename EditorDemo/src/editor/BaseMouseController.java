@@ -69,7 +69,7 @@ public class BaseMouseController implements AWTEventListener {
             			deepEditor = editor;
             		}
             	}
-            	bc.mConstructSelector.Select(Construct.SelectionType.Default, deepEditor);
+            	bc.mConstructSelector.Select(Construct.SelectionCause.SelectedDirectlyWithMouse, deepEditor);
     		}
     		if(e.getID() == MouseEvent.MOUSE_PRESSED) {
     			mLastMouseDownPos = MouseInfo.getPointerInfo().getLocation();
@@ -118,12 +118,11 @@ public class BaseMouseController implements AWTEventListener {
             		}
             	}
 
-            	bc.mConstructSelector.Select(Construct.SelectionType.Default, topEditor);
+            	bc.mConstructSelector.Select(Construct.SelectionCause.SelectedDirectlyWithMouse, topEditor);
     		}
     	}
     	
     }
-
     
     private int getDepth(ConstructEditor editor) {
     	Construct iter = editor.construct;

@@ -11,7 +11,7 @@ import editor.BaseController;
 import editor.BaseController.EKeyBinding;
 import editor.Application;
 import editor.BaseControllerListener;
-import editor.Construct.SelectionType;
+import editor.Construct.SelectionCause;
 import editor.ConstructEditor;
 import editor.document.ConstructDocument;
 
@@ -226,7 +226,7 @@ public class HotkeyListener implements BaseControllerListener {
 		
 		ConstructEditor added = mDocument.editorsFromConstruct(newConstruct);
 		if(added != null)  {
-			controller.mConstructSelector.Select(SelectionType.Default, added);
+			controller.mConstructSelector.Select(SelectionCause.SelectedAfterInsert, added);
 		}
 	}
 }

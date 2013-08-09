@@ -134,9 +134,7 @@ public class Application extends VisualEditorFrame implements ComponentListener
 				
 				@Override
 				public void onConstructAddedChild(Construct parent, Construct child, int index) {
-					System.out.println("Added a child..");
 					mDocument.editorsFromConstruct(child);
-//					layoutController.relayout();
 				}
 
 				@Override

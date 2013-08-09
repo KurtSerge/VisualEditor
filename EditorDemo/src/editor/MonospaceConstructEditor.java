@@ -159,6 +159,10 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 				}
 				
 				WeakReference<ConstructEditor> editor = editorsByConstructs.get(child);
+				if(editor == null) { 
+					System.err.println("WeakReference<ConstructEditor> for Child (" + child.type + ") not found");
+					continue;
+				}
 				ConstructEditor parent_editor = editor.get();
 				
 				if(parent_editor == null)

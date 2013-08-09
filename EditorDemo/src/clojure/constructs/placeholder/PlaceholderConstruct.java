@@ -55,6 +55,10 @@ public class PlaceholderConstruct extends ClojureConstruct {
 
 	@Override
 	public boolean onReceivedRawKey(KeyEvent e) {
+		if(getDescriptor().isVariadic()) { 
+			return false;
+		}
+		
 		int keyCode = e.getKeyCode();
 
 		if(keyCode == KeyEvent.VK_QUOTE) { 
