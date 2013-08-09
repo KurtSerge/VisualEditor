@@ -12,6 +12,7 @@ public class StringConstruct extends ClojureConstruct {
 		super("string", parent);
 		
 		StringLiteralConstruct stringLiteralConstruct = new StringLiteralConstruct(this, literal);
+		stringLiteralConstruct.setIsSoleDependantConstruct(true);
 		children.add(stringLiteralConstruct);		
 	}
 

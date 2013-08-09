@@ -6,9 +6,10 @@ import editor.Construct;
 public class KeywordConstruct extends ClojureConstruct {
 	public KeywordConstruct(Construct parent, String literal) {
 		super("keyword", parent);
-		
-		
-		this.addChild(0, new StringLiteralConstruct(this, literal));
+
+		SymbolConstruct symbolConstruct = new SymbolConstruct(this, literal);
+		symbolConstruct.setIsSoleDependantConstruct(true);
+		this.addChild(0, symbolConstruct);
 	}
 
 	@Override

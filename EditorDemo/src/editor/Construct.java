@@ -325,11 +325,17 @@ public abstract class Construct
 		return this;
 	}
 	
+	private boolean mIsSoleDependantConstruct;
+	
+	public final void setIsSoleDependantConstruct(boolean isSoleDependant) { 
+		mIsSoleDependantConstruct = isSoleDependant;
+	}
+	
 	/**
 	 * Indicate if the parent should be used when considering
 	 * core actions such as selection movement / deletion.
 	 */
-	public boolean isSoleDependantConstruct() { 
-		return false;
+	public final boolean isSoleDependantConstruct() { 
+		return mIsSoleDependantConstruct;
 	}
 }
