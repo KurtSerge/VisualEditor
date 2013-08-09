@@ -69,17 +69,14 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		public void keyPressed(KeyEvent e) {	
 			if(e.getKeyCode() == KeyEvent.VK_TAB) {
 				if(construct.isSoleDependantConstruct()) { 
-					System.out.println("isSoleDependantConstruct.. selecting parent first");
 					mController.mConstructSelector.SelectParentConstruct();
 				}
 				
 				if(mController != null && 
 						mController.mConstructSelector != null) { 
-					System.out.println("selectAdjacentConstruct(true)");
-					mController.mConstructSelector.SelectAdjacentConstruct(true);
+					mController.mConstructSelector.SelectAdjacentConstruct(e.isShiftDown());
 				}
-				
-				System.out.println("Tab is consumed.");
+
 				e.consume();
 			} else if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
 				// Find base

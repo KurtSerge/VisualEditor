@@ -472,17 +472,11 @@ public class BaseController implements KeyListener, BaseControllerListener {
 		public boolean SelectAdjacentConstruct(boolean next) {
 			if(selected == null)
 				return false;
-			
-			System.out.println("Selected Construct is '" + selected.construct.type + "'");
-			System.out.println("Selected Construct has " + selected.construct.getChildren().size() + " children");
-			
+
 			Construct parent = selected.construct.parent;
 			if(parent == null)
 				return false;
-			
-			System.out.println("Selected Construct Parent is '" + parent.type + "'");
-			System.out.println("Parent has " + parent.getChildren().size() + " children ");
-			
+
 			int myIndex = parent.children.indexOf(selected.construct);
 			int selectIndex = (next) ? ++myIndex : --myIndex;
 			if(selectIndex >= parent.children.size()) {
@@ -494,21 +488,13 @@ public class BaseController implements KeyListener, BaseControllerListener {
 			}
 			
 			Construct newSelect = parent.children.get(selectIndex);
-			System.out.println("Construct selected is now " + newSelect.type);
 			if(newSelect == null)
 				return false;
 		
 			ConstructEditor edit = mDocument.editorsFromConstruct(newSelect);
 			if(edit == null) {
-				System.err.println("Failed to selectAdjacentConstruct(), no entry in editorsByConstructs");
 				return false;
 			}
-			
-//			ConstructEditor edit = editWeak.get();
-//			if(edit == null) {
-//				System.err.println("Failed to selectAdjacentConstruct(), null WeakReference<ConstructEditor>");
-//				return false;
-//			}
 			
 			Select(Construct.SelectionCause.SelectedAdjacentConstruct, edit);
 			
