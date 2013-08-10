@@ -1,9 +1,14 @@
 package editor;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
@@ -14,6 +19,7 @@ import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
@@ -41,45 +47,45 @@ public class VisualEditorFrame extends JFrame {
 		mDocumentPresentationPanel = new JPanel();
 		mDocumentPresentationPanel.setLayout(new BoxLayout(mDocumentPresentationPanel, BoxLayout.Y_AXIS));
 		mDocumentPresentationPanel.setSize(100, 100);
-		
-		JLayeredPane lp = getLayeredPane();
-		lp.addComponentListener(new ComponentListener() {
-			@Override
-			public void componentResized(ComponentEvent arg0) {
-				mDocumentPresentationPanel.setSize(VisualEditorFrame.this.getSize());
-				mModalPresentationPanel.setSize(VisualEditorFrame.this.getSize().width, 30);
-				mModalTextArea.setSize(new Dimension(VisualEditorFrame.this.getSize().width-20, 30));
-			}			
-			
-			@Override
-			public void componentShown(ComponentEvent arg0) {
-			}
-			
-			@Override
-			public void componentMoved(ComponentEvent arg0) {
-			}
-			
-			@Override
-			public void componentHidden(ComponentEvent arg0) {
-			}
-		});
-		
+
 		mModalPresentationPanel = new JPanel();
-		mModalPresentationPanel.setLayout(null);
-		mModalPresentationPanel.setBackground(new Color(202, 28, 43));
-		mModalPresentationPanel.setSize(0, 0);
-		mModalPresentationPanel.setVisible(false);
+		mModalPresentationPanel.setLayout(new BorderLayout());
+		mModalPresentationPanel.setBackground(new Color(230, 230, 230));
+		mModalPresentationPanel.setPreferredSize(new Dimension(100, 30));
 		
 		mModalTextArea = new JTextArea();
-		mModalTextArea.setForeground(Color.white);
-		mModalTextArea.setBackground(new Color(255, 255, 255, 0));
-		mModalTextArea.setSize(400, 30);
-		mModalTextArea.setLocation(10, 7);
-		mModalTextArea.setEditable(false);	
-		mModalPresentationPanel.add(mModalTextArea);
+		mModalTextArea.setForeground(Color.DARK_GRAY);
+		mModalTextArea.setBackground(new Color(230, 230, 230));
+		mModalTextArea.setPreferredSize(new Dimension(600, 30));
+		mModalTextArea.setLocation(0, 0);
+		mModalTextArea.setText("");
+		mModalTextArea.setEditable(false);
+		mModalTextArea.setBorder(BorderFactory.createEmptyBorder(7, 8, 0, 0));
 
-		lp.add(mDocumentPresentationPanel, 1);
-		lp.add(mModalPresentationPanel, 0);
+		// Setup the GridBagLayout
+	    GridBagLayout gridBagLayout = new GridBagLayout();
+	    setLayout(gridBagLayout);
+
+	    // Setup the layout of the document area
+	    GridBagConstraints documentConstraints = new GridBagConstraints();
+	    documentConstraints.fill = GridBagConstraints.BOTH;
+	    documentConstraints.gridwidth = 3;
+	    documentConstraints.gridheight = 2;
+	    documentConstraints.weightx = 1.0;
+	    documentConstraints.weighty = 1.0;	    
+	    documentConstraints.gridx = 0;
+	    documentConstraints.gridy = 0;
+
+	    // Setup the layout of the message area
+	    GridBagConstraints messageConstraints = new GridBagConstraints();
+	    messageConstraints.fill = GridBagConstraints.HORIZONTAL;
+	    messageConstraints.insets = new Insets(10,0,0,0);
+	    messageConstraints.gridwidth = 3;
+	    messageConstraints.gridy = 2;
+	    add(mDocumentPresentationPanel, documentConstraints);
+	    add(mModalPresentationPanel, messageConstraints);
+	    
+	    mModalPresentationPanel.add(mModalTextArea);
 	}
 	
 	public JPanel getDocumentPane() { 
@@ -117,18 +123,16 @@ public class VisualEditorFrame extends JFrame {
 	}
 	
 	public void _resetError() { 
-		mModalPresentationPanel.setVisible(false);
+		mModalTextArea.setText("");
 	}
 	
-	public void presentError(ConstructEditor editor, String errorString) { 
-		Point topleft = editor.get_component().getLocationOnScreen();
-		Dimension dim = editor.get_size();
-
-		mModalTextArea.setText(errorString);		
-		
-		mModalPresentationPanel.setVisible(true);
-		mModalPresentationPanel.setSize((int)mDocumentPresentationPanel.getSize().getWidth(), 30);
-		mModalPresentationPanel.setLocation(new Point(0, topleft.y+(int)dim.height-45));
-		mModalPresentationPanel.getParent().invalidate();
+	public void presentError(String errorString) { 
+		mModalTextArea.setText(errorString);	
+		mModalTextArea.setForeground(Color.red);
+	}
+	
+	public void presentInfoMessage(String message) { 
+		mModalTextArea.setText(message);
+		mModalTextArea.setForeground(Color.blue);
 	}
 }

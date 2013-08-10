@@ -293,6 +293,9 @@ public class BaseController implements KeyListener, BaseControllerListener {
 			// Does this key have an alpha numeric capture?
 			if(mCandidateKeys.get(0).fst.getCapturesAlphaNumeric() && !mIsCapturingAlphaNumeric) {
 				mIsCapturingAlphaNumeric = true;
+				
+				Application.showInfoMessage("Listening for construct type..");
+				
 				return ;
 			}
 

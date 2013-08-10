@@ -49,15 +49,13 @@ public abstract class ClojureConstruct extends Construct
 		}
 
 		Placeholder descriptor = getPlaceholderForConstruct(child);		
-		if(descriptor.isPermanent()) { 
-			Application.showError(child, "Cannot delete this construct");
+		if(descriptor == null || descriptor.isPermanent()) { 
+			Application.showErrorMessage("Cannot delete this construct");
 			return false;
 		}
 
-		if(isUser == true && child.getClass().equals(PlaceholderConstruct.class))
-		{ 
-			System.out.println(child.getClass());
-			Application.showError(child, "Cannot delete this construct");
+		if(isUser == true && child.getClass().equals(PlaceholderConstruct.class)) { 
+			Application.showErrorMessage("Cannot delete this construct");
 			return false;
 		}
 
@@ -132,12 +130,12 @@ public abstract class ClojureConstruct extends Construct
 			}
 			
 			if(!descriptor.isAllowed(newCon.getClass())) { 
-				Application.showError(replaceMe, descriptor.getHint() + " requires instance of " + descriptor.getClassRestriction().getSimpleName());
+				Application.showErrorMessage(descriptor.getHint() + " requires instance of " + descriptor.getClassRestriction().getSimpleName());
 				return false;
 			}
 
 			if(descriptor.isPermanent()) {
-				Application.showError(replaceMe, "Cannot delete this construct");
+				Application.showErrorMessage("Cannot delete this construct");
 				return false;
 			}
 			

@@ -186,9 +186,8 @@ public abstract class Construct
 	}
 	
 	public boolean replaceChild(Construct replaceMe, Construct newCon) {
-		// FIXME: really you need to make the replacement first, then validate, then rollback if the replace is invalid
 		int replacementIndex = children.indexOf(replaceMe);
-		if(canReplaceChild(replacementIndex, replaceMe, newCon)) { 
+		if(canReplaceChild(replacementIndex, replaceMe, newCon) && replacementIndex >= 0) { 
 			// Perform the replacement
 			children.set(replacementIndex, newCon);
 			onChildAdded(replacementIndex, newCon);

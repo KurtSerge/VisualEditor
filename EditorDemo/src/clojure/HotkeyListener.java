@@ -239,7 +239,7 @@ public class HotkeyListener implements BaseControllerListener {
 		// based on the initial input (IA, IA, IC)
 		ClojureConstruct parent = getParentForBinding(controller.getSelectedEditor(), binding);
 		if(parent == null) {
-			Application.showError(controller.getSelectedEditor(), "Cannot " + stringForBinding(binding) + " with selected construct");			
+			Application.showErrorMessage("Cannot " + stringForBinding(binding) + " with selected construct");			
 			return ;
 		}
 
@@ -247,7 +247,7 @@ public class HotkeyListener implements BaseControllerListener {
 		// children that the construct will have
 		ClojureConstruct newConstruct = getConstructFromKey(parent, keyEventCode);
 		if(newConstruct == null) {
-			Application.showError(controller.getSelectedEditor(), "Failed to " + stringForBinding(binding) + ": unknown construct type");
+			Application.showErrorMessage("Failed to " + stringForBinding(binding) + ": unknown construct type");
 			return ;
 		}
 		

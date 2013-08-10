@@ -8,6 +8,18 @@ import editor.Construct;
 import editor.document.ConstructDocument;
 
 public class SymbolConstruct extends ClojureConstruct {
+	
+	public static Integer[] sSpecialCharacters = {
+		38,		// &
+		39,		// '
+		42,		// *
+		43,		// +
+		45, 	// -
+		46,		// .
+		47,		// /
+	};
+	
+	
 	/**
 	 * Mutable.
 	 * 
@@ -120,15 +132,15 @@ public class SymbolConstruct extends ClojureConstruct {
 			{
 				return ConstructAction.None;
 			} 
-
-			if((int) keyEvent.getKeyChar() == 47 || 		// /
-					(int) keyEvent.getKeyChar() == 45 || 	// -
-					(int) keyEvent.getKeyChar() == 222 ||  	// ' 
-					(int) keyEvent.getKeyChar() == 46)		// .
-			{ 
-				return ConstructAction.None;
+			
+			
+			// Check to see if the special character is allowed
+			for(int i = 0; i < sSpecialCharacters.length; i++) { 
+				if(sSpecialCharacters[i] == (int) keyEvent.getKeyChar()) {
+					return ConstructAction.None;
+				}
 			}
-				
+
 			if(keyEventWillEmptyConstruct(keyEvent) == true) {
 				keyEvent.consume();
 				return ConstructAction.DeleteThis;
