@@ -1,12 +1,13 @@
 package json;
 
 import editor.Construct;
+import editor.document.ConstructDocument;
 
 public class StringLiteralConstruct extends Construct
 {
-	public StringLiteralConstruct(Construct parent, String literal)
+	public StringLiteralConstruct(ConstructDocument document, Construct parent, String literal)
 	{
-		super("string_literal", parent);
+		super(document, "string_literal", parent);
 		this.literal = literal;
 	}
 
@@ -29,7 +30,7 @@ public class StringLiteralConstruct extends Construct
 	
 	
 	public Construct deepCopy(Construct parent) {
-		StringLiteralConstruct newCopy = new StringLiteralConstruct(parent, literal);
+		StringLiteralConstruct newCopy = new StringLiteralConstruct(mDocument, parent, literal);
 		super.deepCopy(newCopy);
 		return newCopy;
 	}

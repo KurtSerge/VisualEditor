@@ -4,14 +4,15 @@ import clojure.ClojureConstruct;
 import clojure.constructs.placeholder.Placeholder;
 import clojure.constructs.placeholder.PlaceholderConstruct;
 import editor.Construct;
+import editor.document.ConstructDocument;
 
 public class MapConstruct extends ClojureConstruct {
 	
 	private static final String PREFIX = "{";
 	private static final String AFFIX = "}";
 	
-	public MapConstruct(Construct parent, String literal) { 
-		super("map", parent);
+	public MapConstruct(ConstructDocument document, Construct parent, String literal) { 
+		super(document, "map", parent);
 	}
 
 	@Override
@@ -53,7 +54,7 @@ public class MapConstruct extends ClojureConstruct {
 	
 	@Override
 	public Construct deepCopy(Construct parent) {
-		MapConstruct newCopy = new MapConstruct(parent, null);
+		MapConstruct newCopy = new MapConstruct(mDocument, parent, null);
 		super.deepCopy(newCopy);
 		return newCopy;
 	}
@@ -61,7 +62,7 @@ public class MapConstruct extends ClojureConstruct {
 	@Override
 	public void onChildAdded(int index, Construct child) {
 		if(child.getClass().equals(clojure.constructs.KeywordConstruct.class)) { 
-			addChild(index+1, Placeholder.createPlaceholder("value").createConstruct(this));
+			addChild(index+1, Placeholder.createPlaceholder("value").createConstruct(mDocument, this));
 		}
 	}
 	
@@ -77,7 +78,7 @@ public class MapConstruct extends ClojureConstruct {
 		// Restore placeholder for deleted children next to KeywordConstruct's
 		if(index != 0 && this.children.size() >= 1) { 
 			if(this.children.get(index-1).getClass().equals(clojure.constructs.KeywordConstruct.class)) { 
-				addChild(index, Placeholder.createPlaceholder("value").createConstruct(this));
+				addChild(index, Placeholder.createPlaceholder("value").createConstruct(mDocument, this));
 			}
 		}
 	}	

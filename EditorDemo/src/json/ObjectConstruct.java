@@ -1,12 +1,13 @@
 package json;
 
 import editor.Construct;
+import editor.document.ConstructDocument;
 
 public class ObjectConstruct extends Construct {
 
-	public ObjectConstruct(Construct parent)
+	public ObjectConstruct(ConstructDocument document, Construct parent)
 	{
-		super("object", parent);
+		super(document, "object", parent);
 	}
 
 	private static String repeat_string(String s, int times)
@@ -69,7 +70,7 @@ public class ObjectConstruct extends Construct {
 
 
 	public Construct deepCopy(Construct parent) {
-		ObjectConstruct newCopy = new ObjectConstruct(parent);
+		ObjectConstruct newCopy = new ObjectConstruct(mDocument, parent);
 		super.deepCopy(newCopy);
 		return newCopy;
 	}

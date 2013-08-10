@@ -4,9 +4,10 @@ import java.awt.Color;
 
 import clojure.ClojureConstruct;
 import editor.Construct;
+import editor.document.ConstructDocument;
 public class StringLiteralConstruct extends ClojureConstruct {
-	public StringLiteralConstruct(ClojureConstruct parent, String literal) { 
-		super("stringliteral", parent);
+	public StringLiteralConstruct(ConstructDocument document, ClojureConstruct parent, String literal) { 
+		super(document, "stringliteral", parent);
 		this.literal = literal;
 	}
 

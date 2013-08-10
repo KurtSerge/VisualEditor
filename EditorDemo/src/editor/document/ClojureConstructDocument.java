@@ -24,7 +24,7 @@ public class ClojureConstructDocument extends ConstructDocument {
 	protected Construct loadConstruct(InputStream in) { 
 		try { 
  			ClojureReader reader = new ClojureReader();
-			return reader.parseFromInputStream(in);
+			return reader.parseFromInputStream(this, in);
 		} catch(Exception ex) { 
 			System.err.println("Failed to load Clojure file " + ex.getMessage());
 		}

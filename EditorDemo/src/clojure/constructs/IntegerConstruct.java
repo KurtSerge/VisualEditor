@@ -2,10 +2,11 @@ package clojure.constructs;
 
 import clojure.ClojureConstruct;
 import editor.Construct;
+import editor.document.ConstructDocument;
 
 public class IntegerConstruct extends ClojureConstruct {
-	public IntegerConstruct(Construct parent, String literal) {
-		super("integer", parent);
+	public IntegerConstruct(ConstructDocument document, Construct parent, String literal) {
+		super(document, "integer", parent);
 		
 		this.literal = literal;
 	}
@@ -28,7 +29,7 @@ public class IntegerConstruct extends ClojureConstruct {
 	
 	@Override
 	public Construct deepCopy(Construct parent) {
-		IntegerConstruct newCopy = new IntegerConstruct(parent, this.literal);
+		IntegerConstruct newCopy = new IntegerConstruct(mDocument, parent, this.literal);
 		super.deepCopy(newCopy);
 		return newCopy;
 	}

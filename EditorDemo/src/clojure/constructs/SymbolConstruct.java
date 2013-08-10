@@ -5,6 +5,7 @@ import java.awt.event.KeyEvent;
 
 import clojure.ClojureConstruct;
 import editor.Construct;
+import editor.document.ConstructDocument;
 
 public class SymbolConstruct extends ClojureConstruct {
 	/**
@@ -13,8 +14,8 @@ public class SymbolConstruct extends ClojureConstruct {
 	 * @param parent
 	 * @param literal
 	 */
-	public SymbolConstruct(Construct parent, String literal) { 
-		this(parent, literal, true);
+	public SymbolConstruct(ConstructDocument document, Construct parent, String literal) { 
+		this(document, parent, literal, true);
 	}
 	
 	/**
@@ -24,8 +25,8 @@ public class SymbolConstruct extends ClojureConstruct {
 	 * @param symbol
 	 * @param mutable
 	 */
-	public SymbolConstruct(Construct parent, String symbol, boolean mutable) { 
-		super("symbol", parent);
+	public SymbolConstruct(ConstructDocument document, Construct parent, String symbol, boolean mutable) { 
+		super(document, "symbol", parent);
 		
 		if(mutable == false) { 
 			this.mMutable = false;
@@ -66,13 +67,32 @@ public class SymbolConstruct extends ClojureConstruct {
 		SymbolConstruct newCopy;
 		
 		if(mMutable) { 
-			newCopy = new SymbolConstruct(parent, this.literal, true);
+			newCopy = new SymbolConstruct(mDocument, parent, this.literal, true);
 		} else { 
-			newCopy = new SymbolConstruct(parent, mImmutableSymbol, false);
+			newCopy = new SymbolConstruct(mDocument, parent, mImmutableSymbol, false);
 		}
 		
 		super.deepCopy(newCopy);
 		return newCopy;
+	}
+	
+	private boolean keyEventWillEmptyConstruct(KeyEvent e) {
+		if((int)e.getKeyChar() == 8) { // Backspace
+			if(this.literal.length() == 0) { 
+				return true;
+			}
+			
+			if(this.literal.length() == 1) { 
+				ClojureConstruct parentForm = (ClojureConstruct) this.parent;
+				if(parentForm != null && 
+						parentForm.getPlaceholders() != null) { 
+					return true;
+				}
+			}
+
+		}
+		
+		return false;
 	}
 	
 	/**
@@ -84,35 +104,39 @@ public class SymbolConstruct extends ClojureConstruct {
 	 * @param isTyping True if editing this.literal
 	 * @return True to consume the event ( can also call e.consume() )
 	 */
-	public boolean onReceivedKeyEvent(KeyEvent e, boolean isTyping) {
+	public ConstructAction onReceivedKeyEvent(KeyEvent keyEvent, boolean isTyping) {
 		if(isTyping) {
-			if(((int) e.getKeyChar() >= 48 && (int) e.getKeyChar() <= 57)) {
+			if(((int) keyEvent.getKeyChar() >= 48 && (int) keyEvent.getKeyChar() <= 57)) {
 				if(this.literal.length() == 0) {
 					// Consume
-					return true;
+					return ConstructAction.ConsumeEvent;
 				}
 				
-				return false;
+				return ConstructAction.None;
 			}
 
-			if(((int) e.getKeyChar() >= 97 && (int) e.getKeyChar() <= 122) ||   // a-z
-				((int) e.getKeyChar() >= 65 && (int) e.getKeyChar() <= 90))		// A-Z
+			if(((int) keyEvent.getKeyChar() >= 97 && (int) keyEvent.getKeyChar() <= 122) ||   // a-z
+				((int) keyEvent.getKeyChar() >= 65 && (int) keyEvent.getKeyChar() <= 90))		// A-Z
 			{
-				return false;
+				return ConstructAction.None;
 			} 
 			
-			if((int) e.getKeyChar() == 107 || 		// +
-					(int) e.getKeyChar() == 109 || 	// -
-					(int) e.getKeyChar() == 222 ||  // ' 
-					(int) e.getKeyCode() == 190)	// .
+			if((int) keyEvent.getKeyChar() == 107 || 		// +
+					(int) keyEvent.getKeyChar() == 109 || 	// -
+					(int) keyEvent.getKeyChar() == 222 ||  // ' 
+					(int) keyEvent.getKeyCode() == 190)	// .
 			{ 
-				return false;
+				return ConstructAction.None;
 			}
-					
+				
+			if(keyEventWillEmptyConstruct(keyEvent) == true) {
+				keyEvent.consume();
+				return ConstructAction.DeleteThis;
+			}
 			
-			return true;
+			return ConstructAction.ConsumeEvent;
 		}
 
-		return false;
+		return ConstructAction.None;
 	}	
 }

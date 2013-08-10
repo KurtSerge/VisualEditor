@@ -24,6 +24,7 @@ import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import editor.Construct.ConstructAction;
 import editor.document.ConstructDocument;
 
 import json.JSONController;
@@ -93,8 +94,19 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		@Override
 		public void keyTyped(KeyEvent e) {
 			if(construct != null) { 
-				if(construct.onReceivedKeyEvent(e, true) == true) {
-					e.consume();
+				
+				ConstructAction action = construct.onReceivedKeyEvent(e,  true);
+				switch(action) {
+					case DeleteThis:
+						mController.DeleteAllSelected();
+						break;
+				
+					case ConsumeEvent:
+						e.consume();
+						break;
+				
+					default:
+						break;
 				}
 			}			
 		}
@@ -439,7 +451,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 	}
 	
 	@Override
-	public void setSelected(ConstructEditor currentOrNewlySelected, boolean bSelect) {
+	public void setSelected(Construct.SelectionCause cause, ConstructEditor currentOrNewlySelected, boolean bSelect) {
 		if(bSelect == true) {
 			propagateHighlightSelection(this);
 			
@@ -452,7 +464,9 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 
 			if(construct != null && construct.screen_text() == null) { // editable
 				get_component().requestFocus();
-				//text_area.selectAll();
+				
+				if(cause != Construct.SelectionCause.SelectedDirectlyWithMouse)
+					text_area.moveCaretPosition(text_area.getDocument().getLength());	
 			}
 		} 
 		else {
@@ -485,6 +499,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		}		
 	}
 
+	@Override
 	public void delete() {
 		mDocument.getConstructEditorStore().unregister(this);
 		

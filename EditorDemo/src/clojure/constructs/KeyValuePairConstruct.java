@@ -3,6 +3,7 @@ package clojure.constructs;
 import java.util.LinkedList;
 
 import editor.Construct;
+import editor.document.ConstructDocument;
 import clojure.*;
 import clojure.constructs.placeholder.Placeholder;
 import clojure.constructs.special.VariadicVectorConstruct;
@@ -21,8 +22,8 @@ import clojure.constructs.special.VariadicVectorConstruct;
  */
 public class KeyValuePairConstruct extends ClojureConstruct {
 
-	public KeyValuePairConstruct(Construct parent, String literal) {
-		super("keyvaluepair", parent);
+	public KeyValuePairConstruct(ConstructDocument document, Construct parent, String literal) {
+		super(document, "keyvaluepair", parent);
 		
 		LinkedList<Placeholder> placeholders = new LinkedList<Placeholder>();
 		placeholders.add(Placeholder.createPlaceholder("test-constant"));
@@ -44,7 +45,7 @@ public class KeyValuePairConstruct extends ClojureConstruct {
 	
 	@Override
 	public Construct deepCopy(Construct parent) {
-		KeyValuePairConstruct newCopy = new KeyValuePairConstruct(parent, null);
+		KeyValuePairConstruct newCopy = new KeyValuePairConstruct(mDocument, parent, null);
 		super.deepCopy(newCopy);
 		return newCopy;
 	}

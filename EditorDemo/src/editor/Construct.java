@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import editor.document.ConstructDocument;
+
 import json.JSONController;
 
 
@@ -18,6 +20,7 @@ public abstract class Construct
 {
 	protected static final String BREAKING_SPACE = "$(break)";
 	
+	protected final ConstructDocument mDocument;
 	public final String type;
 	public final Construct parent;
 	public UUID workspace;
@@ -42,13 +45,23 @@ public abstract class Construct
 		
 		Selected, // Generic
 	}
-
 	
-	protected Construct(String type, Construct parent)
+	public static enum ConstructAction { 
+		DeleteThis,
+		ConsumeEvent,
+		None,
+	}
+
+	protected Construct(ConstructDocument document, String type, Construct parent)
 	{
+		mDocument = document;
 		this.type = type;
 		this.parent = parent;
 		instance = UUID.randomUUID();
+	}
+	
+	public ConstructDocument getDocument() { 
+		return mDocument;
 	}
 
 	
@@ -319,8 +332,8 @@ public abstract class Construct
 	 * @param isTyping True if editing this.literal
 	 * @return True to consume the event ( can also call e.consume() )
 	 */
-	public boolean onReceivedKeyEvent(KeyEvent e, boolean isTyping) {
-		return false;
+	public ConstructAction onReceivedKeyEvent(KeyEvent e, boolean isTyping) {
+		return ConstructAction.None;
 	}
 	
 	/**

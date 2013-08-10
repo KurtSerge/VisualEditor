@@ -54,7 +54,7 @@ public abstract class ConstructEditor
 		 return mBoundEditorStore.get(construct.parent).get();
 	}
 	
-	public abstract void setSelected(ConstructEditor lastSelected, boolean bSelect);
+	public abstract void setSelected(Construct.SelectionCause cause, ConstructEditor lastSelected, boolean bSelect);
 	
 	// Editor-specific cleanup - per editor instance
 	public abstract void delete();

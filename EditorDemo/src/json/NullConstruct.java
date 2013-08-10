@@ -1,11 +1,12 @@
 package json;
 
 import editor.Construct;
+import editor.document.ConstructDocument;
 
 public class NullConstruct extends Construct{
 
-	protected NullConstruct(Construct parent, String literal) {
-		super("null", parent);
+	protected NullConstruct(ConstructDocument document, Construct parent, String literal) {
+		super(document, "null", parent);
 		this.literal = literal;
 	}
 
@@ -30,7 +31,7 @@ public class NullConstruct extends Construct{
 	
 	
 	public Construct deepCopy(Construct parent) {
-		NullConstruct newCopy = new NullConstruct(parent, literal);
+		NullConstruct newCopy = new NullConstruct(mDocument, parent, literal);
 		super.deepCopy(newCopy);
 		return newCopy;
 	}

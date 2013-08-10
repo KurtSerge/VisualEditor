@@ -1,1 +1,1 @@
-()
+(defn "one hundred things for this document string")

@@ -2,11 +2,12 @@ package clojure.constructs;
 
 import clojure.ClojureConstruct;
 import editor.Construct;
+import editor.document.ConstructDocument;
 
 public class RatioConstruct extends ClojureConstruct {
 
-	public RatioConstruct(Construct parent, String literal) {
-		super("ratio", parent);
+	public RatioConstruct(ConstructDocument document, Construct parent, String literal) {
+		super(document, "ratio", parent);
 		this.literal = literal;
 	}
 	
@@ -23,7 +24,7 @@ public class RatioConstruct extends ClojureConstruct {
 
 	@Override
 	public Construct deepCopy(Construct parent) {
-		RatioConstruct newCopy = new RatioConstruct(parent, null);
+		RatioConstruct newCopy = new RatioConstruct(mDocument, parent, null);
 		super.deepCopy(newCopy);
 		return newCopy;
 	}

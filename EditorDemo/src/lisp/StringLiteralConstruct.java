@@ -1,12 +1,13 @@
 package lisp;
 
 import editor.Construct;
+import editor.document.ConstructDocument;
 
 public class StringLiteralConstruct extends Construct
 {
-	public StringLiteralConstruct(Construct parent, String literal)
+	public StringLiteralConstruct(ConstructDocument document, Construct parent, String literal)
 	{
-		super("string_literal", parent);
+		super(document, "string_literal", parent);
 		this.literal = literal;
 	}
 

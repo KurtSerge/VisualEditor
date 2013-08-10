@@ -5,13 +5,14 @@ import java.awt.Color;
 import clojure.ClojureConstruct;
 import clojure.constructs.StringLiteralConstruct;
 import editor.Construct;
+import editor.document.ConstructDocument;
 
 public class StringConstruct extends ClojureConstruct {
 	
-	public StringConstruct(Construct parent, String literal) { 
-		super("string", parent);
+	public StringConstruct(ConstructDocument document, Construct parent, String literal) { 
+		super(document, "string", parent);
 		
-		StringLiteralConstruct stringLiteralConstruct = new StringLiteralConstruct(this, literal);
+		StringLiteralConstruct stringLiteralConstruct = new StringLiteralConstruct(document, this, literal);
 		stringLiteralConstruct.setIsSoleDependantConstruct(true);
 		children.add(stringLiteralConstruct);		
 	}
@@ -31,7 +32,7 @@ public class StringConstruct extends ClojureConstruct {
 	
 	@Override
 	public Construct deepCopy(Construct parent) {
-		StringConstruct newCopy = new StringConstruct(parent, this.children.get(0).literal);
+		StringConstruct newCopy = new StringConstruct(mDocument, parent, this.children.get(0).literal);
 		return newCopy;
 	}
 	

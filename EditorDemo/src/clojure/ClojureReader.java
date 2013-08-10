@@ -23,6 +23,7 @@ import clojure.constructs.special.EmptyConstruct;
 import clojure.lang.RT;
 
 import editor.Construct;
+import editor.document.ConstructDocument;
 
 public class ClojureReader {
 	
@@ -52,15 +53,15 @@ public class ClojureReader {
 	    return s.hasNext() ? s.next() : "";
 	}
 	
-	private Construct createConstructFromObject(Construct parent, Object object) { 
+	private Construct createConstructFromObject(ConstructDocument document, Construct parent, Object object) { 
 		Class<?> objectClass = object.getClass();
 		Class<?> constructClass = mClassToConstructClassMap.get(objectClass);
 		String objectString = object.toString();
 		
 		if(constructClass != null) { 
 			try {
-				Constructor<?> constructor = constructClass.getConstructor(Construct.class, String.class);
-				return (Construct) constructor.newInstance(parent, objectString);
+				Constructor<?> constructor = constructClass.getConstructor(ConstructDocument.class, Construct.class, String.class);
+				return (Construct) constructor.newInstance(document, parent, objectString);
 			} catch (Exception ex) { 
 				ex.printStackTrace();
 				System.out.println("Constructor not available for " + objectClass);
@@ -68,11 +69,11 @@ public class ClojureReader {
 		} else { 
 			// This is a special case object
 			if(object == clojure.lang.PersistentList.EMPTY) { 
-				return new ListConstruct(parent, objectString);
+				return new ListConstruct(document, parent, objectString);
 			}
 		}
 		
-		return new UnknownConstruct(parent);
+		return new UnknownConstruct(document, parent);
 	}
 	
 	/**
@@ -84,10 +85,10 @@ public class ClojureReader {
 	 * @return The next level construct
 	 * @throws Exception
 	 */
-	public Construct recursiveCreateConstructFromObject(Construct parentConstruct, Object parentObject)
+	public Construct recursiveCreateConstructFromObject(ConstructDocument document, Construct parentConstruct, Object parentObject)
 		throws Exception
 	{
-		Construct thisConstruct = createConstructFromObject(parentConstruct, parentObject);		
+		Construct thisConstruct = createConstructFromObject(document, parentConstruct, parentObject);		
 	    String name = parentObject.getClass().getName();
 	   
 	    // Treat the parent as a vector type
@@ -95,7 +96,7 @@ public class ClojureReader {
 	   	clojure.lang.PersistentVector vector = (clojure.lang.PersistentVector) parentObject;		
 		   	for(int i = 0; i < vector.length(); i++) { 
 		   		Object leafObject = vector.get(i);
-		   		Construct leafConstruct = recursiveCreateConstructFromObject(thisConstruct, leafObject);
+		   		Construct leafConstruct = recursiveCreateConstructFromObject(document, thisConstruct, leafObject);
 		   		if(leafConstruct != null) {
 		   			thisConstruct.addChild(leafConstruct);
 		   		}
@@ -103,7 +104,7 @@ public class ClojureReader {
 	    } else if(name.equalsIgnoreCase("clojure.lang.PersistentList")) {
 	    	clojure.lang.PersistentList list = (clojure.lang.PersistentList) parentObject;		
 		   	for(int i = 0; i < list.size(); i++) { 
-		   		Construct leafConstruct = recursiveCreateConstructFromObject(thisConstruct, list.get(i));
+		   		Construct leafConstruct = recursiveCreateConstructFromObject(document, thisConstruct, list.get(i));
 		   		if(leafConstruct != null) {
 		   			thisConstruct.addChild(leafConstruct);
 		   		}
@@ -111,8 +112,8 @@ public class ClojureReader {
 	    } else if(name.equalsIgnoreCase("clojure.lang.PersistentArrayMap")) {
 	    	clojure.lang.PersistentArrayMap map = (clojure.lang.PersistentArrayMap) parentObject;
 	    	for(Object key : map.keySet()) { 
-	    		Construct keyConstruct = recursiveCreateConstructFromObject(thisConstruct, key);
-	    		Construct valueConstruct = recursiveCreateConstructFromObject(thisConstruct, map.get(key));
+	    		Construct keyConstruct = recursiveCreateConstructFromObject(document, thisConstruct, key);
+	    		Construct valueConstruct = recursiveCreateConstructFromObject(document, thisConstruct, map.get(key));
 	    		if(keyConstruct != null && valueConstruct != null) {
 	    			thisConstruct.addChild(keyConstruct);
 	    			thisConstruct.addChild(valueConstruct);
@@ -131,12 +132,12 @@ public class ClojureReader {
 	 * @return The root level construct, may be null.
 	 * @throws Exception Failure to load
 	 */
-	public Construct parseFromInputStream(InputStream stream) throws Exception {
+	public Construct parseFromInputStream(ConstructDocument document, InputStream stream) throws Exception {
 		String inputStreamAsString = convertStreamToString(stream);
 		Object inputStreamAsSingleObject = RT.readString(inputStreamAsString);
 
-		EmptyConstruct emptyConstruct = new EmptyConstruct();
-		emptyConstruct.addChild(0, recursiveCreateConstructFromObject(emptyConstruct, inputStreamAsSingleObject));
+		EmptyConstruct emptyConstruct = new EmptyConstruct(document);
+		emptyConstruct.addChild(0, recursiveCreateConstructFromObject(document, emptyConstruct, inputStreamAsSingleObject));
 		return emptyConstruct;
 	}
 	

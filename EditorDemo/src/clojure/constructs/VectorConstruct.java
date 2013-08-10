@@ -2,10 +2,11 @@ package clojure.constructs;
 
 import clojure.ClojureConstruct;
 import editor.Construct;
+import editor.document.ConstructDocument;
 
 public class VectorConstruct extends ClojureConstruct {
-	public VectorConstruct(Construct parent, String literal) {
-		super("vector", parent);
+	public VectorConstruct(ConstructDocument document, Construct parent, String literal) {
+		super(document, "vector", parent);
 	}
 
 	@Override
@@ -36,7 +37,7 @@ public class VectorConstruct extends ClojureConstruct {
 
 	@Override
 	public Construct deepCopy(Construct parent) {
-		VectorConstruct newCopy = new VectorConstruct(parent, null);
+		VectorConstruct newCopy = new VectorConstruct(mDocument, parent, null);
 		super.deepCopy(newCopy);
 		return newCopy;
 	}

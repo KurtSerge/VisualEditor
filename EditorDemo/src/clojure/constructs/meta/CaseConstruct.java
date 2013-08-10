@@ -9,6 +9,7 @@ import clojure.constructs.SymbolConstruct;
 import clojure.constructs.VectorConstruct;
 import clojure.constructs.placeholder.Placeholder;
 import editor.Construct;
+import editor.document.ConstructDocument;
 
 /**
  * Syntax: (case test conditions*)
@@ -19,8 +20,8 @@ import editor.Construct;
  */
 public class CaseConstruct extends ListConstruct {
 
-	public CaseConstruct(Construct parent) {
-		super("case", parent);
+	public CaseConstruct(ConstructDocument document, Construct parent) {
+		super(document, "case", parent);
 
 		LinkedList<Placeholder> placeholders = new LinkedList<Placeholder>();
 		placeholders.add(Placeholder.createPlaceholder("test"));
@@ -30,7 +31,7 @@ public class CaseConstruct extends ListConstruct {
 	
 	@Override
 	public Construct deepCopy(Construct parent) {
-		CaseConstruct newCopy = new CaseConstruct(parent);
+		CaseConstruct newCopy = new CaseConstruct(mDocument, parent);
 		super.deepCopy(newCopy);
 		return newCopy;
 	}	

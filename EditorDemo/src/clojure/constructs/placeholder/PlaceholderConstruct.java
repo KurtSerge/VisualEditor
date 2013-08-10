@@ -9,11 +9,12 @@ import clojure.constructs.StringConstruct;
 import clojure.constructs.SymbolConstruct;
 import clojure.constructs.meta.IfThenElseConstruct;
 import editor.Construct;
+import editor.document.ConstructDocument;
 
 public class PlaceholderConstruct extends ClojureConstruct {
 	
-	public PlaceholderConstruct(Construct parent, Placeholder placeholder) { 
-		super("placeholder", parent);
+	public PlaceholderConstruct(ConstructDocument document, Construct parent, Placeholder placeholder) { 
+		super(document, "placeholder", parent);
 		
 		String displayText = placeholder.getHint();
 		if(placeholder.isVariadic()) { 
@@ -49,7 +50,7 @@ public class PlaceholderConstruct extends ClojureConstruct {
 	
 	@Override
 	public Construct deepCopy(Construct parent) {
-		PlaceholderConstruct newCopy = new PlaceholderConstruct(parent, mDescriptor);
+		PlaceholderConstruct newCopy = new PlaceholderConstruct(mDocument, parent, mDescriptor);
 		super.deepCopy(newCopy);
 		return newCopy;
 	}
@@ -68,22 +69,28 @@ public class PlaceholderConstruct extends ClojureConstruct {
 	}
 
 	@Override
-	public boolean onReceivedKeyEvent(KeyEvent e, boolean isTyping) {
-		System.out.println("PlaceholderConstruct::onReceivedKeyEvent('" + e.getKeyChar() + "', " + isTyping + ")");
-		
+	public ConstructAction onReceivedKeyEvent(KeyEvent e, boolean isTyping) {
 		if(getDescriptor().isVariadic() || isTyping == true) { 
-			return false;
+			return ConstructAction.None;
 		}
 		
 		int keyCode = e.getKeyCode();
 		if(keyCode == KeyEvent.VK_QUOTE && e.isShiftDown()) { 
-			return parent.replaceChild(this, new StringConstruct(parent, ""));
+			if(parent.replaceChild(this, new StringConstruct(mDocument, parent, ""))) { 
+				return ConstructAction.ConsumeEvent;
+			}
+			
+			return ConstructAction.None;
 		}
 		
 		if(getDescriptor().isAllowed(IntegerConstruct.class) && isStartOfIntegerConstruct(e)) { 
 			String keyEventText = KeyEvent.getKeyText(keyCode);
-			IntegerConstruct replacementConstruct = new IntegerConstruct(parent, keyEventText);
-			return parent.replaceChild(this, replacementConstruct);
+			IntegerConstruct replacementConstruct = new IntegerConstruct(mDocument, parent, keyEventText);
+			if(parent.replaceChild(this, replacementConstruct)) { 
+				return ConstructAction.ConsumeEvent;
+			}
+			
+			return ConstructAction.None;
 		}
 		
 		if(getDescriptor().isAllowed(SymbolConstruct.class) && isStartOfSymbolConstruct(e)) {
@@ -92,8 +99,12 @@ public class PlaceholderConstruct extends ClojureConstruct {
 				keyEventText = keyEventText.toLowerCase();
 			}
 			
-			SymbolConstruct replacementConstruct = new SymbolConstruct(parent, keyEventText);
-			return parent.replaceChild(this, replacementConstruct);
+			SymbolConstruct replacementConstruct = new SymbolConstruct(mDocument, parent, keyEventText);
+			if(parent.replaceChild(this, replacementConstruct)) { 
+				return ConstructAction.ConsumeEvent;
+			}
+			
+			return ConstructAction.None;
 		}
 		
 		// Auto swap this construct with a StringConstruct if
@@ -108,8 +119,12 @@ public class PlaceholderConstruct extends ClojureConstruct {
 					keyEventText = keyEventText.toLowerCase();
 				}
 				
-				StringConstruct replacementConstruct = new StringConstruct(parent, keyEventText);
-				return parent.replaceChild(this, replacementConstruct);
+				StringConstruct replacementConstruct = new StringConstruct(mDocument, parent, keyEventText);
+				if(parent.replaceChild(this, replacementConstruct)) { 
+					return ConstructAction.ConsumeEvent;
+				}
+				
+				return ConstructAction.None;
 			}
 		}
 		
@@ -118,16 +133,25 @@ public class PlaceholderConstruct extends ClojureConstruct {
 				// We'll autobox this selection				
 				Class<?> restrictedClass = getDescriptor().getClassRestriction();
 				if(restrictedClass.equals(StringConstruct.class)) {
-					StringConstruct replacingConstruct = new StringConstruct(parent, "");
-					return parent.replaceChild(this, replacingConstruct);
+					StringConstruct replacingConstruct = new StringConstruct(mDocument, parent, "");
+					if(parent.replaceChild(this, replacingConstruct)) { 
+						return ConstructAction.ConsumeEvent;
+					}
+					
+					return ConstructAction.None;
+					
 				} else if(restrictedClass.equals(SymbolConstruct.class)) { 
-					SymbolConstruct replacingConstruct = new SymbolConstruct(parent, null);
-					return parent.replaceChild(this, replacingConstruct);
+					SymbolConstruct replacingConstruct = new SymbolConstruct(mDocument, parent, null);
+					if(parent.replaceChild(this, replacingConstruct)) { 
+						return ConstructAction.ConsumeEvent;
+					}
+					
+					return ConstructAction.None;
 				}
 			}
 		}
 
-		return false;
+		return ConstructAction.None;
 	}	
 
 	private Placeholder mDescriptor;

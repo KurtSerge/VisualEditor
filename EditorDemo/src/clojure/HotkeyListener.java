@@ -50,71 +50,71 @@ public class HotkeyListener implements BaseControllerListener {
 		
 		switch(keyEventCode) {
 			case KeyEvent.VK_6:
-				newConstruct = new FunctionConstruct(parent);
+				newConstruct = new FunctionConstruct(mDocument, parent);
 				break;
 			
 			case KeyEvent.VK_7:
-				newConstruct = new CaseConstruct(parent);
+				newConstruct = new CaseConstruct(mDocument, parent);
 				break;
 		
 			case KeyEvent.VK_8:
-				newConstruct = new LetConstruct(parent);
+				newConstruct = new LetConstruct(mDocument, parent);
 				break;
 		
 			case KeyEvent.VK_9:
-				newConstruct = new DefineFunctionConstruct(parent);
+				newConstruct = new DefineFunctionConstruct(mDocument, parent);
 				break;
 				
 			case KeyEvent.VK_0:
-				newConstruct = new IfThenElseConstruct(parent);
+				newConstruct = new IfThenElseConstruct(mDocument, parent);
 				break;
 			
 			case KeyEvent.VK_S: 
-				newConstruct = new SymbolConstruct(parent, "symbol");
+				newConstruct = new SymbolConstruct(mDocument, parent, "symbol");
 				break;
 				
 			case KeyEvent.VK_V:
-				newConstruct = new VectorConstruct(parent, null);
+				newConstruct = new VectorConstruct(mDocument, parent, null);
 				break;
 				
 			case KeyEvent.VK_L:
-				newConstruct = new ListConstruct(parent, null);
+				newConstruct = new ListConstruct(mDocument, parent, null);
 				break;	
 				
 			case KeyEvent.VK_M:
-				newConstruct = new MapConstruct(parent, null);
+				newConstruct = new MapConstruct(mDocument, parent, null);
 				break;
 				
 			case KeyEvent.VK_P:
-				newConstruct = new KeywordExpressionPairConstruct(parent, null);
+				newConstruct = new KeywordExpressionPairConstruct(mDocument, parent, null);
 				break;
 				
 			case KeyEvent.VK_B:
-				newConstruct = new BooleanConstruct(parent, "true");
+				newConstruct = new BooleanConstruct(mDocument, parent, "true");
 				break;	
 				
 			case KeyEvent.VK_I:
-				newConstruct = new IntegerConstruct(parent, "0");
+				newConstruct = new IntegerConstruct(mDocument, parent, "0");
 				break;		
 			
 			case KeyEvent.VK_K:
-				newConstruct = new KeywordConstruct(parent, "keyword");
+				newConstruct = new KeywordConstruct(mDocument, parent, "keyword");
 				break;
 				
 			case KeyEvent.VK_D:
-				newConstruct = new DoubleConstruct(parent, "0.0");
+				newConstruct = new DoubleConstruct(mDocument, parent, "0.0");
 				break;
 				
 			case KeyEvent.VK_C:
-				newConstruct = new CharacterConstruct(parent, "c");
+				newConstruct = new CharacterConstruct(mDocument, parent, "c");
 				break;
 				
 			case KeyEvent.VK_T:
-				newConstruct = new StringConstruct(parent, "string");
+				newConstruct = new StringConstruct(mDocument, parent, "string");
 				break;
 				
 			case KeyEvent.VK_W:
-				newConstruct = new VariadicVectorConstruct(parent, "params");
+				newConstruct = new VariadicVectorConstruct(mDocument, parent, "params");
 				
 			default:
 				System.out.println("Unknown keyEventCode: " + keyEventCode);

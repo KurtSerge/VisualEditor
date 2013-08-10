@@ -3,6 +3,7 @@ package clojure.constructs.special;
 import clojure.ClojureConstruct;
 import clojure.constructs.BigIntConstruct;
 import editor.Construct;
+import editor.document.ConstructDocument;
 
 /**
  * A special construct returned as the parent to all
@@ -12,8 +13,8 @@ import editor.Construct;
  * @author chrislord
  */
 public class EmptyConstruct extends ClojureConstruct {
-	public EmptyConstruct() {
-		super("empty", null);
+	public EmptyConstruct(ConstructDocument document) {
+		super(document, "empty", null);
 	}
 
 	@Override
@@ -40,7 +41,7 @@ public class EmptyConstruct extends ClojureConstruct {
 
 	@Override
 	public Construct deepCopy(Construct parent) {
-		EmptyConstruct newCopy = new EmptyConstruct();
+		EmptyConstruct newCopy = new EmptyConstruct(mDocument);
 		super.deepCopy(newCopy);
 		return newCopy;
 	}

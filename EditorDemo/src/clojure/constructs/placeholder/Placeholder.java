@@ -2,6 +2,7 @@ package clojure.constructs.placeholder;
 
 import clojure.ClojureConstruct;
 import editor.Construct;
+import editor.document.ConstructDocument;
 
 public class Placeholder {
 	public static Placeholder createVariadicPlaceholder(String hint) {
@@ -91,8 +92,8 @@ public class Placeholder {
 		return mClassRestriction;
 	}
 	
-	public PlaceholderConstruct createConstruct(Construct parent) { 
-		return new PlaceholderConstruct(parent, this);
+	public PlaceholderConstruct createConstruct(ConstructDocument document, Construct parent) { 
+		return new PlaceholderConstruct(document, parent, this);
 	}
 	
 	private Class<?> mClassRestriction;

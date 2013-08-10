@@ -1,11 +1,12 @@
 package json;
 
 import editor.Construct;
+import editor.document.ConstructDocument;
 
 public class FloatConstruct extends Construct{
 
-	protected FloatConstruct(Construct parent, String literal) {
-		super("float", parent);
+	protected FloatConstruct(ConstructDocument document, Construct parent, String literal) {
+		super(document, "float", parent);
 		this.literal = literal;
 	}
 
@@ -33,7 +34,7 @@ public class FloatConstruct extends Construct{
 	
 	
 	public Construct deepCopy(Construct parent) {
-		FloatConstruct newCopy = new FloatConstruct(parent, literal);
+		FloatConstruct newCopy = new FloatConstruct(mDocument, parent, literal);
 		super.deepCopy(newCopy);
 		return newCopy;
 	}

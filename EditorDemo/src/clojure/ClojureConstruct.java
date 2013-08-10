@@ -14,6 +14,7 @@ import clojure.constructs.placeholder.PlaceholderConstruct;
 
 import editor.Application;
 import editor.Construct;
+import editor.document.ConstructDocument;
 
 /**
  * TODO: setPlaceholders() replacing previous setPlaceholders()
@@ -23,8 +24,8 @@ import editor.Construct;
  */
 public abstract class ClojureConstruct extends Construct
 {
-	public ClojureConstruct(String type, Construct parent) {
-		super(type, parent);
+	public ClojureConstruct(ConstructDocument document, String type, Construct parent) {
+		super(document, type, parent);
 		
 		mPlaceholders = null;
 		mConstructsToPlaceholders = new HashMap<Construct, Placeholder>();
@@ -87,7 +88,7 @@ public abstract class ClojureConstruct extends Construct
 		{
 			Placeholder descriptor = getPlaceholderForIndex(index);
 			if(!descriptor.isVariadic()) { 
-				PlaceholderConstruct construct = new PlaceholderConstruct(this, descriptor);
+				PlaceholderConstruct construct = new PlaceholderConstruct(mDocument, this, descriptor);
 				descriptor.setPopulated(false);
 
 			    Iterator<Entry<Construct, Placeholder>> it = mConstructsToPlaceholders.entrySet().iterator();
@@ -194,7 +195,7 @@ public abstract class ClojureConstruct extends Construct
 	private boolean mPlaceholdersAddedOptionals;
 	private HashMap<Construct, Placeholder> mConstructsToPlaceholders;
 	
-	protected List<Placeholder> getPlaceholders() { 
+	public List<Placeholder> getPlaceholders() { 
 		return mPlaceholders;
 	}
 	
@@ -256,7 +257,7 @@ public abstract class ClojureConstruct extends Construct
 					}
 				} else { 
 					// This placeholder needs to be filled, add it in now
-					PlaceholderConstruct construct = new PlaceholderConstruct(this, placeholder);
+					PlaceholderConstruct construct = new PlaceholderConstruct(mDocument, this, placeholder);
 					if(placeholder.isVariadic()) { 
 						// Variadic placeholders always reside at the end
 						// of the specified form, treat them like so..

@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import clojure.constructs.VectorConstruct;
 import clojure.constructs.placeholder.Placeholder;
 import editor.Construct;
+import editor.document.ConstructDocument;
 
 /**
  * The VariadicVectorConstruct is an empty vector which contains
@@ -17,8 +18,8 @@ import editor.Construct;
  */
 public class VariadicVectorConstruct extends VectorConstruct {
 	
-	public VariadicVectorConstruct(Construct parent, String hint) { 
-		super(parent, null);
+	public VariadicVectorConstruct(ConstructDocument document, Construct parent, String hint) { 
+		super(document, parent, null);
 		
 		LinkedList<Placeholder> paramsPlaceholders = new LinkedList<Placeholder>();
 		paramsPlaceholders.add(Placeholder.createVariadicPlaceholder(hint));

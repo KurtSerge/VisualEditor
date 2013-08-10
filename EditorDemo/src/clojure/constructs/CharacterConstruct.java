@@ -2,11 +2,12 @@ package clojure.constructs;
 
 import clojure.ClojureConstruct;
 import editor.Construct;
+import editor.document.ConstructDocument;
 
 public class CharacterConstruct extends ClojureConstruct {
 
-	public CharacterConstruct(Construct parent, String literal) { 
-		super("character", parent);
+	public CharacterConstruct(ConstructDocument document, Construct parent, String literal) { 
+		super(document, "character", parent);
 		this.literal = literal;
 	}
 	
@@ -22,7 +23,7 @@ public class CharacterConstruct extends ClojureConstruct {
 	
 	@Override
 	public Construct deepCopy(Construct parent) {
-		CharacterConstruct newCopy = new CharacterConstruct(parent, this.literal);
+		CharacterConstruct newCopy = new CharacterConstruct(mDocument, parent, this.literal);
 		super.deepCopy(newCopy);
 		return newCopy;
 	}

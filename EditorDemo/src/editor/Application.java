@@ -83,7 +83,7 @@ public class Application extends VisualEditorFrame implements ComponentListener
 		
 		boolean shouldLoadJson = false;	// Alt: Loads Clojure
 
-		this.setSize(800, 600);
+		this.setSize(400, 300);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
 		this.setBackground(Color.white);
@@ -175,7 +175,7 @@ public class Application extends VisualEditorFrame implements ComponentListener
 		this.getContentPane().addComponentListener(this);
 
 		this.pack();
-		this.setSize(800, 600);
+		this.setSize(600, 400);
 	}
 
 	private static Application sApplication = null;

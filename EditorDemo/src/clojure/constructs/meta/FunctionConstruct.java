@@ -9,6 +9,7 @@ import clojure.constructs.VectorConstruct;
 import clojure.constructs.placeholder.Placeholder;
 import clojure.constructs.special.VariadicVectorConstruct;
 import editor.Construct;
+import editor.document.ConstructDocument;
 
 /**
  * Syntax: (fn name? [param*] exprs*)
@@ -19,19 +20,19 @@ import editor.Construct;
  */
 public class FunctionConstruct extends ListConstruct {
 
-	public FunctionConstruct(Construct parent) {
-		super("fn", parent);
+	public FunctionConstruct(ConstructDocument document, Construct parent) {
+		super(document, "fn", parent);
 		
 		LinkedList<Placeholder> placeholders = new LinkedList<Placeholder>();
 		placeholders.add(Placeholder.createOptionalPlaceholder("name", SymbolConstruct.class));
-		placeholders.add(Placeholder.createPermanentPlaceholder(new VariadicVectorConstruct(this, "param")));
+		placeholders.add(Placeholder.createPermanentPlaceholder(new VariadicVectorConstruct(mDocument, this, "param")));
 		placeholders.add(Placeholder.createVariadicPlaceholder("exprs"));
 		setPlaceholders(placeholders);
 	}
 	
 	@Override
 	public Construct deepCopy(Construct parent) {
-		FunctionConstruct newCopy = new FunctionConstruct(parent);
+		FunctionConstruct newCopy = new FunctionConstruct(mDocument, parent);
 		super.deepCopy(newCopy);
 		return newCopy;
 	}

@@ -2,11 +2,12 @@ package clojure.constructs;
 
 import clojure.ClojureConstruct;
 import editor.Construct;
+import editor.document.ConstructDocument;
 
 public class DoubleConstruct extends ClojureConstruct {
 
-	public DoubleConstruct(Construct parent, String literal) { 
-		super("double", parent);
+	public DoubleConstruct(ConstructDocument document, Construct parent, String literal) { 
+		super(document, "double", parent);
 		this.literal = literal;
 	}
 	
@@ -28,7 +29,7 @@ public class DoubleConstruct extends ClojureConstruct {
 	
 	@Override
 	public Construct deepCopy(Construct parent) {
-		DoubleConstruct newCopy = new DoubleConstruct(parent, this.literal);
+		DoubleConstruct newCopy = new DoubleConstruct(mDocument, parent, this.literal);
 		super.deepCopy(newCopy);
 		return newCopy;
 	}

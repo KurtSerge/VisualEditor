@@ -1,12 +1,13 @@
 package lisp;
 
 import editor.Construct;
+import editor.document.ConstructDocument;
 
 public class StringConstruct extends Construct {
 
-	public StringConstruct(Construct parent)
+	public StringConstruct(ConstructDocument document, Construct parent)
 	{
-		super("string", parent);
+		super(document, "string", parent);
 	}
 
 	@Override

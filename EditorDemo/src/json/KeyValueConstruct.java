@@ -2,15 +2,16 @@ package json;
 
 import editor.Construct;
 import editor.EmptyConstruct;
+import editor.document.ConstructDocument;
 	
 
 public class KeyValueConstruct extends Construct {
 
 
 
-	public KeyValueConstruct(Construct parent)
+	public KeyValueConstruct(ConstructDocument document, Construct parent)
 	{
-		super("key_value_pair", parent);
+		super(document, "key_value_pair", parent);
 	}
 
 	private static String repeat_string(String s, int times)
@@ -92,7 +93,7 @@ public class KeyValueConstruct extends Construct {
 	// Override this for special rules, example: KV-Pair must have at least 2 children
 	public void handleDeleteChild() {
 		if(children.size() == 1)  {
-			Construct newCon = new EmptyConstruct(this);
+			Construct newCon = new EmptyConstruct(mDocument, this);
 			
 			this.addChild(1, newCon);
 			//JSONController.editors_from_constructs(newCon);
@@ -103,7 +104,7 @@ public class KeyValueConstruct extends Construct {
 	
 	
 	public Construct deepCopy(Construct parent) {
-		KeyValueConstruct newCopy = new KeyValueConstruct(parent);
+		KeyValueConstruct newCopy = new KeyValueConstruct(mDocument, parent);
 		super.deepCopy(newCopy);
 
 		return newCopy;

@@ -2,10 +2,11 @@ package clojure.constructs;
 
 import clojure.ClojureConstruct;
 import editor.Construct;
+import editor.document.ConstructDocument;
 
 public class BooleanConstruct extends ClojureConstruct {
-	public BooleanConstruct(Construct parent, String literal) { 
-		super("boolean", parent);
+	public BooleanConstruct(ConstructDocument document, Construct parent, String literal) { 
+		super(document, "boolean", parent);
 		this.literal = literal;
 	}
 
@@ -26,7 +27,7 @@ public class BooleanConstruct extends ClojureConstruct {
 	
 	@Override
 	public Construct deepCopy(Construct parent) {
-		BigDecimalConstruct newCopy = new BigDecimalConstruct(parent, this.literal);
+		BigDecimalConstruct newCopy = new BigDecimalConstruct(mDocument, parent, this.literal);
 		super.deepCopy(newCopy);
 		return newCopy;
 	}

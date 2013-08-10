@@ -5,14 +5,15 @@ import java.util.LinkedList;
 import clojure.ClojureConstruct;
 import clojure.constructs.placeholder.Placeholder;
 import editor.Construct;
+import editor.document.ConstructDocument;
 
 public class KeywordExpressionPairConstruct extends ClojureConstruct {
 
-	public KeywordExpressionPairConstruct(Construct parent, String literal) {
-		super("keywordexpressionpair", parent);
+	public KeywordExpressionPairConstruct(ConstructDocument document, Construct parent, String literal) {
+		super(document, "keywordexpressionpair", parent);
 		
 		LinkedList<Placeholder> placeholders = new LinkedList<Placeholder>();
-		placeholders.add(Placeholder.createPermanentPlaceholder(new KeywordConstruct(this, "key")));
+		placeholders.add(Placeholder.createPermanentPlaceholder(new KeywordConstruct(document, this, "key")));
 		placeholders.add(Placeholder.createPlaceholder("expr"));		
 		setPlaceholders(placeholders);
 	}
@@ -31,7 +32,7 @@ public class KeywordExpressionPairConstruct extends ClojureConstruct {
 	
 	@Override
 	public Construct deepCopy(Construct parent) {
-		KeywordExpressionPairConstruct newCopy = new KeywordExpressionPairConstruct(parent, null);
+		KeywordExpressionPairConstruct newCopy = new KeywordExpressionPairConstruct(mDocument, parent, null);
 		super.deepCopy(newCopy);
 		return newCopy;
 	}

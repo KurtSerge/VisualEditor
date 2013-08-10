@@ -1,12 +1,13 @@
 package lisp;
 
 import editor.Construct;
+import editor.document.ConstructDocument;
 
 public class SExpressionConstruct extends Construct {
 
-	public SExpressionConstruct(Construct parent)
+	public SExpressionConstruct(ConstructDocument document, Construct parent)
 	{
-		super("sexpression", parent);
+		super(document, "sexpression", parent);
 	}
 	
 	@Override

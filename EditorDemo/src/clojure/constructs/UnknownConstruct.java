@@ -2,11 +2,12 @@ package clojure.constructs;
 
 import clojure.ClojureConstruct;
 import editor.Construct;
+import editor.document.ConstructDocument;
 
 public class UnknownConstruct extends ClojureConstruct {
 
-	public UnknownConstruct(Construct parent) { 
-		super("unknown", parent);
+	public UnknownConstruct(ConstructDocument document, Construct parent) { 
+		super(document, "unknown", parent);
 	}
 	
 	@Override
@@ -21,7 +22,7 @@ public class UnknownConstruct extends ClojureConstruct {
 	
 	@Override
 	public Construct deepCopy(Construct parent) {
-		UnknownConstruct newCopy = new UnknownConstruct(parent);
+		UnknownConstruct newCopy = new UnknownConstruct(mDocument, parent);
 		super.deepCopy(newCopy);
 		return newCopy;
 	}

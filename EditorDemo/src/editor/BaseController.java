@@ -510,7 +510,7 @@ public class BaseController implements KeyListener, BaseControllerListener {
 			
 			ConstructEditor lastSelected = selected;
 			if(selected != null)   {
-				selected.setSelected(newSel, false);
+				selected.setSelected(selectionType, newSel, false);
 			}
 			
 			if(selected != null)
@@ -527,13 +527,9 @@ public class BaseController implements KeyListener, BaseControllerListener {
 			ConstructEditor constructEditor = mDocument.editorsFromConstruct(constructForSelection);
 			constructEditor.update();
 			selected = constructEditor;
-			
-			
-				selected.setSelected(lastSelected, true);
+			selected.setSelected(selectionType, lastSelected, true);
 			
 			Application.resetError();
-			
-			
 
 			frame.invalidate();
 			frame.repaint();

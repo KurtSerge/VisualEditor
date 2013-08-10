@@ -1,11 +1,12 @@
 package json;
 
 import editor.Construct;
+import editor.document.ConstructDocument;
 
 public class BooleanConstruct extends Construct{
 
-	protected BooleanConstruct(Construct parent, String literal) {
-		super("boolean", parent);
+	protected BooleanConstruct(ConstructDocument document, Construct parent, String literal) {
+		super(document, "boolean", parent);
 		this.literal = literal;
 	}
 
@@ -29,7 +30,7 @@ public class BooleanConstruct extends Construct{
 	}
 	
 	public Construct deepCopy(Construct parent) {
-		BooleanConstruct newCopy = new BooleanConstruct(parent, literal);
+		BooleanConstruct newCopy = new BooleanConstruct(mDocument, parent, literal);
 		super.deepCopy(newCopy);
 		return newCopy;
 	}

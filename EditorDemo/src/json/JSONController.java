@@ -44,9 +44,9 @@ public class JSONController
 		if(parent.getClass() != ObjectConstruct.class)
 			return null;
 		
-		json.KeyValueConstruct key_value_construct = new json.KeyValueConstruct(parent);
+		json.KeyValueConstruct key_value_construct = new json.KeyValueConstruct(parent.getDocument(), parent);
 		key_value_construct.addChild(construct_for_json("EmptyString", key_value_construct));
-		key_value_construct.addChild(new EmptyConstruct(key_value_construct));
+		key_value_construct.addChild(new EmptyConstruct(parent.getDocument(), key_value_construct));
 		return key_value_construct;
 	}
 
@@ -119,7 +119,7 @@ public class JSONController
 	{
 		if(object.getClass().equals(JSONObject.class))
 	    {
-	      json.ObjectConstruct object_construct = new json.ObjectConstruct(parent);
+	      json.ObjectConstruct object_construct = new json.ObjectConstruct(parent.getDocument(), parent);
 	      
 	      String[] keys = JSONObject.getNames((JSONObject)object);
 	      
@@ -128,7 +128,7 @@ public class JSONController
 		      {
 				Object child = ((JSONObject)object).get(key);
 				
-				json.KeyValueConstruct key_value_construct = new json.KeyValueConstruct(object_construct);
+				json.KeyValueConstruct key_value_construct = new json.KeyValueConstruct(parent.getDocument(), object_construct);
 				key_value_construct.addChild(construct_for_json(key, key_value_construct));
 				key_value_construct.addChild(construct_for_json(child, key_value_construct));
 				
@@ -139,7 +139,7 @@ public class JSONController
 		} 
 		if(object.getClass().equals(JSONArray.class))
 		{
-			json.ArrayConstruct object_construct = new json.ArrayConstruct(parent);
+			json.ArrayConstruct object_construct = new json.ArrayConstruct(parent.getDocument(), parent);
 			
 			JSONArray json_array = (JSONArray)object;
 			
@@ -154,11 +154,11 @@ public class JSONController
 		}
 		if(object.getClass().equals(String.class))
 		{
-			json.StringConstruct string_construct = new json.StringConstruct(parent);
+			json.StringConstruct string_construct = new json.StringConstruct(parent.getDocument(), parent);
 			
 			String json_string = (String)object;
 			
-			json.StringLiteralConstruct string_literal_construct = new json.StringLiteralConstruct(string_construct, json_string);
+			json.StringLiteralConstruct string_literal_construct = new json.StringLiteralConstruct(parent.getDocument(), string_construct, json_string);
 			
 			string_construct.addChild(string_literal_construct);
 			
@@ -167,28 +167,28 @@ public class JSONController
 		if(object.getClass().equals(Double.class))
 		{
 			String json_string = object.toString();
-			json.FloatConstruct float_construct = new json.FloatConstruct(parent, json_string);
+			json.FloatConstruct float_construct = new json.FloatConstruct(parent.getDocument(), parent, json_string);
 
 			return float_construct;
 		}
 		if(object.getClass().equals(Integer.class))
 		{
 			String json_string = object.toString();
-			json.IntegerConstruct integer_construct = new json.IntegerConstruct(parent, json_string);
+			json.IntegerConstruct integer_construct = new json.IntegerConstruct(parent.getDocument(), parent, json_string);
 
 			return integer_construct;
 		}
 		if(object.getClass().equals(Boolean.class))
 		{
 			String json_string = object.toString();
-			json.BooleanConstruct boolean_construct = new json.BooleanConstruct(parent, json_string);
+			json.BooleanConstruct boolean_construct = new json.BooleanConstruct(parent.getDocument(), parent, json_string);
 
 			return boolean_construct;
 		}
 		if(object==(org.json.JSONObject.NULL))
 		{
 			String json_string = object.toString();
-			json.NullConstruct null_construct = new json.NullConstruct(parent, json_string);
+			json.NullConstruct null_construct = new json.NullConstruct(parent.getDocument(), parent, json_string);
 
 			return null_construct;
 		}

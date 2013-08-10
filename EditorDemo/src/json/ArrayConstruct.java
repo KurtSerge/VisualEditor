@@ -1,12 +1,13 @@
 package json;
 
 import editor.Construct;
+import editor.document.ConstructDocument;
 
 public class ArrayConstruct extends Construct {
 
-	public ArrayConstruct(Construct parent)
+	public ArrayConstruct(ConstructDocument document, Construct parent)
 	{
-		super("array", parent);
+		super(document, "array", parent);
 	}
 
 	@Override
@@ -62,7 +63,7 @@ public class ArrayConstruct extends Construct {
 	}
 
 	public Construct deepCopy(Construct parent) {
-		ArrayConstruct newCopy = new ArrayConstruct(parent);
+		ArrayConstruct newCopy = new ArrayConstruct(mDocument, parent);
 		super.deepCopy(newCopy);
 		return newCopy;
 	}

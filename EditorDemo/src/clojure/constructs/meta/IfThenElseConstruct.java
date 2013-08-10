@@ -8,6 +8,7 @@ import clojure.constructs.VectorConstruct;
 import clojure.constructs.placeholder.Placeholder;
 import clojure.constructs.placeholder.PlaceholderConstruct;
 import editor.Construct;
+import editor.document.ConstructDocument;
 
 /**
  * Syntax: (if test then else?)
@@ -16,8 +17,8 @@ import editor.Construct;
  */
 public class IfThenElseConstruct extends ListConstruct {
 
-	public IfThenElseConstruct(Construct parent) {
-		super("if", parent);
+	public IfThenElseConstruct(ConstructDocument document, Construct parent) {
+		super(document, "if", parent);
 
 		LinkedList<Placeholder> placeholders = new LinkedList<Placeholder>();
 		placeholders.add(Placeholder.createPlaceholder("test"));
@@ -28,7 +29,7 @@ public class IfThenElseConstruct extends ListConstruct {
 	
 	@Override
 	public Construct deepCopy(Construct parent) {
-		IfThenElseConstruct newCopy = new IfThenElseConstruct(parent);
+		IfThenElseConstruct newCopy = new IfThenElseConstruct(mDocument, parent);
 		super.deepCopy(newCopy);
 		return newCopy;
 	}

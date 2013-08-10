@@ -3,11 +3,12 @@ package clojure.constructs;
 import json.ArrayConstruct;
 import clojure.ClojureConstruct;
 import editor.Construct;
+import editor.document.ConstructDocument;
 
 public class BigDecimalConstruct extends ClojureConstruct {
 
-	public BigDecimalConstruct(Construct parent, String literal) {
-		super("bigdecimal", parent);
+	public BigDecimalConstruct(ConstructDocument document, Construct parent, String literal) {
+		super(document, "bigdecimal", parent);
 		this.literal = literal;
 	}
 	
@@ -23,7 +24,7 @@ public class BigDecimalConstruct extends ClojureConstruct {
 	
 	@Override
 	public Construct deepCopy(Construct parent) {
-		BigDecimalConstruct newCopy = new BigDecimalConstruct(parent, this.literal);
+		BigDecimalConstruct newCopy = new BigDecimalConstruct(mDocument, parent, this.literal);
 		super.deepCopy(newCopy);
 		return newCopy;
 	}

@@ -1,12 +1,13 @@
 package editor;
 
 import editor.Construct;
+import editor.document.ConstructDocument;
 
 public class EmptyConstruct extends Construct {
 	
-	public EmptyConstruct(Construct parent)
+	public EmptyConstruct(ConstructDocument document, Construct parent)
 	{
-		super("empty", parent);
+		super(document, "empty", parent);
 	}
 
 	@Override
@@ -22,7 +23,7 @@ public class EmptyConstruct extends Construct {
 	}
 	
 	public Construct deepCopy(Construct parent) {
-		EmptyConstruct newCopy = new EmptyConstruct(parent);
+		EmptyConstruct newCopy = new EmptyConstruct(mDocument, parent);
 		super.deepCopy(newCopy);
 		return newCopy;
 	}

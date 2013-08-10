@@ -2,12 +2,13 @@ package clojure.constructs;
 
 import clojure.ClojureConstruct;
 import editor.Construct;
+import editor.document.ConstructDocument;
 
 public class KeywordConstruct extends ClojureConstruct {
-	public KeywordConstruct(Construct parent, String literal) {
-		super("keyword", parent);
+	public KeywordConstruct(ConstructDocument document, Construct parent, String literal) {
+		super(document, "keyword", parent);
 
-		SymbolConstruct symbolConstruct = new SymbolConstruct(this, literal);
+		SymbolConstruct symbolConstruct = new SymbolConstruct(mDocument, this, literal);
 		symbolConstruct.setIsSoleDependantConstruct(true);
 		this.addChild(0, symbolConstruct);
 	}
@@ -19,7 +20,7 @@ public class KeywordConstruct extends ClojureConstruct {
 	
 	@Override
 	public Construct deepCopy(Construct parent) {
-		KeywordConstruct newCopy = new KeywordConstruct(parent, this.literal);
+		KeywordConstruct newCopy = new KeywordConstruct(mDocument, parent, this.literal);
 		super.deepCopy(newCopy);
 		return newCopy;
 	}

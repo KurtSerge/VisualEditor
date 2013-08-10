@@ -4,15 +4,16 @@ import java.awt.Color;
 
 import clojure.ClojureConstruct;
 import editor.Construct;
+import editor.document.ConstructDocument;
 
 public class ListConstruct extends ClojureConstruct {
 
-	public ListConstruct(Construct parent, String literal) {
-		super("list", parent);
+	public ListConstruct(ConstructDocument document, Construct parent, String literal) {
+		super(document, "list", parent);
 	}
 	
-	public ListConstruct(String type, Construct parent) { 
-		super(type, parent);
+	public ListConstruct(ConstructDocument document, String type, Construct parent) { 
+		super(document, type, parent);
 		
 		mCall = type;
 	}
@@ -65,7 +66,7 @@ public class ListConstruct extends ClojureConstruct {
 	
 	@Override
 	public Construct deepCopy(Construct parent) {
-		ListConstruct newCopy = new ListConstruct(parent, null);
+		ListConstruct newCopy = new ListConstruct(mDocument, parent, null);
 		super.deepCopy(newCopy);
 		return newCopy;
 	}

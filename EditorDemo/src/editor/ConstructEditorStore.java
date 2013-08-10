@@ -20,24 +20,11 @@ public class ConstructEditorStore {
 		if(editor != null) { 
 			mStore.put(editor.construct, new WeakReference<ConstructEditor>(editor));
 		}
-		
-		System.out.println("Size after insertion: " + mStore.keySet().size());
 	}
 	
 	public void unregister(ConstructEditor editor) {
 		if(editor != null && editor.construct != null) { 
-			
-			mStore.remove(editor.construct);
-			
-			System.out.println("Removing " + editor.construct.type + " " + mStore.keySet().size());			
-		}
-		
-//		System.out.println("Size after removal: " + mStore.keySet().size());
-		
-		for(WeakReference<ConstructEditor> stillAround : getEditors()) { 
-			if(stillAround.get() != null) { 
-//				System.out.println(stillAround.get().construct.type);
-			}
+			mStore.remove(editor.construct);			
 		}
 	}
 	
