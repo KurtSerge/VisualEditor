@@ -24,6 +24,7 @@ import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import editor.BaseController.EKeyBinding;
 import editor.Construct.ConstructAction;
 import editor.document.ConstructDocument;
 
@@ -69,13 +70,29 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		@Override
 		public void keyPressed(KeyEvent e) {	
 			if(e.getKeyCode() == KeyEvent.VK_TAB) {
+				
 				if(construct.isSoleDependantConstruct()) { 
+					
+					System.out.println("Currently in a sole dependency, going to parent");
+					if(mController == null || 
+							mController.mConstructSelector == null)
+					{ 
+						System.err.println("Dependency construct cannot move selection to parent");
+					}
+					
 					mController.mConstructSelector.SelectParentConstruct();
 				}
 				
-				if(mController != null && 
-						mController.mConstructSelector != null) { 
-					mController.mConstructSelector.SelectAdjacentConstruct(!e.isShiftDown());
+				if(e.isAltDown()) { 
+					for(BaseControllerListener listener : mController.getActionListeners()) {
+						System.out.println("Simulated..");
+						listener.receivedHotkey(mController, EKeyBinding.Bind_DuplicateToAdjacent, e.getKeyCode());
+					}
+				} else {
+					// Select the next adjacent construct (cancel editing)
+					if(mController != null && mController.mConstructSelector != null) { 
+						mController.mConstructSelector.SelectAdjacentConstruct(!e.isShiftDown());
+					}
 				}
 
 				e.consume();
@@ -121,6 +138,9 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		
 		mController = controller;
 		mDocument = document;
+		
+		assert(mController != null);
+		assert(mDocument != null);
 		
 		if(construct.parent == null)  {
 			text_area = new JTextArea();
@@ -466,7 +486,12 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 				get_component().requestFocus();
 				
 				if(cause != Construct.SelectionCause.SelectedDirectlyWithMouse)
-					text_area.moveCaretPosition(text_area.getDocument().getLength());	
+					text_area.moveCaretPosition(text_area.getDocument().getLength());
+				
+				if(cause == Construct.SelectionCause.SelectedAfterDuplicatingSibling ||
+						cause == Construct.SelectionCause.SelectedAfterInsert) { 
+					text_area.selectAll();
+				}
 			}
 		} 
 		else {

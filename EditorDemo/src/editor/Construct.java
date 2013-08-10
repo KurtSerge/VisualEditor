@@ -36,6 +36,7 @@ public abstract class Construct
 		SelectedDuringFind,
 		SelectedDirectlyWithMouse,
 		SelectedAfterInsert,
+		SelectedAfterDuplicatingSibling,
 		SelectedParent,
 		SelectedFirstChild,
 		SelectedAdjacentConstruct,

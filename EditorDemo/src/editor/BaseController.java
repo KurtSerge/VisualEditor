@@ -37,6 +37,13 @@ public class BaseController implements KeyListener, BaseControllerListener {
 		
 		public Hotkey(int key, boolean isControlPressed) {
 			mIsControlPressed = isControlPressed;
+			mIsAltPressed = false;
+			mKey = key;
+		}
+		
+		public Hotkey(int key, boolean isControlPressed, boolean isAltPressed) { 
+			mIsControlPressed = isControlPressed;
+			mIsAltPressed = isAltPressed;
 			mKey = key;
 		}
 		
@@ -66,7 +73,7 @@ public class BaseController implements KeyListener, BaseControllerListener {
 		}
 		
 		public String serialize() { 
-			String allMembers = "" + mKey + mIsControlPressed;			
+			String allMembers = "" + mKey + mIsControlPressed + mIsAltPressed;			
 			return allMembers;
 		}
 		
@@ -82,6 +89,7 @@ public class BaseController implements KeyListener, BaseControllerListener {
 		}
 		
 		private boolean mIsControlPressed;
+		private boolean mIsAltPressed;
 		private Hotkey mNext;
 		private boolean mIsAlphaNumericGlobal;
 		private int mKey;
@@ -95,6 +103,9 @@ public class BaseController implements KeyListener, BaseControllerListener {
 		Bind_InsertUsurp,
 		Bind_InsertReplace,
 		Bind_InsertChild,
+		
+		Bind_DuplicateToAdjacent,
+
 		// Below this point: Standard non-overridable bindings
 		// Deletion
 		Bind_DeleteAll,
@@ -130,6 +141,10 @@ public class BaseController implements KeyListener, BaseControllerListener {
 		mActionListeners.remove(listener);
 	}
 	
+	public Collection<BaseControllerListener> getActionListeners() { 
+		return mActionListeners;
+	}
+	
 	public BaseController(JFrame frame, ConstructDocument document) {
 		mActionListeners = new LinkedList<BaseControllerListener>();
 		mConstructSelector = new EditSelection(frame, document);
@@ -143,6 +158,7 @@ public class BaseController implements KeyListener, BaseControllerListener {
 
 		// System hotkeys
 		addHotkey(EKeyBinding.Bind_SelectNextSibling, KeyEvent.VK_TAB);
+		addHotkey(EKeyBinding.Bind_DuplicateToAdjacent, KeyEvent.VK_TAB, false, true);
 		addHotkey(EKeyBinding.Bind_DeleteAll, KeyEvent.VK_BACK_SPACE);
 		addHotkey(EKeyBinding.Bind_SelectPrevSibling, KeyEvent.VK_UP);
 		addHotkey(EKeyBinding.Bind_SelectNextSibling, KeyEvent.VK_DOWN);
@@ -164,6 +180,11 @@ public class BaseController implements KeyListener, BaseControllerListener {
 	
 	public Hotkey addHotkey(EKeyBinding bind, int key, boolean isControlPressed) {
 		Hotkey hotkey = new Hotkey(key, isControlPressed);
+		return addHotkey(bind, hotkey);
+	}
+	
+	public Hotkey addHotkey(EKeyBinding bind, int key, boolean isControlPressed, boolean isAltPressed) { 
+		Hotkey hotkey = new Hotkey(key, isControlPressed, isAltPressed);
 		return addHotkey(bind, hotkey);
 	}
 	
@@ -222,12 +243,11 @@ public class BaseController implements KeyListener, BaseControllerListener {
 			return ;
 		}
 		
-		Hotkey emulatedHotkey = new Hotkey(event.getKeyCode(), event.isMetaDown());
+		Hotkey emulatedHotkey = new Hotkey(event.getKeyCode(), event.isMetaDown(), event.isAltDown());
 		if(mCandidateKeys == null) { 
 			// Fetch the parent Hotkey chains for this key
 			mCandidateKeys = getListOfCandiatesForRootKey(emulatedHotkey);
 			if(mCandidateKeys.size() == 0) { 
-
 				// TODO: Support insert/remove/add (currently only 'replace')
 				Construct parent = mConstructSelector.selected.construct.parent;
 				int indexOfSelectedConstruct = getIndexOfSelectedConstruct();
@@ -277,8 +297,9 @@ public class BaseController implements KeyListener, BaseControllerListener {
 			}
 
 			// Publish to all known listeners
-			for(BaseControllerListener listener : mActionListeners) {
+			for(BaseControllerListener listener : getActionListeners()) {
 				try { 
+					System.out.println("Publishing " + binding.toString());
 					if(listener.receivedHotkey(this, binding, publishKeyCode) == true) { 
 						break;
 					}
@@ -530,6 +551,8 @@ public class BaseController implements KeyListener, BaseControllerListener {
 			selected.setSelected(selectionType, lastSelected, true);
 			
 			Application.resetError();
+			
+			System.out.println("setSelected: " + newSel.construct.type + " " + newSel.construct.literal);
 
 			frame.invalidate();
 			frame.repaint();

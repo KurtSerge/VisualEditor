@@ -120,11 +120,11 @@ public class SymbolConstruct extends ClojureConstruct {
 			{
 				return ConstructAction.None;
 			} 
-			
-			if((int) keyEvent.getKeyChar() == 107 || 		// +
-					(int) keyEvent.getKeyChar() == 109 || 	// -
-					(int) keyEvent.getKeyChar() == 222 ||  // ' 
-					(int) keyEvent.getKeyCode() == 190)	// .
+
+			if((int) keyEvent.getKeyChar() == 47 || 		// /
+					(int) keyEvent.getKeyChar() == 45 || 	// -
+					(int) keyEvent.getKeyChar() == 222 ||  	// ' 
+					(int) keyEvent.getKeyChar() == 46)		// .
 			{ 
 				return ConstructAction.None;
 			}
@@ -133,7 +133,8 @@ public class SymbolConstruct extends ClojureConstruct {
 				keyEvent.consume();
 				return ConstructAction.DeleteThis;
 			}
-			
+
+			System.out.println("SymbolConstruct eating up " + (int)keyEvent.getKeyChar());
 			return ConstructAction.ConsumeEvent;
 		}
 

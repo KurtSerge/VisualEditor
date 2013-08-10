@@ -175,7 +175,7 @@ public class Application extends VisualEditorFrame implements ComponentListener
 		this.getContentPane().addComponentListener(this);
 
 		this.pack();
-		this.setSize(600, 400);
+		this.setSize(800, 600);
 	}
 
 	private static Application sApplication = null;
