@@ -7,6 +7,9 @@ import editor.Construct;
 import editor.document.ConstructDocument;
 
 public class ListConstruct extends ClojureConstruct {
+	
+	public static String AFFIX = ")";
+	public static String PREFIX = "(";
 
 	public ListConstruct(ConstructDocument document, Construct parent, String literal) {
 		super(document, "list", parent);
@@ -21,7 +24,7 @@ public class ListConstruct extends ClojureConstruct {
 	@Override
 	public String screen_text() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("(");
+		builder.append(PREFIX);
 		
 		if(mCall != null)
 			builder.append(mCall + " ");
@@ -31,8 +34,13 @@ public class ListConstruct extends ClojureConstruct {
 				builder.append(BREAKING_SPACE);
 			}
 			
-			if(mCall != null && this.getIsMultilined() && i != 0) { 
-				for(int j = 0; j < mCall.length() + 2; j++) { 
+			if(this.getIsMultilined() && i != 0) { 
+				int spacerLength = PREFIX.length();
+				if(mCall != null) { 
+					spacerLength += mCall.length() + 1;
+				}
+				
+				for(int j = 0; j < spacerLength; j++) { 
 					builder.append(" ");
 				}
 			}
@@ -40,7 +48,7 @@ public class ListConstruct extends ClojureConstruct {
 			builder.append("$(node)");
 		}
 
-		builder.append(")");
+		builder.append(AFFIX);
 		
 		return super.layout(builder.toString());
 	}

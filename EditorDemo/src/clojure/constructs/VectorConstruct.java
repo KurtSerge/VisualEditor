@@ -8,20 +8,30 @@ public class VectorConstruct extends ClojureConstruct {
 	public VectorConstruct(ConstructDocument document, Construct parent, String literal) {
 		super(document, "vector", parent);
 	}
+	
+	public static String PREFIX = "[";
+	public static String AFFIX = "]";
 
 	@Override
 	public String screen_text() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("[");
+		builder.append(PREFIX);
 		
 		for(int i = 0; i < children.size(); ++i) {
 			if(i != 0 && i < children.size()) { 
 				builder.append(BREAKING_SPACE);
 			}
+			
+			if(this.getIsMultilined() && i != 0) { 
+				for(int j = 0; j < PREFIX.length(); j++) { 
+					builder.append(" ");
+				}
+			}			
+			
 			builder.append("$(node)");
 		}
 
-		builder.append("]");
+		builder.append(AFFIX);
 		return super.layout(builder.toString());
 	}
 
