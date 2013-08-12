@@ -481,6 +481,9 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 	
 	@Override
 	public void setSelected(Construct.SelectionCause cause, ConstructEditor currentOrNewlySelected, boolean bSelect) {
+		
+		System.out.println(cause.toString() + " - " + bSelect + " - " + this.construct.type + " with parent " + this.construct.parent);
+		
 		if(bSelect == true) {
 			propagateHighlightSelection(this);
 			
@@ -522,6 +525,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 			text_area.setForeground(construct.debug_getForegroundColor());
 			text_area.setBackground(new Color(0,0,0,0));
 			text_area.removeKeyListener(textListener);
+			
 			requestTopFocus();
 			textListener = null;
 		}
@@ -548,13 +552,14 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 	}
 	
 	// Set focus to topmost monospace editor
-	private void requestTopFocus() {
+	public void requestTopFocus() {
 		Component iter = text_area;
 		while(iter.getName() != "mono_base") {
 			iter = iter.getParent();
 			if(iter == null)
 				return;
 		}
+		
 		iter.requestFocus();
 	}
 	

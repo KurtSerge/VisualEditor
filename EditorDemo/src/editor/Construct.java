@@ -44,6 +44,8 @@ public abstract class Construct
 		SelectedAfterDeletingChild,
 		SelectedRandomly,
 		
+		Unselection,
+		
 		Selected, // Generic
 	}
 	

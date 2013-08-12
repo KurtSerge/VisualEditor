@@ -52,6 +52,10 @@ public class StringConstruct extends ClojureConstruct {
 			return this.children.get(0);
 		}
 		
+		if(type == SelectionCause.SelectedAfterDuplicatingSibling) { 
+			return this.children.get(0);
+		}
+		
 		return super.getConstructForSelection(type);
 	}
 }

@@ -1,5 +1,6 @@
 package editor;
 
+import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.lang.ref.WeakReference;
@@ -384,6 +385,18 @@ public class BaseController implements KeyListener, BaseControllerListener {
 	@Override
 	public void keyTyped(KeyEvent arg0) {
 	}
+	
+	// Set focus to topmost monospace editor
+	public void requestTopFocus() {
+		Component iter = mConstructSelector.selected.get_component();
+		while(iter.getName() != "mono_base") {
+			iter = iter.getParent();
+			if(iter == null)
+				return;
+		}
+		
+		iter.requestFocus();
+	}
 
 	// Delete construct and all children
 	public void DeleteAllSelected() {
@@ -415,6 +428,8 @@ public class BaseController implements KeyListener, BaseControllerListener {
 						mConstructSelector.Select(Construct.SelectionCause.SelectedAfterDeletingChild, deleteMeEditor.getParent());
 					}
     			} else {
+    				System.out.println("'deleted' but 'replaced'");
+    				
     				// 'Deleted' but children count didn't change, this implies
     				// that the child was actually replaced (ie, placeholder restoration)
     				Construct replacingConstruct = deleteMeEditor.getParent().construct.children.get(childIndex);
@@ -425,6 +440,8 @@ public class BaseController implements KeyListener, BaseControllerListener {
 				deleteMeEditor.getParent().update();
 			}
 		}
+		
+		requestTopFocus();
 	}
 
 	
@@ -562,7 +579,6 @@ public class BaseController implements KeyListener, BaseControllerListener {
 			}
 			
 			if(selected != null)
-			
 				selected.update();
 			
 			Construct constructForSelection = newSel.construct.getConstructForSelection(selectionType);			
