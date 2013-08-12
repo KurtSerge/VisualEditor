@@ -48,11 +48,11 @@ public class StringConstruct extends ClojureConstruct {
 	
 	@Override
 	public Construct getConstructForSelection(SelectionCause type) { 
-		if(type == SelectionCause.SelectedReplacementDiscoveredDuringKeyEvent) { 
-			return this.children.get(0);
-		}
-		
-		if(type == SelectionCause.SelectedAfterDuplicatingSibling) { 
+		if(type == SelectionCause.SelectedReplacementDiscoveredDuringKeyEvent ||
+				type == SelectionCause.SelectedAfterDuplicatingSibling || 
+				type == SelectionCause.SelectedAfterInsert)
+		{
+			// Select the child, not this
 			return this.children.get(0);
 		}
 		
