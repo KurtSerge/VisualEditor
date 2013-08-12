@@ -585,10 +585,6 @@ public class BaseController implements KeyListener, BaseControllerListener {
 			constructEditor.update();
 			selected = constructEditor;
 			selected.setSelected(selectionType, lastSelected, true);
-			
-			
-			
-			System.out.println("setSelected: " + newSel.construct.type + " " + newSel.construct.literal);
 
 			frame.invalidate();
 			frame.repaint();
