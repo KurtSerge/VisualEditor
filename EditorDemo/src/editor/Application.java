@@ -2,6 +2,7 @@ package editor;
 import java.awt.AWTEvent;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Toolkit;
 import java.awt.event.ComponentEvent;
@@ -37,6 +38,8 @@ import json.JSONController;
 import json.JSONHotkeyListener;
 public class Application extends VisualEditorFrame implements ComponentListener
 {
+	public static final Dimension DEFAULT_WINDOW_SIZE = new Dimension(800, 600);
+	
 	private void setupNewConstruct(Component top, BaseControllerListener listener) {
 		// Delete
 		if(controller != null) {
@@ -58,14 +61,15 @@ public class Application extends VisualEditorFrame implements ComponentListener
 		controller.addListener(listener);
 		controller.addHotkey(EKeyBinding.Bind_Undo, KeyEvent.VK_Z, true);
 		controller.addHotkey(EKeyBinding.Bind_Redo, KeyEvent.VK_Y, true);
+		controller.addHotkey(EKeyBinding.Bind_Copy, KeyEvent.VK_C, true);
+		controller.addHotkey(EKeyBinding.Bind_InsertPaste, KeyEvent.VK_V, true);
 		controller.addHotkey(EKeyBinding.Bind_InsertAfter, KeyEvent.VK_I, true).setNext(new Hotkey(KeyEvent.VK_A, true)).setCaptureAlphaNumeric(true);
 		controller.addHotkey(EKeyBinding.Bind_InsertBefore, KeyEvent.VK_I, true).setNext(new Hotkey(KeyEvent.VK_B, true)).setCaptureAlphaNumeric(true);
 		controller.addHotkey(EKeyBinding.Bind_InsertReplace, KeyEvent.VK_I, true).setNext(new Hotkey(KeyEvent.VK_R, true)).setCaptureAlphaNumeric(true);
 		controller.addHotkey(EKeyBinding.Bind_InsertChild, KeyEvent.VK_I, true).setNext(new Hotkey(KeyEvent.VK_C, true)).setCaptureAlphaNumeric(true);
-
+		
 		// TODO: Restore
 		//controller.registerHotkey(EKeyBinding.Bind_InsertUsurp, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_U, (char)KeyEvent.VK_UNDEFINED));
-		//controller.registerHotkey(EKeyBinding.Bind_Copy, String.format("%s", (char)KeyEvent.VK_C));
 	}
 
 	/**
@@ -75,19 +79,19 @@ public class Application extends VisualEditorFrame implements ComponentListener
 	private ConstructDocument mDocument = null;
 	private BaseController controller = null;
 	private LayoutController layoutController = null;
-	private JTextArea lastError;
 
-	Application()
-	{
-		super("Editor Demo");
-		
-		boolean shouldLoadJson = false;	// Alt: Loads Clojure
+	Application() {
+		super("Form Editor");
 
-		this.setSize(400, 300);
+		this.setSize(DEFAULT_WINDOW_SIZE);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setBackground(Color.white);		
 		this.setVisible(true);
-		this.setBackground(Color.white);
+	}
+	
+	public void initialize() { 
 
+		boolean shouldLoadJson = false;
 		final VisualEditorFrame window = this;
 		try {
 			if(shouldLoadJson) {
@@ -173,9 +177,8 @@ public class Application extends VisualEditorFrame implements ComponentListener
 		}
 		
 		this.getContentPane().addComponentListener(this);
-
-		this.pack();
-		this.setSize(800, 600);
+	
+		this.invalidate();
 	}
 
 	private static Application sApplication = null;
@@ -187,12 +190,19 @@ public class Application extends VisualEditorFrame implements ComponentListener
 	}
 	
 	public static void showErrorMessage(String error) {
-		sApplication.presentError(error);
+		if(sApplication != null)
+			sApplication.presentError(error);
 	}
 	
 	public static void showInfoMessage(String message) { 
-		sApplication.presentInfoMessage(message);
+		if(sApplication != null)
+			sApplication.presentInfoMessage(message);
 	}
+	
+	public static void showDebugMessage(String message) { 
+		if(sApplication != null)
+			sApplication.presentDebugMessage(message);
+	}	
 	
 	/**
 	 * @param args
@@ -205,6 +215,7 @@ public class Application extends VisualEditorFrame implements ComponentListener
 		}
 		
 		sApplication = new Application();
+		sApplication.initialize();
 	}
 
 	@Override

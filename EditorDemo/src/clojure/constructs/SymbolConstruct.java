@@ -94,14 +94,13 @@ public class SymbolConstruct extends ClojureConstruct {
 				return true;
 			}
 			
-			if(this.literal.length() == 1) { 
-				ClojureConstruct parentForm = (ClojureConstruct) this.parent;
-				if(parentForm != null && 
-						parentForm.getPlaceholders() != null) { 
-					return true;
-				}
-			}
-
+//			if(this.literal.length() == 1) { 
+//				ClojureConstruct parentForm = (ClojureConstruct) this.parent;
+//				if(parentForm != null && 
+//						parentForm.getPlaceholders() != null) { 
+//					return true;
+//				}
+//			}
 		}
 		
 		return false;
@@ -133,7 +132,6 @@ public class SymbolConstruct extends ClojureConstruct {
 				return ConstructAction.None;
 			} 
 			
-			
 			// Check to see if the special character is allowed
 			for(int i = 0; i < sSpecialCharacters.length; i++) { 
 				if(sSpecialCharacters[i] == (int) keyEvent.getKeyChar()) {
@@ -146,7 +144,6 @@ public class SymbolConstruct extends ClojureConstruct {
 				return ConstructAction.DeleteThis;
 			}
 
-			System.out.println("SymbolConstruct eating up " + (int)keyEvent.getKeyChar());
 			return ConstructAction.ConsumeEvent;
 		}
 

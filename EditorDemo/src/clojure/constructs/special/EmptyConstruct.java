@@ -14,7 +14,7 @@ import editor.document.ConstructDocument;
  */
 public class EmptyConstruct extends ClojureConstruct {
 	public EmptyConstruct(ConstructDocument document) {
-		super(document, "empty", null);
+		super(document, "clojure", null);
 	}
 
 	@Override

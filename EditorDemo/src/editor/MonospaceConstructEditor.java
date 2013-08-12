@@ -470,6 +470,15 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 		}
 	}
 	
+	protected String getBreadcrumbs(Construct construct) {
+		String parentcrumbs = "";
+		if(construct.parent != null) { 
+			parentcrumbs = getBreadcrumbs(construct.parent);
+		}
+		
+		return parentcrumbs.concat(" > " + construct.type);
+	}
+	
 	@Override
 	public void setSelected(Construct.SelectionCause cause, ConstructEditor currentOrNewlySelected, boolean bSelect) {
 		if(bSelect == true) {
@@ -493,6 +502,10 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 					text_area.selectAll();
 				}
 			}
+			
+			
+			String breadcrumbs = getBreadcrumbs(this.construct);
+			Application.showDebugMessage("Selected " + breadcrumbs.substring(3));
 		} 
 		else {
 			if(currentOrNewlySelected != null) {

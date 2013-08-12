@@ -135,4 +135,9 @@ public class VisualEditorFrame extends JFrame {
 		mModalTextArea.setText(message);
 		mModalTextArea.setForeground(Color.blue);
 	}
+	
+	public void presentDebugMessage(String message) { 
+		mModalTextArea.setText(message);
+		mModalTextArea.setForeground(Color.darkGray);
+	}
 }

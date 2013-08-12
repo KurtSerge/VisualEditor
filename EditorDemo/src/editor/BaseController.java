@@ -32,20 +32,31 @@ public class BaseController implements KeyListener, BaseControllerListener {
 	public static class Hotkey { 
 		public Hotkey(int key) { 
 			mIsControlPressed = false;
+			mIsAltPressed = false;
+			mIsShiftPressed = false;
 			mKey = key;
 		}
 		
 		public Hotkey(int key, boolean isControlPressed) {
 			mIsControlPressed = isControlPressed;
 			mIsAltPressed = false;
+			mIsShiftPressed = false;
 			mKey = key;
 		}
 		
 		public Hotkey(int key, boolean isControlPressed, boolean isAltPressed) { 
 			mIsControlPressed = isControlPressed;
 			mIsAltPressed = isAltPressed;
+			mIsShiftPressed = false;
 			mKey = key;
 		}
+		
+		public Hotkey(int key, boolean isControlPressed, boolean isAltPressed, boolean isShiftPressed) { 
+			mIsControlPressed = isControlPressed;
+			mIsAltPressed = isAltPressed;
+			mIsShiftPressed = isShiftPressed;
+			mKey = key;
+		}		
 		
 		public void setCaptureAlphaNumeric(boolean value) { 
 			mIsAlphaNumericGlobal = value;
@@ -73,7 +84,7 @@ public class BaseController implements KeyListener, BaseControllerListener {
 		}
 		
 		public String serialize() { 
-			String allMembers = "" + mKey + mIsControlPressed + mIsAltPressed;			
+			String allMembers = "" + mKey + mIsControlPressed + mIsAltPressed + mIsShiftPressed;			
 			return allMembers;
 		}
 		
@@ -88,11 +99,13 @@ public class BaseController implements KeyListener, BaseControllerListener {
 			return hotkey.hashCode() == this.hashCode();
 		}
 		
-		private boolean mIsControlPressed;
-		private boolean mIsAltPressed;
-		private Hotkey mNext;
+		private final boolean mIsControlPressed;
+		private final boolean mIsAltPressed;
+		private final boolean mIsShiftPressed;
 		private boolean mIsAlphaNumericGlobal;
-		private int mKey;
+		private final int mKey;
+		
+		private Hotkey mNext;		
 	}
 	
 	public enum EKeyBinding {
@@ -157,6 +170,7 @@ public class BaseController implements KeyListener, BaseControllerListener {
 		mConstructSelector.SelectRandom();
 
 		// System hotkeys
+		addHotkey(EKeyBinding.Bind_SelectPrevSibling, KeyEvent.VK_TAB, false, false, true);
 		addHotkey(EKeyBinding.Bind_SelectNextSibling, KeyEvent.VK_TAB);
 		addHotkey(EKeyBinding.Bind_DuplicateToAdjacent, KeyEvent.VK_TAB, false, true);
 		addHotkey(EKeyBinding.Bind_DeleteAll, KeyEvent.VK_BACK_SPACE);
@@ -185,6 +199,11 @@ public class BaseController implements KeyListener, BaseControllerListener {
 	
 	public Hotkey addHotkey(EKeyBinding bind, int key, boolean isControlPressed, boolean isAltPressed) { 
 		Hotkey hotkey = new Hotkey(key, isControlPressed, isAltPressed);
+		return addHotkey(bind, hotkey);
+	}
+	
+	public Hotkey addHotkey(EKeyBinding bind, int key, boolean isControlPressed, boolean isAltPressed, boolean isShiftPressed) { 
+		Hotkey hotkey = new Hotkey(key, isControlPressed, isAltPressed, isShiftPressed);
 		return addHotkey(bind, hotkey);
 	}
 	
@@ -243,7 +262,10 @@ public class BaseController implements KeyListener, BaseControllerListener {
 			return ;
 		}
 		
-		Hotkey emulatedHotkey = new Hotkey(event.getKeyCode(), event.isMetaDown(), event.isAltDown());
+		Hotkey emulatedHotkey = new Hotkey(event.getKeyCode(), 
+											event.isMetaDown(), 
+											event.isAltDown(),
+											event.isShiftDown());
 		if(mCandidateKeys == null) { 
 			// Fetch the parent Hotkey chains for this key
 			mCandidateKeys = getListOfCandiatesForRootKey(emulatedHotkey);
@@ -531,6 +553,8 @@ public class BaseController implements KeyListener, BaseControllerListener {
 			if(newSel == null)
 				return;
 			
+			Application.resetError();
+			
 			
 			ConstructEditor lastSelected = selected;
 			if(selected != null)   {
@@ -541,19 +565,13 @@ public class BaseController implements KeyListener, BaseControllerListener {
 			
 				selected.update();
 			
-			Construct constructForSelection = newSel.construct.getConstructForSelection(selectionType);
-			
-			
-			if(selectionType == SelectionCause.SelectedAdjacentConstruct)  { 
-				int a = 0;
-			}
-			
+			Construct constructForSelection = newSel.construct.getConstructForSelection(selectionType);			
 			ConstructEditor constructEditor = mDocument.editorsFromConstruct(constructForSelection);
 			constructEditor.update();
 			selected = constructEditor;
 			selected.setSelected(selectionType, lastSelected, true);
 			
-			Application.resetError();
+			
 			
 			System.out.println("setSelected: " + newSel.construct.type + " " + newSel.construct.literal);
 
