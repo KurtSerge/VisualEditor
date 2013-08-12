@@ -4,12 +4,11 @@ import editor.Construct;
 import editor.document.ConstructDocument;
 
 /**
- * TODO: setPlaceholders() replacing previous setPlaceholders()
  * TODO: validate() should ensure all required placeholders are replaced
  * 
  * @author Christopher Lord
  */
-public abstract class ClojureConstruct extends AbstractPlaceholderConstruct
+public abstract class ClojureConstruct extends PlaceholdingConstruct
 {
 	public ClojureConstruct(ConstructDocument document, String type, Construct parent) {
 		super(document, type, parent);
@@ -30,7 +29,7 @@ public abstract class ClojureConstruct extends AbstractPlaceholderConstruct
 	 * 
 	 * @return If a child can be inserted or not.
 	 */
-	public boolean canInsertChildren() { 
+	public boolean isConstructContainer() { 
 		return false;
 	}	
 	

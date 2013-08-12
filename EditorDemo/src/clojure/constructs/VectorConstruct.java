@@ -41,7 +41,7 @@ public class VectorConstruct extends ClojureConstruct {
 	}
 	
 	@Override 
-	public boolean canInsertChildren() { 
+	public boolean isConstructContainer() { 
 		return true;
 	}
 

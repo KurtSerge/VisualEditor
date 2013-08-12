@@ -59,7 +59,7 @@ public class ListConstruct extends ClojureConstruct {
 	}
 	
 	@Override 
-	public boolean canInsertChildren() { 
+	public boolean isConstructContainer() { 
 		return mCall == null;
 	}
 	

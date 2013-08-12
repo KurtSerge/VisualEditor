@@ -210,7 +210,7 @@ public class HotkeyListener implements BaseControllerListener {
 			return null;
 		}
 		
-		if(parent.canInsertChildren() == false && 
+		if(parent.isConstructContainer() == false && 
 				(binding == EKeyBinding.Bind_InsertAfter || 
 				binding == EKeyBinding.Bind_InsertBefore || 
 				binding == EKeyBinding.Bind_InsertChild))

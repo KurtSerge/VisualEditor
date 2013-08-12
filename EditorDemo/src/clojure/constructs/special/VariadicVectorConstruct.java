@@ -27,7 +27,7 @@ public class VariadicVectorConstruct extends VectorConstruct {
 	}
 
 	@Override 
-	public boolean canInsertChildren() { 
+	public boolean isConstructContainer() { 
 		return false;
 	}
 }
