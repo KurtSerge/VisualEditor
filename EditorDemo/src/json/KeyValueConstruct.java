@@ -1,6 +1,6 @@
 package json;
 
-import editor.Construct;
+import construct.Construct;
 import editor.EmptyConstruct;
 import editor.document.ConstructDocument;
 	

@@ -1,7 +1,7 @@
 package clojure.constructs;
 
+import construct.Construct;
 import clojure.ClojureConstruct;
-import editor.Construct;
 import editor.document.ConstructDocument;
 
 public class DoubleConstruct extends ClojureConstruct {

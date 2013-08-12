@@ -1,10 +1,7 @@
 package editor;
 
 import java.awt.AWTEvent;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.IllegalComponentStateException;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -14,11 +11,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JTextArea;
-
-import editor.MonospaceConstructEditor.TransparentTextArea;
+import construct.Construct;
 import editor.document.ConstructDocument;
 
 // Using AWT because Swing "MouseListener" doesn't give coords when clicking over jtextareas

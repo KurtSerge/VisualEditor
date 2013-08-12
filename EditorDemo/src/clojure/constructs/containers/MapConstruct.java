@@ -1,9 +1,8 @@
-package clojure.constructs;
+package clojure.constructs.containers;
 
+import construct.Construct;
+import construct.Placeholder;
 import clojure.ClojureConstruct;
-import clojure.constructs.placeholder.Placeholder;
-import clojure.constructs.placeholder.PlaceholderConstruct;
-import editor.Construct;
 import editor.document.ConstructDocument;
 
 public class MapConstruct extends ClojureConstruct {
@@ -86,7 +85,7 @@ public class MapConstruct extends ClojureConstruct {
 	// Override this to set special conditions for when a child can be deleted
 	@Override
 	protected boolean canDeleteChild(int index, Construct child, boolean isUser) {
-		if(child.getClass().equals(clojure.constructs.placeholder.PlaceholderConstruct.class)) { 
+		if(child.getClass().equals(construct.PlaceholderConstruct.class)) { 
 			return false;
 		}
 		
@@ -95,7 +94,7 @@ public class MapConstruct extends ClojureConstruct {
 	
 	@Override
 	public boolean canAddChild(int index, Construct child) {
-		return child.getClass().equals(clojure.constructs.KeywordExpressionPairConstruct.class);
+		return child.getClass().equals(clojure.constructs.meta.KeywordExpressionPairConstruct.class);
 	}
 	
 	protected boolean canReplaceChild(int index, Construct oldConstruct, Construct newConstruct) {

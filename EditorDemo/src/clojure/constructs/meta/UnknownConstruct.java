@@ -1,7 +1,7 @@
-package clojure.constructs;
+package clojure.constructs.meta;
 
 import clojure.ClojureConstruct;
-import editor.Construct;
+import construct.Construct;
 import editor.document.ConstructDocument;
 
 public class UnknownConstruct extends ClojureConstruct {

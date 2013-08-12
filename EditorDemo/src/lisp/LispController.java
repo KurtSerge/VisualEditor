@@ -2,18 +2,12 @@
 package lisp;
 
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.json.JSONString;
 import org.json.JSONTokener;
 
-
-import editor.Construct;
-import editor.ConstructEditor;
-import editor.MonospaceConstructEditor;
+import construct.Construct;
 import editor.document.ConstructDocument;
 
 public class LispController

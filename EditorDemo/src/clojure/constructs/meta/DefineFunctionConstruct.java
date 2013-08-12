@@ -2,16 +2,11 @@ package clojure.constructs.meta;
 
 import java.util.LinkedList;
 
-import clojure.ClojureConstruct;
-import clojure.constructs.ListConstruct;
 import clojure.constructs.StringConstruct;
-import clojure.constructs.SymbolConstruct;
-import clojure.constructs.VectorConstruct;
-import clojure.constructs.placeholder.Placeholder;
-import clojure.constructs.special.VariadicVectorConstruct;
-import editor.Construct;
+import clojure.constructs.containers.ListConstruct;
+import construct.Construct;
+import construct.Placeholder;
 import editor.document.ConstructDocument;
-import clojure.ClojureConstruct.*;
 
 /**
  * Syntax: (defn name doc-string? attr-map? [params*] exprs*)

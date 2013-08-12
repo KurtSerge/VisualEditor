@@ -2,15 +2,9 @@ package editor.document;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.LinkedList;
-import java.util.List;
 
 import clojure.ClojureReader;
-import clojure.constructs.ListConstruct;
-import clojure.constructs.placeholder.Placeholder;
-import clojure.constructs.special.VariadicVectorConstruct;
-import editor.BaseController;
-import editor.Construct;
+import construct.Construct;
 
 public class ClojureConstructDocument extends ConstructDocument {
 	

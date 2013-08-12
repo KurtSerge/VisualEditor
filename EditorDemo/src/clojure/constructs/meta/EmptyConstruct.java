@@ -1,8 +1,7 @@
-package clojure.constructs.special;
+package clojure.constructs.meta;
 
 import clojure.ClojureConstruct;
-import clojure.constructs.BigIntConstruct;
-import editor.Construct;
+import construct.Construct;
 import editor.document.ConstructDocument;
 
 /**

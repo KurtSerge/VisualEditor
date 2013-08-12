@@ -1,7 +1,6 @@
-package clojure.constructs.placeholder;
+package construct;
 
 import clojure.ClojureConstruct;
-import editor.Construct;
 import editor.document.ConstructDocument;
 
 public class Placeholder {

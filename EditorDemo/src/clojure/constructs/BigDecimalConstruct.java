@@ -1,8 +1,7 @@
 package clojure.constructs;
 
-import json.ArrayConstruct;
+import construct.Construct;
 import clojure.ClojureConstruct;
-import editor.Construct;
 import editor.document.ConstructDocument;
 
 public class BigDecimalConstruct extends ClojureConstruct {

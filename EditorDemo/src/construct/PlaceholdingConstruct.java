@@ -1,4 +1,4 @@
-package clojure;
+package construct;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -7,10 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import clojure.constructs.placeholder.Placeholder;
-import clojure.constructs.placeholder.PlaceholderConstruct;
 import editor.Application;
-import editor.Construct;
 import editor.document.ConstructDocument;
 
 public abstract class PlaceholdingConstruct extends Construct {

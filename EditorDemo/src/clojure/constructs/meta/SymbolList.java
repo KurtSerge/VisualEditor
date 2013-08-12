@@ -1,8 +1,8 @@
 package clojure.constructs.meta;
 
-import clojure.constructs.ListConstruct;
 import clojure.constructs.SymbolConstruct;
-import editor.Construct;
+import clojure.constructs.containers.ListConstruct;
+import construct.Construct;
 import editor.document.ConstructDocument;
 
 public class SymbolList extends ListConstruct {

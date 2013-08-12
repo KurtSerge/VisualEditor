@@ -1,7 +1,6 @@
-package editor;
+package construct;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,9 +10,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import editor.ConstructPublisher;
 import editor.document.ConstructDocument;
-
-import json.JSONController;
 
 
 public abstract class Construct
@@ -85,7 +83,7 @@ public abstract class Construct
 	}
 	
 	public String literal = null;
-	protected List<Construct> children = new LinkedList<Construct>();
+	public List<Construct> children = new LinkedList<Construct>();
 	
 	
 	public void debugPrint() {

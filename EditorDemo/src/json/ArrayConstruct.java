@@ -1,6 +1,6 @@
 package json;
 
-import editor.Construct;
+import construct.Construct;
 import editor.document.ConstructDocument;
 
 public class ArrayConstruct extends Construct {

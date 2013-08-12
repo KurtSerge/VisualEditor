@@ -3,12 +3,10 @@ package editor;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+
+import construct.Construct;
 
 public abstract class ConstructEditor
 {

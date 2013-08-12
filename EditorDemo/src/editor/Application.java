@@ -3,39 +3,24 @@ import java.awt.AWTEvent;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Toolkit;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
-import java.awt.event.HierarchyBoundsListener;
-import java.awt.event.HierarchyEvent;
 import java.awt.event.KeyEvent;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.lang.ref.WeakReference;
 
-import javax.swing.BorderFactory;
-import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
+import json.JSONHotkeyListener;
+import construct.Construct;
 import editor.BaseController.EKeyBinding;
 import editor.BaseController.Hotkey;
 import editor.ConstructPublisher.ConstructListener;
 import editor.document.ClojureConstructDocument;
 import editor.document.ConstructDocument;
 import editor.document.JSONConstructDocument;
-
-import json.JSONController;
-import json.JSONHotkeyListener;
 public class Application extends VisualEditorFrame implements ComponentListener
 {
 	public static final Dimension DEFAULT_WINDOW_SIZE = new Dimension(800, 600);

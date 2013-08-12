@@ -8,13 +8,10 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.LayoutManager;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.lang.ref.WeakReference;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import javax.swing.BorderFactory;
@@ -24,11 +21,10 @@ import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import construct.Construct;
+import construct.Construct.ConstructAction;
 import editor.BaseController.EKeyBinding;
-import editor.Construct.ConstructAction;
 import editor.document.ConstructDocument;
-
-import json.JSONController;
 
 
 public class MonospaceConstructEditor extends ConstructEditor implements LayoutManager, DocumentListener

@@ -1,5 +1,7 @@
 package editor;
 
+import construct.Construct;
+
 // FIXME: Could probably be more efficient.  Starts search from beginning of tree instead of continuing
 public class ConstructFinder {
 	private final Construct head;

@@ -1,4 +1,4 @@
-package clojure.constructs.placeholder;
+package construct;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
@@ -7,8 +7,6 @@ import clojure.ClojureConstruct;
 import clojure.constructs.IntegerConstruct;
 import clojure.constructs.StringConstruct;
 import clojure.constructs.SymbolConstruct;
-import clojure.constructs.meta.IfThenElseConstruct;
-import editor.Construct;
 import editor.document.ConstructDocument;
 
 public class PlaceholderConstruct extends ClojureConstruct {

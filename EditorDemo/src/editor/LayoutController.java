@@ -2,6 +2,7 @@ package editor;
 
 import java.awt.Dimension;
 
+import construct.Construct;
 import editor.document.ConstructDocument;
 
 public class LayoutController {

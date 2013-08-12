@@ -2,18 +2,31 @@ package clojure;
 
 import java.awt.event.KeyEvent;
 
-import json.JSONController;
-
-import clojure.constructs.*;
-import clojure.constructs.meta.*;
-import clojure.constructs.special.VariadicVectorConstruct;
-
+import clojure.constructs.BooleanConstruct;
+import clojure.constructs.CharacterConstruct;
+import clojure.constructs.DoubleConstruct;
+import clojure.constructs.IntegerConstruct;
+import clojure.constructs.KeywordConstruct;
+import clojure.constructs.StringConstruct;
+import clojure.constructs.SymbolConstruct;
+import clojure.constructs.containers.ListConstruct;
+import clojure.constructs.containers.MapConstruct;
+import clojure.constructs.containers.VectorConstruct;
+import clojure.constructs.meta.CaseConstruct;
+import clojure.constructs.meta.DefineFunctionConstruct;
+import clojure.constructs.meta.FunctionConstruct;
+import clojure.constructs.meta.IfThenElseConstruct;
+import clojure.constructs.meta.KeyValuePairConstruct;
+import clojure.constructs.meta.KeywordExpressionPairConstruct;
+import clojure.constructs.meta.LetConstruct;
+import clojure.constructs.meta.SymbolList;
+import clojure.constructs.meta.VariadicVectorConstruct;
+import construct.Construct;
+import construct.Construct.SelectionCause;
+import editor.Application;
 import editor.BaseController;
 import editor.BaseController.EKeyBinding;
-import editor.Application;
 import editor.BaseControllerListener;
-import editor.Construct;
-import editor.Construct.SelectionCause;
 import editor.ConstructEditor;
 import editor.document.ConstructDocument;
 
@@ -223,20 +236,23 @@ public class HotkeyListener implements BaseControllerListener {
 	
 	private String stringForBinding(EKeyBinding binding) { 
 		switch(binding) { 
-		case Bind_DeleteAll:
-			return "delete";
+			case Bind_DeleteAll:
+				return "delete";
+				
+			case Bind_InsertChild:
+				return "insert child";
+				
+			case Bind_InsertAfter:
+				return "insert after";
+				
+			case Bind_InsertBefore:
+				return "insert before";
+				
+			case Bind_InsertReplace:
+				return "replace";
 			
-		case Bind_InsertChild:
-			return "insert child";
-			
-		case Bind_InsertAfter:
-			return "insert after";
-			
-		case Bind_InsertBefore:
-			return "insert before";
-			
-		case Bind_InsertReplace:
-			return "replace";
+			default:
+				break;
 		}
 		
 		return "(unknown)";

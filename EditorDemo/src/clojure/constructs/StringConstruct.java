@@ -2,9 +2,10 @@ package clojure.constructs;
 
 import java.awt.Color;
 
+import construct.Construct;
+
 import clojure.ClojureConstruct;
 import clojure.constructs.StringLiteralConstruct;
-import editor.Construct;
 import editor.document.ConstructDocument;
 
 public class StringConstruct extends ClojureConstruct {

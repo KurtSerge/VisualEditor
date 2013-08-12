@@ -3,8 +3,9 @@ package clojure.constructs;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 
+import construct.Construct;
+
 import clojure.ClojureConstruct;
-import editor.Construct;
 import editor.document.ConstructDocument;
 
 public class SymbolConstruct extends ClojureConstruct {

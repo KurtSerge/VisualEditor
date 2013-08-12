@@ -1,10 +1,11 @@
-package clojure.constructs;
+package clojure.constructs.meta;
 
 import java.util.LinkedList;
 
 import clojure.ClojureConstruct;
-import clojure.constructs.placeholder.Placeholder;
-import editor.Construct;
+import clojure.constructs.KeywordConstruct;
+import construct.Construct;
+import construct.Placeholder;
 import editor.document.ConstructDocument;
 
 public class KeywordExpressionPairConstruct extends ClojureConstruct {

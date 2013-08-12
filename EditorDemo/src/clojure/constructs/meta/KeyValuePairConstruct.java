@@ -1,12 +1,11 @@
-package clojure.constructs;
+package clojure.constructs.meta;
 
 import java.util.LinkedList;
 
-import editor.Construct;
+import clojure.ClojureConstruct;
+import construct.Construct;
+import construct.Placeholder;
 import editor.document.ConstructDocument;
-import clojure.*;
-import clojure.constructs.placeholder.Placeholder;
-import clojure.constructs.special.VariadicVectorConstruct;
 
 /**
  * An uncontained key value pair to enforce 1:1

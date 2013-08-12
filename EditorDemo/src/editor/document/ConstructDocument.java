@@ -1,20 +1,16 @@
 package editor.document;
 
 import java.awt.Component;
-import java.awt.Graphics;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
 
+import construct.Construct;
 import editor.BaseController;
-import editor.Construct;
 import editor.ConstructEditor;
 import editor.ConstructEditorStore;
-import editor.ConstructPublisher.ConstructListener;
 import editor.MonospaceConstructEditor;
 
 /**

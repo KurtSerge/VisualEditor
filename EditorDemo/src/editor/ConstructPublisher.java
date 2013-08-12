@@ -1,5 +1,6 @@
 package editor;
 
+import construct.Construct;
 import editor.document.ConstructDocument;
 
 public class ConstructPublisher {

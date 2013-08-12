@@ -1,10 +1,10 @@
-package clojure.constructs.special;
+package clojure.constructs.meta;
 
 import java.util.LinkedList;
 
-import clojure.constructs.VectorConstruct;
-import clojure.constructs.placeholder.Placeholder;
-import editor.Construct;
+import clojure.constructs.containers.VectorConstruct;
+import construct.Construct;
+import construct.Placeholder;
 import editor.document.ConstructDocument;
 
 /**

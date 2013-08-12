@@ -1,6 +1,6 @@
 package lisp;
 
-import editor.Construct;
+import construct.Construct;
 import editor.document.ConstructDocument;
 
 public class StringLiteralConstruct extends Construct

@@ -1,6 +1,7 @@
 package clojure;
 
-import editor.Construct;
+import construct.Construct;
+import construct.PlaceholdingConstruct;
 import editor.document.ConstructDocument;
 
 /**

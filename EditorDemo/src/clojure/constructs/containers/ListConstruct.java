@@ -1,9 +1,10 @@
-package clojure.constructs;
+package clojure.constructs.containers;
 
 import java.awt.Color;
 
+import construct.Construct;
+
 import clojure.ClojureConstruct;
-import editor.Construct;
 import editor.document.ConstructDocument;
 
 public class ListConstruct extends ClojureConstruct {

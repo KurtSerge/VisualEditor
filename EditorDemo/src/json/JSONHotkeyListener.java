@@ -7,13 +7,13 @@ import javax.swing.JFrame;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import construct.Construct;
+import construct.Construct.SelectionCause;
 import editor.BaseController;
+import editor.BaseController.EKeyBinding;
 import editor.BaseControllerListener;
 import editor.Clipboard;
-import editor.Construct;
-import editor.Construct.SelectionCause;
 import editor.ConstructEditor;
-import editor.BaseController.EKeyBinding;
 import editor.document.ConstructDocument;
 
 public class JSONHotkeyListener implements BaseControllerListener {

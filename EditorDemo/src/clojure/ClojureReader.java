@@ -12,17 +12,16 @@ import clojure.constructs.CharacterConstruct;
 import clojure.constructs.DoubleConstruct;
 import clojure.constructs.IntegerConstruct;
 import clojure.constructs.KeywordConstruct;
-import clojure.constructs.ListConstruct;
-import clojure.constructs.MapConstruct;
 import clojure.constructs.RatioConstruct;
 import clojure.constructs.StringConstruct;
 import clojure.constructs.SymbolConstruct;
-import clojure.constructs.UnknownConstruct;
-import clojure.constructs.VectorConstruct;
-import clojure.constructs.special.EmptyConstruct;
+import clojure.constructs.containers.ListConstruct;
+import clojure.constructs.containers.MapConstruct;
+import clojure.constructs.containers.VectorConstruct;
+import clojure.constructs.meta.EmptyConstruct;
+import clojure.constructs.meta.UnknownConstruct;
 import clojure.lang.RT;
-
-import editor.Construct;
+import construct.Construct;
 import editor.document.ConstructDocument;
 
 public class ClojureReader {

@@ -4,8 +4,6 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 
 import clojure.ClojureConstruct;
-import editor.Construct;
-import editor.Construct.ConstructAction;
 import editor.document.ConstructDocument;
 public class StringLiteralConstruct extends ClojureConstruct {
 	public StringLiteralConstruct(ConstructDocument document, ClojureConstruct parent, String literal) { 
