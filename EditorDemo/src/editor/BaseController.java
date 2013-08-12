@@ -345,7 +345,7 @@ public class BaseController implements KeyListener, BaseControllerListener {
 	}
 	
 	private void SaveToFile() {
-		String outdir = System.getProperty("user.dir") + "\\JSONOut.json";
+//		String outdir = System.getProperty("user.dir") + "\\JSONOut.json";
 		//JSONController.save_json(getTopConstruct(), outdir, 4);
 	}
 	
@@ -365,13 +365,13 @@ public class BaseController implements KeyListener, BaseControllerListener {
 		}
 	}
 	
-	private Construct getTopConstruct() {
-		Construct iter = mConstructSelector.selected.construct;
-		while(iter.parent != null)
-			iter = iter.parent;
-			
-		return iter;
-	}
+//	private Construct getTopConstruct() {
+//		Construct iter = mConstructSelector.selected.construct;
+//		while(iter.parent != null)
+//			iter = iter.parent;
+//			
+//		return iter;
+//	}
 	
     public ConstructEditor getSelectedEditor() {
     	return mConstructSelector.selected;

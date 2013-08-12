@@ -39,6 +39,10 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 	private JTextArea text_area;
 	private static Font font = new Font("Monospaced",Font.PLAIN, 14);
 	public class TransparentTextArea extends JTextArea {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -1482967738035295842L;
 		public TransparentTextArea() {
 			super();
 			setBackground(new Color(0,0,0,0));
