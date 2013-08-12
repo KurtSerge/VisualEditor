@@ -481,9 +481,6 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 	
 	@Override
 	public void setSelected(Construct.SelectionCause cause, ConstructEditor currentOrNewlySelected, boolean bSelect) {
-		
-		System.out.println(cause.toString() + " - " + bSelect + " - " + this.construct.type + " with parent " + this.construct.parent);
-		
 		if(bSelect == true) {
 			propagateHighlightSelection(this);
 			

@@ -100,6 +100,14 @@ public class HotkeyListener implements BaseControllerListener {
 		System.out.println("Key is " + KeyEvent.VK_M);
 		
 		switch(keyEventCode) {
+			case KeyEvent.VK_1:
+				newConstruct = new KeyValuePairConstruct(mDocument, parent, null);
+				break;
+		
+			case KeyEvent.VK_2:
+				newConstruct = new SymbolList(mDocument, parent, null);
+				break;				
+				
 			case KeyEvent.VK_6:
 				newConstruct = new FunctionConstruct(mDocument, parent);
 				break;
