@@ -9,6 +9,8 @@ public class BigIntConstruct extends ClojureConstruct {
 	public BigIntConstruct(ConstructDocument document, Construct parent, String literal) {
 		super(document, "bigint", parent);
 		this.literal = literal;
+		if(this.literal == null) 
+			this.literal = "0";		
 	}
 
 	@Override

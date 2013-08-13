@@ -12,101 +12,27 @@ import java.util.Random;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import autocomplete.AutoCompleteDialog.SimpleAutoCompleteEntry;
+import autocomplete.IAutoCompleteListener;
+
 import com.sun.tools.javac.util.Pair;
 
 import construct.Construct;
+import construct.Construct.AutoCompleteStyle;
 import construct.Construct.SelectionCause;
 import editor.document.ConstructDocument;
 
-public class BaseController implements KeyListener, BaseControllerListener {
+public class BaseController implements KeyListener, BaseControllerListener, IAutoCompleteListener {
 
 	private LinkedList<BaseControllerListener> mActionListeners;
 	private LinkedList<Pair<Hotkey, EKeyBinding>> mHotkeys;
 	private List<Pair<Hotkey, EKeyBinding>> mCandidateKeys;
-	private boolean mIsCapturingAlphaNumeric = false;
+	
+	private EKeyBinding mAutoCompletePublishBinding;
 	
 	// TODO: Code formatting
 	private ConstructFinder finder = null;
 	public EditSelection mConstructSelector = null;	
-
-	public static class Hotkey { 
-		public Hotkey(int key) { 
-			mIsControlPressed = false;
-			mIsAltPressed = false;
-			mIsShiftPressed = false;
-			mKey = key;
-		}
-		
-		public Hotkey(int key, boolean isControlPressed) {
-			mIsControlPressed = isControlPressed;
-			mIsAltPressed = false;
-			mIsShiftPressed = false;
-			mKey = key;
-		}
-		
-		public Hotkey(int key, boolean isControlPressed, boolean isAltPressed) { 
-			mIsControlPressed = isControlPressed;
-			mIsAltPressed = isAltPressed;
-			mIsShiftPressed = false;
-			mKey = key;
-		}
-		
-		public Hotkey(int key, boolean isControlPressed, boolean isAltPressed, boolean isShiftPressed) { 
-			mIsControlPressed = isControlPressed;
-			mIsAltPressed = isAltPressed;
-			mIsShiftPressed = isShiftPressed;
-			mKey = key;
-		}		
-		
-		public void setCaptureAlphaNumeric(boolean value) { 
-			mIsAlphaNumericGlobal = value;
-		}
-		
-		public boolean getCapturesAlphaNumeric() { 
-			return mIsAlphaNumericGlobal;
-		}
-		
-		public int getKey() { 
-			return mKey;
-		}
-		
-		public boolean isControlPressed() { 
-			return mIsControlPressed;
-		}
-		
-		public Hotkey setNext(Hotkey hotkey) { 
-			mNext = hotkey;
-			return hotkey;
-		}
-		
-		public Hotkey getNext() { 
-			return mNext;
-		}
-		
-		public String serialize() { 
-			String allMembers = "" + mKey + mIsControlPressed + mIsAltPressed + mIsShiftPressed;			
-			return allMembers;
-		}
-		
-		@Override 
-		public int hashCode() { 
-			String serialized = serialize();
-			return serialized.hashCode();
-		}
-		
-		@Override
-		public boolean equals(Object hotkey) { 
-			return hotkey.hashCode() == this.hashCode();
-		}
-		
-		private final boolean mIsControlPressed;
-		private final boolean mIsAltPressed;
-		private final boolean mIsShiftPressed;
-		private boolean mIsAlphaNumericGlobal;
-		private final int mKey;
-		
-		private Hotkey mNext;		
-	}
 	
 	public enum EKeyBinding {
 		Bind_Insert,
@@ -129,6 +55,9 @@ public class BaseController implements KeyListener, BaseControllerListener {
 		// clipboard
 		Bind_Copy,
 		Bind_InsertPaste,
+		
+		Bind_PresentAutoComplete,
+		
 		// Selection
 		Bind_SelectNextSibling,
 		Bind_SelectPrevSibling,
@@ -212,11 +141,6 @@ public class BaseController implements KeyListener, BaseControllerListener {
 		return hotkey;
 	}
 
-	
-	
-	
-	
-	
 	private int getIndexOfSelectedConstruct() { 
 		if(mConstructSelector.selected != null &&
 				mConstructSelector.selected.construct.parent != null)
@@ -249,16 +173,15 @@ public class BaseController implements KeyListener, BaseControllerListener {
 			return ;
 		}
 		
-		if(event.getKeyCode() == KeyEvent.VK_ESCAPE)  {
-			// Escape should cancel the hotkey stack
-			mIsCapturingAlphaNumeric = false;
-			mCandidateKeys = null;
+		if(Application.getApplication().isAutoCompleteActive()) {
+			Application.getApplication().onKeyPressed(event);
 			return ;
 		}
 		
-		if(mIsCapturingAlphaNumeric == true) {
-			// Publish this key 
-			publishKeyIfAvailable(event);
+		if(event.getKeyCode() == KeyEvent.VK_ESCAPE)  {
+			// Escape should cancel the hotkey stack
+			Application.getApplication().hideAutoComplete(true);
+			mCandidateKeys = null;
 			return ;
 		}
 		
@@ -305,41 +228,24 @@ public class BaseController implements KeyListener, BaseControllerListener {
 				mCandidateKeys.size() == 1 && 
 				mCandidateKeys.get(0).fst.getNext() == null)
 		{ 
-			Hotkey hotkey = mCandidateKeys.get(0).fst;
 			EKeyBinding binding = mCandidateKeys.get(0).snd;
-			int publishKeyCode = hotkey.getKey(); 
-			if(keyEvent != null) {
-				publishKeyCode = keyEvent.getKeyCode();
-			}
 			
 			// Does this key have an alpha numeric capture?
-			if(mCandidateKeys.get(0).fst.getCapturesAlphaNumeric() && !mIsCapturingAlphaNumeric) {
-				mIsCapturingAlphaNumeric = true;
-				
-				Application.showInfoMessage("Listening for construct type..");
-				
-				return ;
-			}
-
-			// Publish to all known listeners
-			for(BaseControllerListener listener : getActionListeners()) {
-				try { 
-					System.out.println("Publishing " + binding.toString());
-					if(listener.receivedHotkey(this, binding, publishKeyCode) == true) { 
-						break;
-					}
-				} catch(Exception ex) { 
-					ex.printStackTrace();
-				}
+			if(mCandidateKeys.get(0).fst.followsWithAutoComplete()) {
+				mAutoCompletePublishBinding = binding;
+				Application.getApplication().showAutoComplete(this, getSelectedEditor(), this);
+			} else {
+				publishAction(binding, null);
 			}
 
 			// Reset the candidate keys
-			mIsCapturingAlphaNumeric = false;
 			mCandidateKeys = null;
 		}
 		
 		if(mCandidateKeys != null && 
-			mCandidateKeys.size() == 0) {  
+			mCandidateKeys.size() == 0) { 
+			// If there are no candidate keys, then 
+			// reset our candidate keys array
 			mCandidateKeys = null;
 		}
 	}
@@ -570,6 +476,7 @@ public class BaseController implements KeyListener, BaseControllerListener {
 				return;
 			
 			Application.resetError();
+			Application.getApplication().hideAutoComplete(true);
 			
 			
 			ConstructEditor lastSelected = selected;
@@ -591,7 +498,7 @@ public class BaseController implements KeyListener, BaseControllerListener {
 		}
 
 		@Override
-		public boolean receivedHotkey(BaseController baseController, EKeyBinding binding, int keyEventCode) {
+		public boolean onReceievedAction(BaseController baseController, EKeyBinding binding, SimpleAutoCompleteEntry construct) {
 			switch(binding) {
 				case Bind_SelectParent:
 	    			SelectParentConstruct();
@@ -626,7 +533,7 @@ public class BaseController implements KeyListener, BaseControllerListener {
 	}
 	
 	@Override
-	public boolean receivedHotkey(BaseController controller, EKeyBinding binding, int keyCode) {
+	public boolean onReceievedAction(BaseController controller, EKeyBinding binding, SimpleAutoCompleteEntry construct) {
 		switch(binding) { 
 			case Bind_DeleteAll:
 				DeleteAllSelected();
@@ -648,10 +555,52 @@ public class BaseController implements KeyListener, BaseControllerListener {
 				FindNext();
 				break;
 				
+			case Bind_PresentAutoComplete:
+				if(mConstructSelector.selected.construct.canPresentAutoComplete()) { 
+					Application.presentAutoComplete(controller, mConstructSelector.selected, mConstructSelector.selected);
+				}
+				break;
+				
 			default: 
 				return false;
 		}
 		
 		return true;
+	}
+
+	@Override
+	public void onAutoCompleteCreateReplacement(BaseController controller, SimpleAutoCompleteEntry entry) {
+		
+		System.out.println("Publishing " + mAutoCompletePublishBinding.toString());
+		
+		publishAction(mAutoCompletePublishBinding, entry);
+		
+		Application.getApplication().hideAutoComplete(true);
+		
+//		ConstructEditor editor = mDocument.editorsFromConstruct(construct);
+//		WeakReference<ConstructEditor> weakParentEditor = mDocument.getConstructEditorStore().get(construct.parent);
+//		if(weakParentEditor != null) { 
+//			ConstructEditor parentEditor = weakParentEditor.get();
+//			if(parentEditor != null) {
+//				if(construct.parent.replaceChild(getSelectedEditor().construct, construct)) {
+//					controller.mConstructSelector.Select(SelectionCause.Selected, editor);
+//				} else { 
+//					Application.showErrorMessage("Failed to autocomplete: parent denied replacement");
+//				}
+//			} else { 
+//				Application.showErrorMessage("Failed to autocomplete: weak parent editor resolved to null");
+//			}
+//		} else { 
+//			Application.showErrorMessage("Failed to autocomplete: parent editor not found");
+//		}
+//		
+//				
+	}
+	
+	private void publishAction(EKeyBinding action, SimpleAutoCompleteEntry entry) { 
+		for(BaseControllerListener listener : getActionListeners()) { 
+			if(listener.onReceievedAction(this, action, entry) == true) 
+				break;
+		}
 	}
 }

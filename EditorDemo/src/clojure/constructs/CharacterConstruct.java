@@ -9,6 +9,8 @@ public class CharacterConstruct extends ClojureConstruct {
 	public CharacterConstruct(ConstructDocument document, Construct parent, String literal) { 
 		super(document, "character", parent);
 		this.literal = literal;
+		if(this.literal == null) 
+			this.literal = "c";		
 	}
 	
 	@Override

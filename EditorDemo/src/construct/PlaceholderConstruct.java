@@ -2,6 +2,10 @@ package construct;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.Collection;
+
+import construct.Construct.AutoCompleteStyle;
 
 import clojure.ClojureConstruct;
 import clojure.constructs.IntegerConstruct;
@@ -151,6 +155,22 @@ public class PlaceholderConstruct extends ClojureConstruct {
 
 		return ConstructAction.None;
 	}	
+	
+	@Override
+	public AutoCompleteStyle getAutoCompleteStyle() { 
+		return AutoCompleteStyle.Replace;
+	}
+	
+	@Override
+	public Collection<Class<?>> getAutoCompleteClasses() { 
+		if(getDescriptor().getClassRestriction() != null) {
+			ArrayList<Class<?>> classRestriction = new ArrayList<Class<?>>(1);
+			classRestriction.add(getDescriptor().getClassRestriction());
+			return classRestriction;
+		}
+
+		return null;
+	}
 
 	private Placeholder mDescriptor;
 }

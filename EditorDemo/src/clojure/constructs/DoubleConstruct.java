@@ -9,6 +9,8 @@ public class DoubleConstruct extends ClojureConstruct {
 	public DoubleConstruct(ConstructDocument document, Construct parent, String literal) { 
 		super(document, "double", parent);
 		this.literal = literal;
+		if(this.literal == null) 
+			this.literal = "0.0";		
 	}
 	
 	@Override

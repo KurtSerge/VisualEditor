@@ -22,6 +22,6 @@ public class JSONConstructDocument extends ConstructDocument {
 	protected Construct loadConstruct(InputStream in) { 
 		JSONObject json = new JSONObject(new JSONTokener(in));
 		
-		return JSONController.construct_for_json(json, null);
+		return JSONController.construct_for_json(this, json, null);
 	}
 }

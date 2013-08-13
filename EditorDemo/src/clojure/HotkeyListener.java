@@ -1,7 +1,6 @@
 package clojure;
 
-import java.awt.event.KeyEvent;
-
+import autocomplete.AutoCompleteDialog.SimpleAutoCompleteEntry;
 import clojure.constructs.BooleanConstruct;
 import clojure.constructs.CharacterConstruct;
 import clojure.constructs.DoubleConstruct;
@@ -39,7 +38,7 @@ public class HotkeyListener implements BaseControllerListener {
 	
 	
 	@Override
-	public boolean receivedHotkey(BaseController controller, EKeyBinding binding, int keyEventCode) {
+	public boolean onReceievedAction(BaseController controller, EKeyBinding binding, SimpleAutoCompleteEntry entry) {
 		if(binding == EKeyBinding.Bind_Undo) { 
 			mDocument.undo();
 			return true;
@@ -71,7 +70,7 @@ public class HotkeyListener implements BaseControllerListener {
 				}
 			}
 		} else { 
-			handleInsert(controller, binding, keyEventCode);
+			handleInsert(controller, binding, entry);
 		}
 		
 		return true;
@@ -107,95 +106,6 @@ public class HotkeyListener implements BaseControllerListener {
 		return newConstruct;
 	}	
 	
-	private ClojureConstruct getConstructFromKey(ClojureConstruct parent, int keyEventCode) {
-		ClojureConstruct newConstruct = null;
-
-		System.out.println("Key is " + KeyEvent.VK_M);
-		
-		switch(keyEventCode) {
-			case KeyEvent.VK_1:
-				newConstruct = new KeyValuePairConstruct(mDocument, parent, null);
-				break;
-		
-			case KeyEvent.VK_2:
-				newConstruct = new SymbolList(mDocument, parent, null);
-				break;				
-				
-			case KeyEvent.VK_6:
-				newConstruct = new FunctionConstruct(mDocument, parent);
-				break;
-			
-			case KeyEvent.VK_7:
-				newConstruct = new CaseConstruct(mDocument, parent);
-				break;
-		
-			case KeyEvent.VK_8:
-				newConstruct = new LetConstruct(mDocument, parent);
-				break;
-		
-			case KeyEvent.VK_9:
-				newConstruct = new DefineFunctionConstruct(mDocument, parent);
-				break;
-				
-			case KeyEvent.VK_0:
-				newConstruct = new IfThenElseConstruct(mDocument, parent);
-				break;
-			
-			case KeyEvent.VK_S: 
-				newConstruct = new SymbolConstruct(mDocument, parent, "symbol");
-				break;
-				
-			case KeyEvent.VK_V:
-				newConstruct = new VectorConstruct(mDocument, parent, null);
-				break;
-				
-			case KeyEvent.VK_L:
-				newConstruct = new ListConstruct(mDocument, parent, null);
-				break;	
-				
-			case KeyEvent.VK_M:
-				newConstruct = new MapConstruct(mDocument, parent, null);
-				break;
-				
-			case KeyEvent.VK_P:
-				newConstruct = new KeywordExpressionPairConstruct(mDocument, parent, null);
-				break;
-				
-			case KeyEvent.VK_B:
-				newConstruct = new BooleanConstruct(mDocument, parent, "true");
-				break;	
-				
-			case KeyEvent.VK_I:
-				newConstruct = new IntegerConstruct(mDocument, parent, "0");
-				break;		
-			
-			case KeyEvent.VK_K:
-				newConstruct = new KeywordConstruct(mDocument, parent, "keyword");
-				break;
-				
-			case KeyEvent.VK_D:
-				newConstruct = new DoubleConstruct(mDocument, parent, "0.0");
-				break;
-				
-			case KeyEvent.VK_C:
-				newConstruct = new CharacterConstruct(mDocument, parent, "c");
-				break;
-				
-			case KeyEvent.VK_T:
-				newConstruct = new StringConstruct(mDocument, parent, "string");
-				break;
-				
-			case KeyEvent.VK_W:
-				newConstruct = new VariadicVectorConstruct(mDocument, parent, "params");
-				break;
-				
-			default:
-				System.out.println("Unknown keyEventCode: " + keyEventCode);
-		}
-		
-		return newConstruct;
-	}
-	
 	private ClojureConstruct getParentForBinding(ConstructEditor selectedEditor, EKeyBinding binding) {	
 		ClojureConstruct parent = null;
 		switch(binding) {
@@ -216,7 +126,6 @@ public class HotkeyListener implements BaseControllerListener {
 				
 			default:
 				System.out.println(binding.toString());
-				throw new RuntimeException("Unhandled hotkey");
 		}
 		
 		if(parent == null) { 
@@ -258,20 +167,14 @@ public class HotkeyListener implements BaseControllerListener {
 		return "(unknown)";
 	}
 
-	private void handleInsert(BaseController controller, EKeyBinding binding, int keyEventCode) {
+	private void handleInsert(BaseController controller, EKeyBinding binding, SimpleAutoCompleteEntry entry) {
 		// Determine the parent for the new construct, this is 
 		// based on the initial input (IA, IA, IC)
 		ClojureConstruct parent = getParentForBinding(controller.getSelectedEditor(), binding);
+		Construct newConstruct = entry.create(mDocument, parent);
+		
 		if(parent == null) {
 			Application.showErrorMessage("Cannot " + stringForBinding(binding) + " with selected construct");			
-			return ;
-		}
-
-		// Determine what the new construct will be and any default
-		// children that the construct will have
-		ClojureConstruct newConstruct = getConstructFromKey(parent, keyEventCode);
-		if(newConstruct == null) {
-			Application.showErrorMessage("Failed to " + stringForBinding(binding) + ": unknown construct type");
 			return ;
 		}
 		

@@ -2,6 +2,7 @@ package construct;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -41,10 +42,15 @@ public abstract class Construct
 		SelectedInPlaceOfDeletedConstruct,	
 		SelectedAfterDeletingChild,
 		SelectedRandomly,
-		
+		SelectedAfterAutoCompletion,
 		Unselection,
 		
 		Selected, // Generic
+	}
+	
+	public static enum AutoCompleteStyle { 
+		Replace,
+		None
 	}
 	
 	public static enum ConstructAction { 
@@ -356,5 +362,18 @@ public abstract class Construct
 	 */
 	public final boolean isSoleDependantConstruct() { 
 		return mIsSoleDependantConstruct;
+	}
+	
+	
+	public boolean canPresentAutoComplete() {
+		return getAutoCompleteStyle() != AutoCompleteStyle.None;
+	}	
+	
+	public Collection<Class<?>> getAutoCompleteClasses() { 
+		return null;
+	}
+	
+	public AutoCompleteStyle getAutoCompleteStyle() { 
+		return AutoCompleteStyle.None;
 	}
 }

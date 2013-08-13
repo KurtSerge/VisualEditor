@@ -47,7 +47,13 @@ public class SymbolConstruct extends ClojureConstruct {
 			this.mImmutableSymbol = symbol;
 		} else { 
 			this.mMutable = true;
-			this.literal = symbol;
+			
+			String defaultLiteral = symbol;
+			if(defaultLiteral == null) { 
+				defaultLiteral = "symbol";
+			}
+			
+			this.literal = defaultLiteral;
 			this.mImmutableSymbol = null;
 		}
 	}

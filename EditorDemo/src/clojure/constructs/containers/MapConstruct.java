@@ -1,5 +1,8 @@
 package clojure.constructs.containers;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import construct.Construct;
 import construct.Placeholder;
 import clojure.ClojureConstruct;
@@ -102,5 +105,12 @@ public class MapConstruct extends ClojureConstruct {
 			return false;
 			
 		return true;
+	}
+	
+	@Override
+	public Collection<Class<?>> getAutoCompleteClasses() { 
+		ArrayList<Class<?>> classRestriction = new ArrayList<Class<?>>(1);
+		classRestriction.add(clojure.constructs.meta.KeywordExpressionPairConstruct.class);
+		return classRestriction;
 	}
 }

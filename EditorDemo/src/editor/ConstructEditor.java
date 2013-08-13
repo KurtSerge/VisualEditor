@@ -6,12 +6,14 @@ import java.lang.ref.WeakReference;
 import java.util.LinkedList;
 import java.util.List;
 
+import autocomplete.IAutoCompleteListener;
+
 import construct.Construct;
 
-public abstract class ConstructEditor
+public abstract class ConstructEditor implements IAutoCompleteListener
 {
 	public final Construct construct;
-	private final ConstructEditorStore mBoundEditorStore;
+	protected final ConstructEditorStore mBoundEditorStore;
 	
 	ConstructEditor(Construct construct, ConstructEditorStore store)
 	{

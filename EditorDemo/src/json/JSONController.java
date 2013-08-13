@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import construct.Construct;
 import editor.EmptyConstruct;
+import editor.document.ConstructDocument;
 
 public class JSONController 
 {
@@ -30,12 +31,12 @@ public class JSONController
 //	}
 
 
-	static public Construct get_empty_kvp(Construct parent)  {
+	static public Construct get_empty_kvp(ConstructDocument document, Construct parent)  {
 		if(parent.getClass() != ObjectConstruct.class)
 			return null;
 		
 		json.KeyValueConstruct key_value_construct = new json.KeyValueConstruct(parent.getDocument(), parent);
-		key_value_construct.addChild(construct_for_json("EmptyString", key_value_construct));
+		key_value_construct.addChild(construct_for_json(document, "EmptyString", key_value_construct));
 		key_value_construct.addChild(new EmptyConstruct(parent.getDocument(), key_value_construct));
 		return key_value_construct;
 	}
@@ -105,11 +106,13 @@ public class JSONController
 		return ret;
 	}
 	
-	static public Construct construct_for_json(Object object, Construct parent)
+	static public Construct construct_for_json(ConstructDocument document, Object object, Construct parent)
 	{
 		if(object.getClass().equals(JSONObject.class))
 	    {
-	      json.ObjectConstruct object_construct = new json.ObjectConstruct(parent.getDocument(), parent);
+			
+			
+	      json.ObjectConstruct object_construct = new json.ObjectConstruct(document, parent);
 	      
 	      String[] keys = JSONObject.getNames((JSONObject)object);
 	      
@@ -118,9 +121,9 @@ public class JSONController
 		      {
 				Object child = ((JSONObject)object).get(key);
 				
-				json.KeyValueConstruct key_value_construct = new json.KeyValueConstruct(parent.getDocument(), object_construct);
-				key_value_construct.addChild(construct_for_json(key, key_value_construct));
-				key_value_construct.addChild(construct_for_json(child, key_value_construct));
+				json.KeyValueConstruct key_value_construct = new json.KeyValueConstruct(document, object_construct);
+				key_value_construct.addChild(construct_for_json(document, key, key_value_construct));
+				key_value_construct.addChild(construct_for_json(document, child, key_value_construct));
 				
 				object_construct.addChild(key_value_construct);
 		      }
@@ -137,7 +140,7 @@ public class JSONController
 			{
 				Object child = json_array.get(i);
 				
-				object_construct.addChild(construct_for_json(child, object_construct));
+				object_construct.addChild(construct_for_json(document, child, object_construct));
 			}
 			
 			return object_construct;

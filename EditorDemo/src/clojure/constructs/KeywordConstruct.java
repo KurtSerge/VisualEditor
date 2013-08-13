@@ -7,8 +7,12 @@ import editor.document.ConstructDocument;
 public class KeywordConstruct extends ClojureConstruct {
 	public KeywordConstruct(ConstructDocument document, Construct parent, String literal) {
 		super(document, "keyword", parent);
+		
+		String defaultLiteral = literal;
+		if(defaultLiteral == null) 
+			defaultLiteral = "keyword";
 
-		SymbolConstruct symbolConstruct = new SymbolConstruct(mDocument, this, literal);
+		SymbolConstruct symbolConstruct = new SymbolConstruct(mDocument, this, defaultLiteral);
 		symbolConstruct.setIsSoleDependantConstruct(true);
 		this.addChild(0, symbolConstruct);
 	}

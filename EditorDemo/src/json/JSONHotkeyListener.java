@@ -7,6 +7,8 @@ import javax.swing.JFrame;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import autocomplete.AutoCompleteDialog.SimpleAutoCompleteEntry;
+
 import construct.Construct;
 import construct.Construct.SelectionCause;
 import editor.BaseController;
@@ -28,8 +30,8 @@ public class JSONHotkeyListener implements BaseControllerListener {
 	}
 	
 	@Override
-	public boolean receivedHotkey(BaseController controller, EKeyBinding binding, int keyEventCode) {
-		handleInsert(controller, binding, keyEventCode);
+	public boolean onReceievedAction(BaseController controller, EKeyBinding binding, SimpleAutoCompleteEntry construct) {
+//		handleInsert(controller, binding, keyEventCode);
 		return true;
 	}
 
@@ -72,39 +74,39 @@ public class JSONHotkeyListener implements BaseControllerListener {
 				   parent.getClass() == json.ArrayConstruct.class)  {
 					// Empty Object 
 					JSONObject newObj = new JSONObject();
-					newConstruct = JSONController.construct_for_json(newObj, parent);
+					newConstruct = JSONController.construct_for_json(mDocument, newObj, parent);
 				}
 				else {
 					// KV-Pair with Obj value (it's common enough to warrant a hotkey methinks)
 					// FIXME: needs work
 					JSONObject newObj = new JSONObject();
 					newObj.put("EmptyString", new JSONObject());
-					newConstruct = JSONController.construct_for_json(newObj, parent);
+					newConstruct = JSONController.construct_for_json(mDocument, newObj, parent);
 				}
 				break;
 			case KeyEvent.VK_S: // String
-				newConstruct = JSONController.construct_for_json("EmtpyStr", parent);
+				newConstruct = JSONController.construct_for_json(mDocument, "EmtpyStr", parent);
 				break;
 			case KeyEvent.VK_K: // KVPair
-    			newConstruct = JSONController.get_empty_kvp(parent);
+    			newConstruct = JSONController.get_empty_kvp(mDocument, parent);
 				break;
 			case KeyEvent.VK_I: // Integer
-				newConstruct = JSONController.construct_for_json(0, parent);
+				newConstruct = JSONController.construct_for_json(mDocument, 0, parent);
 				break;
 			case KeyEvent.VK_F: // Float
-				newConstruct = JSONController.construct_for_json(0.0, parent);
+				newConstruct = JSONController.construct_for_json(mDocument, 0.0, parent);
 				break;
 			case KeyEvent.VK_B: // Bool
-				newConstruct = JSONController.construct_for_json(true, parent);
+				newConstruct = JSONController.construct_for_json(mDocument, true, parent);
 				break;
 			case KeyEvent.VK_N: // Null
-				newConstruct = JSONController.construct_for_json(org.json.JSONObject.NULL, parent);
+				newConstruct = JSONController.construct_for_json(mDocument, org.json.JSONObject.NULL, parent);
 				break;
 			case KeyEvent.VK_A: // Array
 				JSONArray list = new JSONArray();
 				list.put("test");
 				list.put("test2");
-				newConstruct = JSONController.construct_for_json(list, parent);
+				newConstruct = JSONController.construct_for_json(mDocument, list, parent);
 				break;
 			case KeyEvent.VK_P: 
 				newConstruct = mClipboard.getCopyToPaste(parent);

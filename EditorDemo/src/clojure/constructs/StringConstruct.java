@@ -13,7 +13,11 @@ public class StringConstruct extends ClojureConstruct {
 	public StringConstruct(ConstructDocument document, Construct parent, String literal) { 
 		super(document, "string", parent);
 		
-		StringLiteralConstruct stringLiteralConstruct = new StringLiteralConstruct(document, this, literal);
+		String defaultLiteral = literal;
+		if(defaultLiteral == null)
+			defaultLiteral = "string";
+		
+		StringLiteralConstruct stringLiteralConstruct = new StringLiteralConstruct(document, this, defaultLiteral);
 		stringLiteralConstruct.setIsSoleDependantConstruct(true);
 		children.add(stringLiteralConstruct);		
 	}

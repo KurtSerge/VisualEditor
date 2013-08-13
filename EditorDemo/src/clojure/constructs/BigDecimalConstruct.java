@@ -9,6 +9,8 @@ public class BigDecimalConstruct extends ClojureConstruct {
 	public BigDecimalConstruct(ConstructDocument document, Construct parent, String literal) {
 		super(document, "bigdecimal", parent);
 		this.literal = literal;
+		if(this.literal == null) 
+			this.literal = "0";
 	}
 	
 	@Override

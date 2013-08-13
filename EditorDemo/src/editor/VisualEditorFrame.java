@@ -2,6 +2,7 @@ package editor;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
@@ -10,12 +11,17 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+
+import autocomplete.AutoCompleteDialog;
+import autocomplete.IAutoCompleteListener;
 
 public class VisualEditorFrame extends JFrame {
 	private Point pt;
@@ -129,5 +135,80 @@ public class VisualEditorFrame extends JFrame {
 	public void presentDebugMessage(String message) { 
 		mModalTextArea.setText(message);
 		mModalTextArea.setForeground(Color.darkGray);
+	}
+	
+	private AutoCompleteDialog mAutoCompleteDialog = null;
+	private ConstructEditor mAutoCompleteEditor = null;
+	
+	/**
+	 * Presents an autocomplete dialog in the vacinity
+	 * of the ConstructEditor object provided.
+	 * 
+	 * @param editor Editor to auto-complete into.
+	 */
+	public void showAutoComplete(BaseController controller, ConstructEditor editor, IAutoCompleteListener listener)
+	{ 
+		if(mAutoCompleteDialog != null &&
+				mAutoCompleteEditor != editor) {
+			hideAutoComplete(true);
+		}
+		
+		// Figure out top left position of dialog
+		Component editorComponent = editor.get_component();
+		Point locationOnScreen = editorComponent.getLocationOnScreen();
+		Dimension sizeOnScreen = editorComponent.getSize();
+		Point location = new Point(locationOnScreen.x, locationOnScreen.y + sizeOnScreen.height + 5);
+
+		// Instantiate a new dialog for this editor
+		if(mAutoCompleteEditor == null || mAutoCompleteEditor != editor) { 
+			mAutoCompleteEditor = editor;
+			mAutoCompleteDialog = new AutoCompleteDialog(controller, editor, listener);		
+		}
+		
+		// Update the location of the component
+		// TODO: Constrain to desktop
+		mAutoCompleteDialog.setLocation(location);
+		mAutoCompleteDialog.setVisible(true);
+		mAutoCompleteDialog.getEntryField().requestFocus();
+	}
+	
+	/**
+	 * Hides the auto-complete window.
+	 */
+	public void hideAutoComplete(boolean destroy)
+	{ 
+		// Make the auto-complete hidden
+		if(mAutoCompleteDialog != null) { 
+			mAutoCompleteDialog.setVisible(false);
+			
+			if(destroy == true) {
+				// Destroy & clean up
+				mAutoCompleteEditor = null;
+				mAutoCompleteDialog = null;
+			}
+		}
+	}
+	
+	/**
+	 * If the dialog was hidden, but not destroyed,
+	 * this can be called to bring it back into action.
+	 */
+	public void restoreAutoComplete() {
+		if(mAutoCompleteDialog != null) { 
+			mAutoCompleteDialog.setVisible(true);
+		}
+	}
+	
+	public boolean isAutoCompleteActive() { 
+		return mAutoCompleteDialog != null;
+	}
+	
+	public void onKeyPressed(KeyEvent e) { 
+		if(e.getKeyCode() == KeyEvent.VK_ESCAPE) { 
+			hideAutoComplete(true);
+			return ;
+		}
+		
+		mAutoCompleteDialog.onKeyPressed(e);
 	}
 }

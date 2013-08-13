@@ -9,6 +9,8 @@ public class IntegerConstruct extends ClojureConstruct {
 		super(document, "integer", parent);
 		
 		this.literal = literal;
+		if(this.literal == null) 
+			this.literal = "0";	
 	}
 
 	@Override

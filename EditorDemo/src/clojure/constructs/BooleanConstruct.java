@@ -8,6 +8,8 @@ public class BooleanConstruct extends ClojureConstruct {
 	public BooleanConstruct(ConstructDocument document, Construct parent, String literal) { 
 		super(document, "boolean", parent);
 		this.literal = literal;
+		if(this.literal == null) 
+			this.literal = "false";		
 	}
 
 	@Override

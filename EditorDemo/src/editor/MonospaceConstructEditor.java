@@ -11,6 +11,7 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,13 +22,17 @@ import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import autocomplete.IAutoCompleteListener;
+import autocomplete.AutoCompleteDialog.SimpleAutoCompleteEntry;
+
 import construct.Construct;
 import construct.Construct.ConstructAction;
+import construct.Construct.SelectionCause;
 import editor.BaseController.EKeyBinding;
 import editor.document.ConstructDocument;
 
 
-public class MonospaceConstructEditor extends ConstructEditor implements LayoutManager, DocumentListener
+public class MonospaceConstructEditor extends ConstructEditor implements LayoutManager, DocumentListener, IAutoCompleteListener
 {
 	private static boolean skDebug_ShowBorders = false;
 	
@@ -72,7 +77,6 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 			if(e.getKeyCode() == KeyEvent.VK_TAB) {
 				
 				if(construct.isSoleDependantConstruct()) { 
-					
 					System.out.println("Currently in a sole dependency, going to parent");
 					if(mController == null || 
 							mController.mConstructSelector == null)
@@ -85,8 +89,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 				
 				if(e.isAltDown()) { 
 					for(BaseControllerListener listener : mController.getActionListeners()) {
-						System.out.println("Simulated..");
-						listener.receivedHotkey(mController, EKeyBinding.Bind_DuplicateToAdjacent, e.getKeyCode());
+						listener.onReceievedAction(mController, EKeyBinding.Bind_DuplicateToAdjacent, null);
 					}
 				} else {
 					// Select the next adjacent construct (cancel editing)
@@ -561,4 +564,31 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 	}
 	
 	private boolean isPerformingUpdate = false;
+	
+	
+	@Override
+	public void onAutoCompleteCreateReplacement(BaseController controller, SimpleAutoCompleteEntry entry) {
+		Construct construct = entry.create(mDocument, this.construct.parent);
+		ConstructEditor editor = mDocument.editorsFromConstruct(construct);
+		WeakReference<ConstructEditor> weakParentEditor = mBoundEditorStore.get(construct.parent);
+		if(weakParentEditor != null) { 
+			ConstructEditor parentEditor = weakParentEditor.get();
+			if(parentEditor != null)  {
+				
+				switch(this.construct.getAutoCompleteStyle()) { 
+					case Replace:
+						if(construct.parent.replaceChild(this.construct, construct)) {
+							controller.mConstructSelector.Select(SelectionCause.Selected, editor);
+						}
+						break;
+					
+					default:
+						System.err.println("Unsupported AutoCompleteStyle." + this.construct.getAutoCompleteStyle().toString() + " in MonospaceConstructEditor");
+						break;
+				}				
+			}
+		}
+		
+		Application.getApplication().hideAutoComplete(true);
+	}
 }

@@ -7,16 +7,19 @@ import java.awt.Toolkit;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.io.FileNotFoundException;
 
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import autocomplete.IAutoCompleteListener;
+
 import json.JSONHotkeyListener;
 import construct.Construct;
 import editor.BaseController.EKeyBinding;
-import editor.BaseController.Hotkey;
 import editor.ConstructPublisher.ConstructListener;
 import editor.document.ClojureConstructDocument;
 import editor.document.ConstructDocument;
@@ -47,11 +50,12 @@ public class Application extends VisualEditorFrame implements ComponentListener
 		controller.addHotkey(EKeyBinding.Bind_Undo, KeyEvent.VK_Z, true);
 		controller.addHotkey(EKeyBinding.Bind_Redo, KeyEvent.VK_Y, true);
 		controller.addHotkey(EKeyBinding.Bind_Copy, KeyEvent.VK_C, true);
+		controller.addHotkey(EKeyBinding.Bind_PresentAutoComplete, KeyEvent.VK_ENTER);
 		controller.addHotkey(EKeyBinding.Bind_InsertPaste, KeyEvent.VK_V, true);
-		controller.addHotkey(EKeyBinding.Bind_InsertAfter, KeyEvent.VK_I, true).setNext(new Hotkey(KeyEvent.VK_A, true)).setCaptureAlphaNumeric(true);
-		controller.addHotkey(EKeyBinding.Bind_InsertBefore, KeyEvent.VK_I, true).setNext(new Hotkey(KeyEvent.VK_B, true)).setCaptureAlphaNumeric(true);
-		controller.addHotkey(EKeyBinding.Bind_InsertReplace, KeyEvent.VK_I, true).setNext(new Hotkey(KeyEvent.VK_R, true)).setCaptureAlphaNumeric(true);
-		controller.addHotkey(EKeyBinding.Bind_InsertChild, KeyEvent.VK_I, true).setNext(new Hotkey(KeyEvent.VK_C, true)).setCaptureAlphaNumeric(true);
+		controller.addHotkey(EKeyBinding.Bind_InsertAfter, KeyEvent.VK_I, true).setNext(new Hotkey(KeyEvent.VK_A, true)).setFollowsWithAutoComplete(true);
+		controller.addHotkey(EKeyBinding.Bind_InsertBefore, KeyEvent.VK_I, true).setNext(new Hotkey(KeyEvent.VK_B, true)).setFollowsWithAutoComplete(true);
+		controller.addHotkey(EKeyBinding.Bind_InsertReplace, KeyEvent.VK_I, true).setNext(new Hotkey(KeyEvent.VK_R, true)).setFollowsWithAutoComplete(true);
+		controller.addHotkey(EKeyBinding.Bind_InsertChild, KeyEvent.VK_I, true).setNext(new Hotkey(KeyEvent.VK_C, true)).setFollowsWithAutoComplete(true);
 		
 		// TODO: Restore
 		//controller.registerHotkey(EKeyBinding.Bind_InsertUsurp, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_U, (char)KeyEvent.VK_UNDEFINED));
@@ -75,9 +79,22 @@ public class Application extends VisualEditorFrame implements ComponentListener
 	}
 	
 	public void initialize() { 
-
 		boolean shouldLoadJson = false;
 		final VisualEditorFrame window = this;
+		
+		this.addWindowFocusListener(new WindowFocusListener() {
+			@Override
+			public void windowLostFocus(WindowEvent arg0) {
+				// TODO Auto-generated method stub
+				hideAutoComplete(false);
+			}
+			
+			@Override
+			public void windowGainedFocus(WindowEvent arg0) {
+				restoreAutoComplete();
+			}
+		});
+		
 		try {
 			if(shouldLoadJson) {
 				// Create a document for JSON parsing
@@ -187,7 +204,12 @@ public class Application extends VisualEditorFrame implements ComponentListener
 	public static void showDebugMessage(String message) { 
 		if(sApplication != null)
 			sApplication.presentDebugMessage(message);
-	}	
+	}
+	
+	public static void presentAutoComplete(BaseController controller, ConstructEditor editor, IAutoCompleteListener listener) { 
+		if(sApplication != null) 
+			sApplication.showAutoComplete(controller, editor, listener);
+	}
 	
 	/**
 	 * @param args
@@ -219,5 +241,9 @@ public class Application extends VisualEditorFrame implements ComponentListener
 
 	@Override
 	public void componentShown(ComponentEvent arg0) {
+	}
+	
+	public static Application getApplication() { 
+		return sApplication;
 	}
 }
