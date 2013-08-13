@@ -18,6 +18,7 @@ import com.sun.tools.javac.util.Pair;
 import construct.Construct;
 import construct.Construct.SelectionCause;
 import editor.document.ConstructDocument;
+import com.sun.tools.javac.util.*;
 
 /**
  * ! This class used to be BaseController, it is being repurposed as InterfaceController.
