@@ -19,7 +19,7 @@ import autocomplete.IAutoCompleteListener;
 
 import json.JSONHotkeyListener;
 import construct.Construct;
-import editor.BaseController.EKeyBinding;
+import editor.BaseController.EInterfaceAction;
 import editor.ConstructPublisher.ConstructListener;
 import editor.document.ClojureConstructDocument;
 import editor.document.ConstructDocument;
@@ -47,18 +47,18 @@ public class Application extends VisualEditorFrame implements ComponentListener
 		top.requestFocus();
 
 		controller.addListener(listener);
-		controller.addHotkey(EKeyBinding.Bind_Undo, KeyEvent.VK_Z, true);
-		controller.addHotkey(EKeyBinding.Bind_Redo, KeyEvent.VK_Y, true);
-		controller.addHotkey(EKeyBinding.Bind_Copy, KeyEvent.VK_C, true);
-		controller.addHotkey(EKeyBinding.Bind_PresentAutoComplete, KeyEvent.VK_ENTER);
-		controller.addHotkey(EKeyBinding.Bind_InsertPaste, KeyEvent.VK_V, true);
-		controller.addHotkey(EKeyBinding.Bind_InsertAfter, KeyEvent.VK_I, true).setNext(new Hotkey(KeyEvent.VK_A, true)).setFollowsWithAutoComplete(true);
-		controller.addHotkey(EKeyBinding.Bind_InsertBefore, KeyEvent.VK_I, true).setNext(new Hotkey(KeyEvent.VK_B, true)).setFollowsWithAutoComplete(true);
-		controller.addHotkey(EKeyBinding.Bind_InsertReplace, KeyEvent.VK_I, true).setNext(new Hotkey(KeyEvent.VK_R, true)).setFollowsWithAutoComplete(true);
-		controller.addHotkey(EKeyBinding.Bind_InsertChild, KeyEvent.VK_I, true).setNext(new Hotkey(KeyEvent.VK_C, true)).setFollowsWithAutoComplete(true);
+		controller.addHotkey(EInterfaceAction.Bind_Undo, KeyEvent.VK_Z, true);
+		controller.addHotkey(EInterfaceAction.Bind_Redo, KeyEvent.VK_Y, true);
+		controller.addHotkey(EInterfaceAction.Bind_Copy, KeyEvent.VK_C, true);
+		controller.addHotkey(EInterfaceAction.Bind_PresentAutoComplete, KeyEvent.VK_ENTER);
+		controller.addHotkey(EInterfaceAction.Bind_InsertPaste, KeyEvent.VK_V, true);
+		controller.addHotkey(EInterfaceAction.Bind_InsertAfter, KeyEvent.VK_I, true).setNext(new Hotkey(KeyEvent.VK_A, true)).setFollowsWithAutoComplete(true);
+		controller.addHotkey(EInterfaceAction.Bind_InsertBefore, KeyEvent.VK_I, true).setNext(new Hotkey(KeyEvent.VK_B, true)).setFollowsWithAutoComplete(true);
+		controller.addHotkey(EInterfaceAction.Bind_InsertReplace, KeyEvent.VK_I, true).setNext(new Hotkey(KeyEvent.VK_R, true)).setFollowsWithAutoComplete(true);
+		controller.addHotkey(EInterfaceAction.Bind_InsertChild, KeyEvent.VK_I, true).setNext(new Hotkey(KeyEvent.VK_C, true)).setFollowsWithAutoComplete(true);
 		
 		// TODO: Restore
-		//controller.registerHotkey(EKeyBinding.Bind_InsertUsurp, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_U, (char)KeyEvent.VK_UNDEFINED));
+		//controller.registerHotkey(EInterfaceAction.Bind_InsertUsurp, String.format("%s%s%s", (char)KeyEvent.VK_I, (char)KeyEvent.VK_U, (char)KeyEvent.VK_UNDEFINED));
 	}
 
 	/**

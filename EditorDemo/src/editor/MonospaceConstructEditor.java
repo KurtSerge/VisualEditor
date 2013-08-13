@@ -28,7 +28,7 @@ import autocomplete.AutoCompleteDialog.SimpleAutoCompleteEntry;
 import construct.Construct;
 import construct.Construct.ConstructAction;
 import construct.Construct.SelectionCause;
-import editor.BaseController.EKeyBinding;
+import editor.BaseController.EInterfaceAction;
 import editor.document.ConstructDocument;
 
 
@@ -89,7 +89,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 				
 				if(e.isAltDown()) { 
 					for(BaseControllerListener listener : mController.getActionListeners()) {
-						listener.onReceievedAction(mController, EKeyBinding.Bind_DuplicateToAdjacent, null);
+						listener.onReceievedAction(mController, EInterfaceAction.Bind_DuplicateToAdjacent, null);
 					}
 				} else {
 					// Select the next adjacent construct (cancel editing)

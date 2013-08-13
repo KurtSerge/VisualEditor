@@ -12,7 +12,7 @@ import autocomplete.AutoCompleteDialog.SimpleAutoCompleteEntry;
 import construct.Construct;
 import construct.Construct.SelectionCause;
 import editor.BaseController;
-import editor.BaseController.EKeyBinding;
+import editor.BaseController.EInterfaceAction;
 import editor.BaseControllerListener;
 import editor.Clipboard;
 import editor.ConstructEditor;
@@ -30,12 +30,12 @@ public class JSONHotkeyListener implements BaseControllerListener {
 	}
 	
 	@Override
-	public boolean onReceievedAction(BaseController controller, EKeyBinding binding, SimpleAutoCompleteEntry construct) {
+	public boolean onReceievedAction(BaseController controller, EInterfaceAction binding, SimpleAutoCompleteEntry construct) {
 //		handleInsert(controller, binding, keyEventCode);
 		return true;
 	}
 
-	private void handleInsert(BaseController controller, EKeyBinding binding, int keyEventCode) {
+	private void handleInsert(BaseController controller, EInterfaceAction binding, int keyEventCode) {
 		Construct newConstruct = null;
 		Construct parent = null;
 

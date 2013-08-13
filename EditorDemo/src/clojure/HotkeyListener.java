@@ -24,7 +24,7 @@ import construct.Construct;
 import construct.Construct.SelectionCause;
 import editor.Application;
 import editor.BaseController;
-import editor.BaseController.EKeyBinding;
+import editor.BaseController.EInterfaceAction;
 import editor.BaseControllerListener;
 import editor.ConstructEditor;
 import editor.document.ConstructDocument;
@@ -38,21 +38,21 @@ public class HotkeyListener implements BaseControllerListener {
 	
 	
 	@Override
-	public boolean onReceievedAction(BaseController controller, EKeyBinding binding, SimpleAutoCompleteEntry entry) {
-		if(binding == EKeyBinding.Bind_Undo) { 
+	public boolean onReceievedAction(BaseController controller, EInterfaceAction binding, SimpleAutoCompleteEntry entry) {
+		if(binding == EInterfaceAction.Bind_Undo) { 
 			mDocument.undo();
 			return true;
-		} else if(binding == EKeyBinding.Bind_Redo) { 
+		} else if(binding == EInterfaceAction.Bind_Redo) { 
 			mDocument.redo();
 			return true;
 		}
 		
-		if(binding == EKeyBinding.Bind_DebugPrint) {
+		if(binding == EInterfaceAction.Bind_DebugPrint) {
 			mDocument.debugPrint();
 			return true;
 		}
 		
-		if(binding == EKeyBinding.Bind_DuplicateToAdjacent) {
+		if(binding == EInterfaceAction.Bind_DuplicateToAdjacent) {
 			// Duplicate this construct
 			Construct parent = getParentForBinding(controller.getSelectedEditor(), binding);
 			Construct selected = controller.getSelectedEditor().construct;
@@ -106,7 +106,7 @@ public class HotkeyListener implements BaseControllerListener {
 		return newConstruct;
 	}	
 	
-	private ClojureConstruct getParentForBinding(ConstructEditor selectedEditor, EKeyBinding binding) {	
+	private ClojureConstruct getParentForBinding(ConstructEditor selectedEditor, EInterfaceAction binding) {	
 		ClojureConstruct parent = null;
 		switch(binding) {
 			case Bind_InsertAfter:  
@@ -133,9 +133,9 @@ public class HotkeyListener implements BaseControllerListener {
 		}
 		
 		if(parent.isConstructContainer() == false && 
-				(binding == EKeyBinding.Bind_InsertAfter || 
-				binding == EKeyBinding.Bind_InsertBefore || 
-				binding == EKeyBinding.Bind_InsertChild))
+				(binding == EInterfaceAction.Bind_InsertAfter || 
+				binding == EInterfaceAction.Bind_InsertBefore || 
+				binding == EInterfaceAction.Bind_InsertChild))
 		{ 
 			return null;
 		}			
@@ -143,7 +143,7 @@ public class HotkeyListener implements BaseControllerListener {
 		return parent;
 	}
 	
-	private String stringForBinding(EKeyBinding binding) { 
+	private String stringForBinding(EInterfaceAction binding) { 
 		switch(binding) { 
 			case Bind_DeleteAll:
 				return "delete";
@@ -167,7 +167,7 @@ public class HotkeyListener implements BaseControllerListener {
 		return "(unknown)";
 	}
 
-	private void handleInsert(BaseController controller, EKeyBinding binding, SimpleAutoCompleteEntry entry) {
+	private void handleInsert(BaseController controller, EInterfaceAction binding, SimpleAutoCompleteEntry entry) {
 		// Determine the parent for the new construct, this is 
 		// based on the initial input (IA, IA, IC)
 		ClojureConstruct parent = getParentForBinding(controller.getSelectedEditor(), binding);

@@ -25,16 +25,15 @@ import editor.document.ConstructDocument;
 public class BaseController implements KeyListener, BaseControllerListener, IAutoCompleteListener {
 
 	private LinkedList<BaseControllerListener> mActionListeners;
-	private LinkedList<Pair<Hotkey, EKeyBinding>> mHotkeys;
-	private List<Pair<Hotkey, EKeyBinding>> mCandidateKeys;
-	
-	private EKeyBinding mAutoCompletePublishBinding;
+	private LinkedList<Pair<Hotkey, EInterfaceAction>> mHotkeys;
+	private List<Pair<Hotkey, EInterfaceAction>> mCandidateKeys;
+	private EInterfaceAction mAutoCompletePublishBinding;
 	
 	// TODO: Code formatting
 	private ConstructFinder finder = null;
 	public EditSelection mConstructSelector = null;	
 	
-	public enum EKeyBinding {
+	public enum EInterfaceAction {
 		Bind_Insert,
 		Bind_InsertAfter,
 		Bind_InsertBefore,
@@ -42,29 +41,19 @@ public class BaseController implements KeyListener, BaseControllerListener, IAut
 		Bind_InsertUsurp,
 		Bind_InsertReplace,
 		Bind_InsertChild,
-		
 		Bind_DuplicateToAdjacent,
-
-		// Below this point: Standard non-overridable bindings
-		// Deletion
 		Bind_DeleteAll,
 		Bind_DeleteTopmost,
-		// Undo buff
 		Bind_Undo,
 		Bind_Redo,
-		// clipboard
 		Bind_Copy,
 		Bind_InsertPaste,
-		
 		Bind_PresentAutoComplete,
-		
-		// Selection
 		Bind_SelectNextSibling,
 		Bind_SelectPrevSibling,
 		Bind_SelectParent,
 		Bind_SelectChild,
-		Bind_SelectRandom,// TODO: debug
-		//
+		Bind_SelectRandom,
 		Bind_DebugPrint,
 		Bind_Find,
 		Bind_FindNext,
@@ -90,7 +79,7 @@ public class BaseController implements KeyListener, BaseControllerListener, IAut
 	public BaseController(JFrame frame, ConstructDocument document) {
 		mActionListeners = new LinkedList<BaseControllerListener>();
 		mConstructSelector = new EditSelection(frame, document);
-		mHotkeys = new LinkedList<Pair<Hotkey, EKeyBinding>>();		
+		mHotkeys = new LinkedList<Pair<Hotkey, EInterfaceAction>>();		
 		mDocument = document;
 
 		addListener(mConstructSelector);
@@ -99,45 +88,45 @@ public class BaseController implements KeyListener, BaseControllerListener, IAut
 		mConstructSelector.SelectRandom();
 
 		// System hotkeys
-		addHotkey(EKeyBinding.Bind_SelectPrevSibling, KeyEvent.VK_TAB, false, false, true);
-		addHotkey(EKeyBinding.Bind_SelectNextSibling, KeyEvent.VK_TAB);
-		addHotkey(EKeyBinding.Bind_DuplicateToAdjacent, KeyEvent.VK_TAB, false, true);
-		addHotkey(EKeyBinding.Bind_DeleteAll, KeyEvent.VK_BACK_SPACE);
-		addHotkey(EKeyBinding.Bind_SelectPrevSibling, KeyEvent.VK_UP);
-		addHotkey(EKeyBinding.Bind_SelectNextSibling, KeyEvent.VK_DOWN);
-		addHotkey(EKeyBinding.Bind_SelectParent, KeyEvent.VK_LEFT);
-		addHotkey(EKeyBinding.Bind_SelectChild, KeyEvent.VK_RIGHT);
+		addHotkey(EInterfaceAction.Bind_SelectPrevSibling, KeyEvent.VK_TAB, false, false, true);
+		addHotkey(EInterfaceAction.Bind_SelectNextSibling, KeyEvent.VK_TAB);
+		addHotkey(EInterfaceAction.Bind_DuplicateToAdjacent, KeyEvent.VK_TAB, false, true);
+		addHotkey(EInterfaceAction.Bind_DeleteAll, KeyEvent.VK_BACK_SPACE);
+		addHotkey(EInterfaceAction.Bind_SelectPrevSibling, KeyEvent.VK_UP);
+		addHotkey(EInterfaceAction.Bind_SelectNextSibling, KeyEvent.VK_DOWN);
+		addHotkey(EInterfaceAction.Bind_SelectParent, KeyEvent.VK_LEFT);
+		addHotkey(EInterfaceAction.Bind_SelectChild, KeyEvent.VK_RIGHT);
 		
 		// System Control-events
-		addHotkey(EKeyBinding.Bind_DebugPrint, KeyEvent.VK_P, true);
-		addHotkey(EKeyBinding.Bind_Save, KeyEvent.VK_S, true);
-		addHotkey(EKeyBinding.Bind_DeleteTopmost, KeyEvent.VK_D, true).setNext(new Hotkey(KeyEvent.VK_P, true));
-		addHotkey(EKeyBinding.Bind_Find, KeyEvent.VK_F, true).setNext(new Hotkey(KeyEvent.VK_F, true));
-		addHotkey(EKeyBinding.Bind_FindNext, KeyEvent.VK_F, true).setNext(new Hotkey(KeyEvent.VK_N, true));
+		addHotkey(EInterfaceAction.Bind_DebugPrint, KeyEvent.VK_P, true);
+		addHotkey(EInterfaceAction.Bind_Save, KeyEvent.VK_S, true);
+		addHotkey(EInterfaceAction.Bind_DeleteTopmost, KeyEvent.VK_D, true).setNext(new Hotkey(KeyEvent.VK_P, true));
+		addHotkey(EInterfaceAction.Bind_Find, KeyEvent.VK_F, true).setNext(new Hotkey(KeyEvent.VK_F, true));
+		addHotkey(EInterfaceAction.Bind_FindNext, KeyEvent.VK_F, true).setNext(new Hotkey(KeyEvent.VK_N, true));
 	}
 	
-	public Hotkey addHotkey(EKeyBinding bind, int key) { 
+	public Hotkey addHotkey(EInterfaceAction bind, int key) { 
 		Hotkey hotkey = new Hotkey(key, false);
 		return addHotkey(bind, hotkey);
 	}
 	
-	public Hotkey addHotkey(EKeyBinding bind, int key, boolean isControlPressed) {
+	public Hotkey addHotkey(EInterfaceAction bind, int key, boolean isControlPressed) {
 		Hotkey hotkey = new Hotkey(key, isControlPressed);
 		return addHotkey(bind, hotkey);
 	}
 	
-	public Hotkey addHotkey(EKeyBinding bind, int key, boolean isControlPressed, boolean isAltPressed) { 
+	public Hotkey addHotkey(EInterfaceAction bind, int key, boolean isControlPressed, boolean isAltPressed) { 
 		Hotkey hotkey = new Hotkey(key, isControlPressed, isAltPressed);
 		return addHotkey(bind, hotkey);
 	}
 	
-	public Hotkey addHotkey(EKeyBinding bind, int key, boolean isControlPressed, boolean isAltPressed, boolean isShiftPressed) { 
+	public Hotkey addHotkey(EInterfaceAction bind, int key, boolean isControlPressed, boolean isAltPressed, boolean isShiftPressed) { 
 		Hotkey hotkey = new Hotkey(key, isControlPressed, isAltPressed, isShiftPressed);
 		return addHotkey(bind, hotkey);
 	}
 	
-	public Hotkey addHotkey(EKeyBinding bind, Hotkey hotkey) {
-		mHotkeys.add(new Pair<Hotkey, EKeyBinding>(hotkey, bind));
+	public Hotkey addHotkey(EInterfaceAction bind, Hotkey hotkey) {
+		mHotkeys.add(new Pair<Hotkey, EInterfaceAction>(hotkey, bind));
 		return hotkey;
 	}
 
@@ -151,9 +140,9 @@ public class BaseController implements KeyListener, BaseControllerListener, IAut
 		return -2;
 	}
 	
-	private List<Pair<Hotkey, EKeyBinding>> getListOfCandiatesForRootKey(Hotkey key) {
-		LinkedList<Pair<Hotkey, EKeyBinding>> hotkeys = new LinkedList<Pair<Hotkey, EKeyBinding>>();
-		for(Pair<Hotkey, EKeyBinding> pair : mHotkeys) {
+	private List<Pair<Hotkey, EInterfaceAction>> getListOfCandiatesForRootKey(Hotkey key) {
+		LinkedList<Pair<Hotkey, EInterfaceAction>> hotkeys = new LinkedList<Pair<Hotkey, EInterfaceAction>>();
+		for(Pair<Hotkey, EInterfaceAction> pair : mHotkeys) {
 			if(pair.fst.equals(key)) { 
 				hotkeys.add(pair);
 			}
@@ -209,11 +198,11 @@ public class BaseController implements KeyListener, BaseControllerListener, IAut
 		} else { 
 			// Filter down the list of candidate keys that
 			// have a next parameter that matches this key
-			List<Pair<Hotkey, EKeyBinding>> filteredBindings = new LinkedList<Pair<Hotkey, EKeyBinding>>();
-			for(Pair<Hotkey, EKeyBinding> bindings : mCandidateKeys) { 
+			List<Pair<Hotkey, EInterfaceAction>> filteredBindings = new LinkedList<Pair<Hotkey, EInterfaceAction>>();
+			for(Pair<Hotkey, EInterfaceAction> bindings : mCandidateKeys) { 
 				if(bindings.fst.getNext() != null && 
 						bindings.fst.getNext().equals(emulatedHotkey) == true) {
-					filteredBindings.add(new Pair<Hotkey, EKeyBinding>(bindings.fst.getNext(), bindings.snd));					
+					filteredBindings.add(new Pair<Hotkey, EInterfaceAction>(bindings.fst.getNext(), bindings.snd));					
 				}
 			}
 
@@ -228,7 +217,7 @@ public class BaseController implements KeyListener, BaseControllerListener, IAut
 				mCandidateKeys.size() == 1 && 
 				mCandidateKeys.get(0).fst.getNext() == null)
 		{ 
-			EKeyBinding binding = mCandidateKeys.get(0).snd;
+			EInterfaceAction binding = mCandidateKeys.get(0).snd;
 			
 			// Does this key have an alpha numeric capture?
 			if(mCandidateKeys.get(0).fst.followsWithAutoComplete()) {
@@ -498,7 +487,7 @@ public class BaseController implements KeyListener, BaseControllerListener, IAut
 		}
 
 		@Override
-		public boolean onReceievedAction(BaseController baseController, EKeyBinding binding, SimpleAutoCompleteEntry construct) {
+		public boolean onReceievedAction(BaseController baseController, EInterfaceAction binding, SimpleAutoCompleteEntry construct) {
 			switch(binding) {
 				case Bind_SelectParent:
 	    			SelectParentConstruct();
@@ -533,7 +522,7 @@ public class BaseController implements KeyListener, BaseControllerListener, IAut
 	}
 	
 	@Override
-	public boolean onReceievedAction(BaseController controller, EKeyBinding binding, SimpleAutoCompleteEntry construct) {
+	public boolean onReceievedAction(BaseController controller, EInterfaceAction binding, SimpleAutoCompleteEntry construct) {
 		switch(binding) { 
 			case Bind_DeleteAll:
 				DeleteAllSelected();
@@ -597,7 +586,7 @@ public class BaseController implements KeyListener, BaseControllerListener, IAut
 //				
 	}
 	
-	private void publishAction(EKeyBinding action, SimpleAutoCompleteEntry entry) { 
+	private void publishAction(EInterfaceAction action, SimpleAutoCompleteEntry entry) { 
 		for(BaseControllerListener listener : getActionListeners()) { 
 			if(listener.onReceievedAction(this, action, entry) == true) 
 				break;
