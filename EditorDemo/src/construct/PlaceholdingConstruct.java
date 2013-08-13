@@ -136,6 +136,9 @@ public abstract class PlaceholdingConstruct extends Construct {
 	
 	protected void setPlaceholders(List<Placeholder> placeholders) {
 		mPlaceholders = placeholders;
+		
+		insertPlaceholders();
+		removePlaceholders(false);
 	}
 	
 	protected Placeholder getPlaceholderForIndex(int indexOfObject) {

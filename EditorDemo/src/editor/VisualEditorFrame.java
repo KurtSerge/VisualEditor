@@ -146,7 +146,7 @@ public class VisualEditorFrame extends JFrame {
 	 * 
 	 * @param editor Editor to auto-complete into.
 	 */
-	public void showAutoComplete(BaseController controller, ConstructEditor editor, IAutoCompleteListener listener)
+	public void showAutoComplete(InterfaceController controller, ConstructEditor editor, IAutoCompleteListener listener)
 	{ 
 		if(mAutoCompleteDialog != null &&
 				mAutoCompleteEditor != editor) {

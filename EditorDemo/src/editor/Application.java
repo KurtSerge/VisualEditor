@@ -19,7 +19,7 @@ import autocomplete.IAutoCompleteListener;
 
 import json.JSONHotkeyListener;
 import construct.Construct;
-import editor.BaseController.EInterfaceAction;
+import editor.InterfaceController.EInterfaceAction;
 import editor.ConstructPublisher.ConstructListener;
 import editor.document.ClojureConstructDocument;
 import editor.document.ConstructDocument;
@@ -28,7 +28,13 @@ public class Application extends VisualEditorFrame implements ComponentListener
 {
 	public static final Dimension DEFAULT_WINDOW_SIZE = new Dimension(800, 600);
 	
-	private void setupNewConstruct(Component top, BaseControllerListener listener) {
+	public Clipboard mClipboard = new Clipboard();
+	
+	public Clipboard getClipboard() { 
+		return mClipboard;
+	}
+	
+	private void setupNewConstruct(Component top, IInterfaceActionListener listener) {
 		// Delete
 		if(controller != null) {
 			controller.getSelectedEditor().deleteAll();
@@ -38,7 +44,7 @@ public class Application extends VisualEditorFrame implements ComponentListener
 		this.getDocumentPane().add(top);
 		
 		// TODO: ! Cyclic
-		controller = new BaseController(this, mDocument);
+		controller = new InterfaceController(this, mDocument);
 		mDocument.setController(controller);
 		
 		layoutController = new LayoutController(mDocument, this, getSize(), 0.9f);
@@ -46,7 +52,7 @@ public class Application extends VisualEditorFrame implements ComponentListener
 		top.addKeyListener(controller);
 		top.requestFocus();
 
-		controller.addListener(listener);
+		controller.addInterfaceActionListener(listener);
 		controller.addHotkey(EInterfaceAction.Bind_Undo, KeyEvent.VK_Z, true);
 		controller.addHotkey(EInterfaceAction.Bind_Redo, KeyEvent.VK_Y, true);
 		controller.addHotkey(EInterfaceAction.Bind_Copy, KeyEvent.VK_C, true);
@@ -66,7 +72,7 @@ public class Application extends VisualEditorFrame implements ComponentListener
 	 */
 	private static final long serialVersionUID = 1L;
 	private ConstructDocument mDocument = null;
-	private BaseController controller = null;
+	private InterfaceController controller = null;
 	private LayoutController layoutController = null;
 
 	Application() {
@@ -206,7 +212,7 @@ public class Application extends VisualEditorFrame implements ComponentListener
 			sApplication.presentDebugMessage(message);
 	}
 	
-	public static void presentAutoComplete(BaseController controller, ConstructEditor editor, IAutoCompleteListener listener) { 
+	public static void presentAutoComplete(InterfaceController controller, ConstructEditor editor, IAutoCompleteListener listener) { 
 		if(sApplication != null) 
 			sApplication.showAutoComplete(controller, editor, listener);
 	}

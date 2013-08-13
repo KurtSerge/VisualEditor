@@ -26,7 +26,7 @@ import clojure.constructs.containers.ListConstruct;
 import clojure.constructs.meta.UnknownConstruct;
 
 import construct.Construct;
-import editor.BaseController;
+import editor.InterfaceController;
 import editor.ConstructEditor;
 import editor.document.ConstructDocument;
 
@@ -38,7 +38,7 @@ public class AutoCompleteDialog extends JDialog {
 	
 	private final IAutoCompleteListener mListener;
 	private final ConstructEditor mEditor;
-	private final BaseController mController;
+	private final InterfaceController mController;
 
 	private Collection<Class<?>> mClassRestrictions;
 	private List<SimpleAutoCompleteEntry> mAllEntries;
@@ -84,7 +84,7 @@ public class AutoCompleteDialog extends JDialog {
 		private Class<?> mClass;		
 	}
 	
-	public AutoCompleteDialog(BaseController controller, ConstructEditor editor, IAutoCompleteListener listener) {
+	public AutoCompleteDialog(InterfaceController controller, ConstructEditor editor, IAutoCompleteListener listener) {
 		mListener = listener;
 		mEditor = editor;
 		mController = controller;

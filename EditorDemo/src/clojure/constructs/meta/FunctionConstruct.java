@@ -33,5 +33,4 @@ public class FunctionConstruct extends ListConstruct {
 		super.deepCopy(newCopy);
 		return newCopy;
 	}
-	
 }

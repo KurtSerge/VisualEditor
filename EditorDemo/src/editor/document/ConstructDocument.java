@@ -8,7 +8,7 @@ import java.io.InputStream;
 import java.lang.ref.WeakReference;
 
 import construct.Construct;
-import editor.BaseController;
+import editor.InterfaceController;
 import editor.ConstructEditor;
 import editor.ConstructEditorStore;
 import editor.MonospaceConstructEditor;
@@ -28,7 +28,7 @@ public abstract class ConstructDocument {
 	
 	private Construct mRootConstruct;
 	private Component mRootComponent;
-	private BaseController mController;
+	private InterfaceController mController;
 	private ConstructDocumentListener mListener;
 	private ConstructEditorStore mConstructEditorStore;
 
@@ -69,7 +69,7 @@ public abstract class ConstructDocument {
 		return mConstructEditorStore;
 	}
 	
-	public void setController(BaseController controller) { 
+	public void setController(InterfaceController controller) { 
 		mController = controller;
 	}
 	

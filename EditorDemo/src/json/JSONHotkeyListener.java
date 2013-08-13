@@ -11,31 +11,31 @@ import autocomplete.AutoCompleteDialog.SimpleAutoCompleteEntry;
 
 import construct.Construct;
 import construct.Construct.SelectionCause;
-import editor.BaseController;
-import editor.BaseController.EInterfaceAction;
-import editor.BaseControllerListener;
+import editor.Application;
+import editor.InterfaceController;
+import editor.InterfaceController.EInterfaceAction;
+import editor.IInterfaceActionListener;
 import editor.Clipboard;
 import editor.ConstructEditor;
 import editor.document.ConstructDocument;
 
-public class JSONHotkeyListener implements BaseControllerListener {
+public class JSONHotkeyListener implements IInterfaceActionListener {
 	private final ConstructDocument mDocument;
 	private final JFrame window;	
-	private final Clipboard mClipboard;
+	
 	
 	public JSONHotkeyListener(ConstructDocument document, JFrame window) {
 		this.window = window;
 		this.mDocument = document;
-		this.mClipboard = new Clipboard();
 	}
 	
 	@Override
-	public boolean onReceievedAction(BaseController controller, EInterfaceAction binding, SimpleAutoCompleteEntry construct) {
+	public boolean onReceievedAction(InterfaceController controller, EInterfaceAction binding, SimpleAutoCompleteEntry construct) {
 //		handleInsert(controller, binding, keyEventCode);
 		return true;
 	}
 
-	private void handleInsert(BaseController controller, EInterfaceAction binding, int keyEventCode) {
+	private void handleInsert(InterfaceController controller, EInterfaceAction binding, int keyEventCode) {
 		Construct newConstruct = null;
 		Construct parent = null;
 
@@ -56,9 +56,6 @@ public class JSONHotkeyListener implements BaseControllerListener {
 			case Bind_Redo:
 				mDocument.redo();
 				return;
-			case Bind_Copy:
-				mClipboard.copy(controller.getSelectedEditor().construct);
-				break;
 			case Bind_DebugPrint:
 				mDocument.debugPrint();
 				break;
@@ -109,7 +106,7 @@ public class JSONHotkeyListener implements BaseControllerListener {
 				newConstruct = JSONController.construct_for_json(mDocument, list, parent);
 				break;
 			case KeyEvent.VK_P: 
-				newConstruct = mClipboard.getCopyToPaste(parent);
+				newConstruct = Application.getApplication().getClipboard().getCopyToPaste(parent);
 				break;
 			default:
 				return;

@@ -57,19 +57,9 @@ public abstract class ConstructEditor implements IAutoCompleteListener
 	public abstract void setSelected(Construct.SelectionCause cause, ConstructEditor lastSelected, boolean bSelect);
 	
 	// Editor-specific cleanup - per editor instance
-	public abstract void delete();
+	public abstract void onEditorDeleted();
 
-	public final boolean deleteMe() {
-		List<Construct> childConstructs = new LinkedList<Construct>();
-		getAllChildConstructs(childConstructs, construct);		
 
-		if(construct.delete(true, true) == true) {
-			for(Construct del : childConstructs) { 
-				mBoundEditorStore.get(del).get().delete();
-			}
-		}
-		return true;
-	}
 
 	private void getAllChildConstructs(List<Construct> referenceList, Construct delete) {
 		referenceList.add(delete);
@@ -86,21 +76,38 @@ public abstract class ConstructEditor implements IAutoCompleteListener
 			top = top.parent;
 		
 		ConstructEditor topEditor = mBoundEditorStore.get(top).get();
-		topEditor.deleteMe();
+		topEditor.delete();
 	}
 	
-	// Replace my construct with newCon.  Cleanup editors (prefer calling this over Construct.replaceChild())
 	final public boolean replaceChild(Construct child, Construct newCon) {
 		List<Construct> childConstructs = new LinkedList<Construct>();
 		getAllChildConstructs(childConstructs, child);
 		
-		// replace
+		// Do the construct replacement here, if the replacement
+		// is successful, then we need to cleanup all editors related
+		// to construct we have just replaced
 		if(construct.replaceChild(child, newCon)) {
-			for(Construct del : childConstructs) {
-				mBoundEditorStore.get(del).get().delete();
+			for(Construct constructForEditorDeletion : childConstructs) {
+				WeakReference<ConstructEditor> editor = mBoundEditorStore.get(constructForEditorDeletion);
+				if(editor != null && editor.get() != null) { 
+					editor.get().delete();
+				}
 			}
 		}
 	
+		return true;
+	}
+	
+	public final boolean delete() {
+		List<Construct> childConstructs = new LinkedList<Construct>();
+		getAllChildConstructs(childConstructs, construct);		
+
+		if(construct.delete(true, true) == true) {
+			for(Construct del : childConstructs) { 
+				mBoundEditorStore.get(del).get().onEditorDeleted();
+			}
+		}
+		
 		return true;
 	}
 }

@@ -16,7 +16,7 @@ import editor.document.ConstructDocument;
 
 // Using AWT because Swing "MouseListener" doesn't give coords when clicking over jtextareas
 public class BaseMouseController implements AWTEventListener {
-	private final BaseController bc;
+	private final InterfaceController bc;
 	private final ConstructDocument mDocument;
 	private Point mLastMouseDownPos = null;
 	private final VisualEditorFrame window;
@@ -25,7 +25,7 @@ public class BaseMouseController implements AWTEventListener {
 	private static final int skMinSelection = 25;
 
 	
-	public BaseMouseController(BaseController bc, ConstructDocument document, VisualEditorFrame window) {
+	public BaseMouseController(InterfaceController bc, ConstructDocument document, VisualEditorFrame window) {
 		this.bc = bc;
 		this.mDocument = document;
 		this.window = window;

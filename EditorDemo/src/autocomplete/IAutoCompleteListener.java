@@ -2,8 +2,8 @@ package autocomplete;
 
 import autocomplete.AutoCompleteDialog.SimpleAutoCompleteEntry;
 import construct.Construct;
-import editor.BaseController;
+import editor.InterfaceController;
 
 public interface IAutoCompleteListener {
-	public void onAutoCompleteCreateReplacement(BaseController controller, SimpleAutoCompleteEntry entry);
+	public void onAutoCompleteCreateReplacement(InterfaceController controller, SimpleAutoCompleteEntry entry);
 }

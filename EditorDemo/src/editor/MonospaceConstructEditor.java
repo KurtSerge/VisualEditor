@@ -28,7 +28,7 @@ import autocomplete.AutoCompleteDialog.SimpleAutoCompleteEntry;
 import construct.Construct;
 import construct.Construct.ConstructAction;
 import construct.Construct.SelectionCause;
-import editor.BaseController.EInterfaceAction;
+import editor.InterfaceController.EInterfaceAction;
 import editor.document.ConstructDocument;
 
 
@@ -88,7 +88,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 				}
 				
 				if(e.isAltDown()) { 
-					for(BaseControllerListener listener : mController.getActionListeners()) {
+					for(IInterfaceActionListener listener : mController.getInterfaceActionListeners()) {
 						listener.onReceievedAction(mController, EInterfaceAction.Bind_DuplicateToAdjacent, null);
 					}
 				} else {
@@ -118,7 +118,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 				ConstructAction action = construct.onReceivedKeyEvent(e,  true);
 				switch(action) {
 					case DeleteThis:
-						mController.DeleteAllSelected();
+						mController.deleteSelected();
 						break;
 				
 					case ConsumeEvent:
@@ -133,9 +133,9 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 	}
 	
 	private ConstructDocument mDocument = null;
-	private final BaseController mController;
+	private final InterfaceController mController;
 	
-	public MonospaceConstructEditor(ConstructEditorStore bindingEditorStore, BaseController controller, Construct construct, ConstructDocument document)
+	public MonospaceConstructEditor(ConstructEditorStore bindingEditorStore, InterfaceController controller, Construct construct, ConstructDocument document)
 	{
 		super(construct, bindingEditorStore);
 		
@@ -542,7 +542,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 	}
 
 	@Override
-	public void delete() {
+	public void onEditorDeleted() {
 		mDocument.getConstructEditorStore().unregister(this);
 		
 		if(textListener != null)
@@ -567,7 +567,7 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 	
 	
 	@Override
-	public void onAutoCompleteCreateReplacement(BaseController controller, SimpleAutoCompleteEntry entry) {
+	public void onAutoCompleteCreateReplacement(InterfaceController controller, SimpleAutoCompleteEntry entry) {
 		Construct construct = entry.create(mDocument, this.construct.parent);
 		ConstructEditor editor = mDocument.editorsFromConstruct(construct);
 		WeakReference<ConstructEditor> weakParentEditor = mBoundEditorStore.get(construct.parent);

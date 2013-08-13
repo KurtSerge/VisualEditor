@@ -23,13 +23,13 @@ import clojure.constructs.meta.VariadicVectorConstruct;
 import construct.Construct;
 import construct.Construct.SelectionCause;
 import editor.Application;
-import editor.BaseController;
-import editor.BaseController.EInterfaceAction;
-import editor.BaseControllerListener;
+import editor.InterfaceController;
+import editor.InterfaceController.EInterfaceAction;
+import editor.IInterfaceActionListener;
 import editor.ConstructEditor;
 import editor.document.ConstructDocument;
 
-public class HotkeyListener implements BaseControllerListener {
+public class HotkeyListener implements IInterfaceActionListener {
 	private final ConstructDocument mDocument;
 	
 	public HotkeyListener(ConstructDocument document) { 
@@ -38,7 +38,7 @@ public class HotkeyListener implements BaseControllerListener {
 	
 	
 	@Override
-	public boolean onReceievedAction(BaseController controller, EInterfaceAction binding, SimpleAutoCompleteEntry entry) {
+	public boolean onReceievedAction(InterfaceController controller, EInterfaceAction binding, SimpleAutoCompleteEntry entry) {
 		if(binding == EInterfaceAction.Bind_Undo) { 
 			mDocument.undo();
 			return true;
@@ -124,6 +124,10 @@ public class HotkeyListener implements BaseControllerListener {
 				parent = (ClojureConstruct) selectedEditor.construct.parent;
 				break;
 				
+			case Bind_InsertPaste:
+				parent = (ClojureConstruct) selectedEditor.construct.parent;
+				break;
+				
 			default:
 				System.out.println(binding.toString());
 		}
@@ -142,39 +146,15 @@ public class HotkeyListener implements BaseControllerListener {
 		
 		return parent;
 	}
-	
-	private String stringForBinding(EInterfaceAction binding) { 
-		switch(binding) { 
-			case Bind_DeleteAll:
-				return "delete";
-				
-			case Bind_InsertChild:
-				return "insert child";
-				
-			case Bind_InsertAfter:
-				return "insert after";
-				
-			case Bind_InsertBefore:
-				return "insert before";
-				
-			case Bind_InsertReplace:
-				return "replace";
-			
-			default:
-				break;
-		}
-		
-		return "(unknown)";
-	}
 
-	private void handleInsert(BaseController controller, EInterfaceAction binding, SimpleAutoCompleteEntry entry) {
+	private void handleInsert(InterfaceController controller, EInterfaceAction binding, SimpleAutoCompleteEntry entry) {
 		// Determine the parent for the new construct, this is 
 		// based on the initial input (IA, IA, IC)
 		ClojureConstruct parent = getParentForBinding(controller.getSelectedEditor(), binding);
 		Construct newConstruct = entry.create(mDocument, parent);
 		
 		if(parent == null) {
-			Application.showErrorMessage("Cannot " + stringForBinding(binding) + " with selected construct");			
+			Application.showErrorMessage("Cannot " + binding.toString() + " with selected construct");			
 			return ;
 		}
 		

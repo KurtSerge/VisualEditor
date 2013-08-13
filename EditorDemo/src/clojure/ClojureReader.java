@@ -134,8 +134,12 @@ public class ClojureReader {
 	public Construct parseFromInputStream(ConstructDocument document, InputStream stream) throws Exception {
 		String inputStreamAsString = convertStreamToString(stream);
 		Object inputStreamAsSingleObject = RT.readString(inputStreamAsString);
-
+		
+		System.out.println(inputStreamAsString);
+		System.out.println(inputStreamAsSingleObject);
+		
 		EmptyConstruct emptyConstruct = new EmptyConstruct(document);
+		
 		emptyConstruct.addChild(0, recursiveCreateConstructFromObject(document, emptyConstruct, inputStreamAsSingleObject));
 		return emptyConstruct;
 	}
