@@ -13,12 +13,9 @@ import javax.swing.JOptionPane;
 import autocomplete.AutoCompleteDialog.SimpleAutoCompleteEntry;
 import autocomplete.IAutoCompleteListener;
 
-import com.sun.tools.javac.util.Pair;
-
 import construct.Construct;
 import construct.Construct.SelectionCause;
 import editor.document.ConstructDocument;
-import com.sun.tools.javac.util.*;
 
 /**
  * ! This class used to be BaseController, it is being repurposed as InterfaceController.
@@ -30,6 +27,60 @@ import com.sun.tools.javac.util.*;
  */
 public class InterfaceController implements KeyListener, IInterfaceActionListener, IAutoCompleteListener {
 
+	public static class Pair<A, B> {
+	    private A first;
+	    private B second;
+
+	    public Pair(A first, B second) {
+	    	super();
+	    	this.first = first;
+	    	this.second = second;
+	    }
+
+	    public int hashCode() {
+	    	int hashFirst = first != null ? first.hashCode() : 0;
+	    	int hashSecond = second != null ? second.hashCode() : 0;
+
+	    	return (hashFirst + hashSecond) * hashSecond + hashFirst;
+	    }
+
+	    public boolean equals(Object other) {
+	    	if (other instanceof Pair) {
+	    		Pair otherPair = (Pair) other;
+	    		return 
+	    		((  this.first == otherPair.first ||
+	    			( this.first != null && otherPair.first != null &&
+	    			  this.first.equals(otherPair.first))) &&
+	    		 (	this.second == otherPair.second ||
+	    			( this.second != null && otherPair.second != null &&
+	    			  this.second.equals(otherPair.second))) );
+	    	}
+
+	    	return false;
+	    }
+
+	    public String toString()
+	    { 
+	           return "(" + first + ", " + second + ")"; 
+	    }
+
+	    public A getFirst() {
+	    	return first;
+	    }
+
+	    public void setFirst(A first) {
+	    	this.first = first;
+	    }
+
+	    public B getSecond() {
+	    	return second;
+	    }
+
+	    public void setSecond(B second) {
+	    	this.second = second;
+	    }
+	}
+	
 	private LinkedList<IInterfaceActionListener> mActionListeners;
 	private LinkedList<Pair<Hotkey, EInterfaceAction>> mHotkeys;
 	private List<Pair<Hotkey, EInterfaceAction>> mHotkeySequenceCandidates;
@@ -197,7 +248,7 @@ public class InterfaceController implements KeyListener, IInterfaceActionListene
 	private List<Pair<Hotkey, EInterfaceAction>> getListOfCandiatesForRootKey(Hotkey key) {
 		LinkedList<Pair<Hotkey, EInterfaceAction>> hotkeys = new LinkedList<Pair<Hotkey, EInterfaceAction>>();
 		for(Pair<Hotkey, EInterfaceAction> pair : mHotkeys) {
-			if(pair.fst.equals(key)) { 
+			if(pair.getFirst().equals(key)) { 
 				hotkeys.add(pair);
 			}
 		}
@@ -247,9 +298,9 @@ public class InterfaceController implements KeyListener, IInterfaceActionListene
 			// have a next parameter that matches this key
 			List<Pair<Hotkey, EInterfaceAction>> filteredBindings = new LinkedList<Pair<Hotkey, EInterfaceAction>>();
 			for(Pair<Hotkey, EInterfaceAction> bindings : mHotkeySequenceCandidates) { 
-				if(bindings.fst.getNext() != null && 
-						bindings.fst.getNext().equals(emulatedHotkey) == true) {
-					filteredBindings.add(new Pair<Hotkey, EInterfaceAction>(bindings.fst.getNext(), bindings.snd));					
+				if(bindings.getFirst().getNext() != null && 
+						bindings.getFirst().getNext().equals(emulatedHotkey) == true) {
+					filteredBindings.add(new Pair<Hotkey, EInterfaceAction>(bindings.getFirst().getNext(), bindings.getSecond()));					
 				}
 			}
 
@@ -288,13 +339,13 @@ public class InterfaceController implements KeyListener, IInterfaceActionListene
 	private void onHotkeySequenceProgressed() { 		
 		if(mHotkeySequenceCandidates != null) {
 			if(mHotkeySequenceCandidates.size() == 1 && 
-				mHotkeySequenceCandidates.get(0).fst.getNext() == null) {
+				mHotkeySequenceCandidates.get(0).getFirst().getNext() == null) {
 				// There is only one candidate left and it has no further
 				// hotkeys in the sequence, publish this and reset sequence
-				EInterfaceAction binding = mHotkeySequenceCandidates.get(0).snd;
+				EInterfaceAction binding = mHotkeySequenceCandidates.get(0).getSecond();
 				
 				// Does this key have AutoComplete capture?
-				if(mHotkeySequenceCandidates.get(0).fst.followsWithAutoComplete()) {
+				if(mHotkeySequenceCandidates.get(0).getFirst().followsWithAutoComplete()) {
 					mAutoCompletePublishBinding = binding;
 					Application.getApplication().showAutoComplete(this, getSelectedEditor(), this);
 				} else {
@@ -404,8 +455,10 @@ public class InterfaceController implements KeyListener, IInterfaceActionListene
 			}
 		}
 		
+		if(deleteMeEditor.getParent() != null) { 
+			deleteMeEditor.getParent().update();
+		}
 		
-		deleteMeEditor.getParent().update();
 		requestTopFocus();
 	}
 
