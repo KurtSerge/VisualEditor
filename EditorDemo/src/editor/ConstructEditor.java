@@ -7,7 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import autocomplete.IAutoCompleteListener;
-
 import construct.Construct;
 
 public abstract class ConstructEditor implements IAutoCompleteListener

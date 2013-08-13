@@ -5,8 +5,6 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import construct.Construct.AutoCompleteStyle;
-
 import clojure.ClojureConstruct;
 import clojure.constructs.IntegerConstruct;
 import clojure.constructs.StringConstruct;

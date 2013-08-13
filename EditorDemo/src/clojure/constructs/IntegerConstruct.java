@@ -1,7 +1,7 @@
 package clojure.constructs;
 
-import construct.Construct;
 import clojure.ClojureConstruct;
+import construct.Construct;
 import editor.document.ConstructDocument;
 
 public class IntegerConstruct extends ClojureConstruct {

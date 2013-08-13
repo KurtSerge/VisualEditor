@@ -3,9 +3,9 @@ package clojure.constructs.containers;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import clojure.ClojureConstruct;
 import construct.Construct;
 import construct.Placeholder;
-import clojure.ClojureConstruct;
 import editor.document.ConstructDocument;
 
 public class MapConstruct extends ClojureConstruct {

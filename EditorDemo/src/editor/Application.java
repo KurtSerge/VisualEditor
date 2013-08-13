@@ -15,12 +15,11 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-import autocomplete.IAutoCompleteListener;
-
 import json.JSONHotkeyListener;
+import autocomplete.IAutoCompleteListener;
 import construct.Construct;
-import editor.InterfaceController.EInterfaceAction;
 import editor.ConstructPublisher.ConstructListener;
+import editor.InterfaceController.EInterfaceAction;
 import editor.document.ClojureConstructDocument;
 import editor.document.ConstructDocument;
 import editor.document.JSONConstructDocument;

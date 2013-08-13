@@ -7,7 +7,6 @@ import java.util.Random;
 import javax.swing.JFrame;
 
 import autocomplete.AutoCompleteDialog.SimpleAutoCompleteEntry;
-
 import construct.Construct;
 import editor.InterfaceController.EInterfaceAction;
 import editor.document.ConstructDocument;

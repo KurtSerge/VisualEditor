@@ -11,22 +11,14 @@ import clojure.constructs.SymbolConstruct;
 import clojure.constructs.containers.ListConstruct;
 import clojure.constructs.containers.MapConstruct;
 import clojure.constructs.containers.VectorConstruct;
-import clojure.constructs.meta.CaseConstruct;
-import clojure.constructs.meta.DefineFunctionConstruct;
-import clojure.constructs.meta.FunctionConstruct;
-import clojure.constructs.meta.IfThenElseConstruct;
-import clojure.constructs.meta.KeyValuePairConstruct;
 import clojure.constructs.meta.KeywordExpressionPairConstruct;
-import clojure.constructs.meta.LetConstruct;
-import clojure.constructs.meta.SymbolList;
-import clojure.constructs.meta.VariadicVectorConstruct;
 import construct.Construct;
 import construct.Construct.SelectionCause;
 import editor.Application;
+import editor.ConstructEditor;
+import editor.IInterfaceActionListener;
 import editor.InterfaceController;
 import editor.InterfaceController.EInterfaceAction;
-import editor.IInterfaceActionListener;
-import editor.ConstructEditor;
 import editor.document.ConstructDocument;
 
 public class HotkeyListener implements IInterfaceActionListener {

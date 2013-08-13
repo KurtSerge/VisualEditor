@@ -3,11 +3,9 @@ package editor;
 import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.lang.ref.WeakReference;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -18,7 +16,6 @@ import autocomplete.IAutoCompleteListener;
 import com.sun.tools.javac.util.Pair;
 
 import construct.Construct;
-import construct.Construct.AutoCompleteStyle;
 import construct.Construct.SelectionCause;
 import editor.document.ConstructDocument;
 

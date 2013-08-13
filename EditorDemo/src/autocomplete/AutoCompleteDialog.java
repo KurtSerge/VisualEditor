@@ -1,11 +1,7 @@
 package autocomplete;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.Constructor;
 import java.util.Collection;
@@ -16,18 +12,13 @@ import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
-import clojure.constructs.containers.ListConstruct;
 import clojure.constructs.meta.UnknownConstruct;
-
 import construct.Construct;
-import editor.InterfaceController;
 import editor.ConstructEditor;
+import editor.InterfaceController;
 import editor.document.ConstructDocument;
 
 public class AutoCompleteDialog extends JDialog {

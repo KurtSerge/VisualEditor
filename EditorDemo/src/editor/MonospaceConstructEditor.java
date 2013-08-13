@@ -22,9 +22,8 @@ import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import autocomplete.IAutoCompleteListener;
 import autocomplete.AutoCompleteDialog.SimpleAutoCompleteEntry;
-
+import autocomplete.IAutoCompleteListener;
 import construct.Construct;
 import construct.Construct.ConstructAction;
 import construct.Construct.SelectionCause;

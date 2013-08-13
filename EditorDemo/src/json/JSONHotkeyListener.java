@@ -8,15 +8,13 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import autocomplete.AutoCompleteDialog.SimpleAutoCompleteEntry;
-
 import construct.Construct;
 import construct.Construct.SelectionCause;
 import editor.Application;
+import editor.ConstructEditor;
+import editor.IInterfaceActionListener;
 import editor.InterfaceController;
 import editor.InterfaceController.EInterfaceAction;
-import editor.IInterfaceActionListener;
-import editor.Clipboard;
-import editor.ConstructEditor;
 import editor.document.ConstructDocument;
 
 public class JSONHotkeyListener implements IInterfaceActionListener {

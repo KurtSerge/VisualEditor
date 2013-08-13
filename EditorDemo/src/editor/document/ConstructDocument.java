@@ -8,9 +8,9 @@ import java.io.InputStream;
 import java.lang.ref.WeakReference;
 
 import construct.Construct;
-import editor.InterfaceController;
 import editor.ConstructEditor;
 import editor.ConstructEditorStore;
+import editor.InterfaceController;
 import editor.MonospaceConstructEditor;
 
 /**
