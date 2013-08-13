@@ -102,17 +102,23 @@ public class AutoCompleteDialog extends JDialog {
 		addEntry(new SimpleAutoCompleteEntry("function call", clojure.constructs.meta.SymbolList.class));
 		addEntry(new SimpleAutoCompleteEntry("variadic vector", clojure.constructs.meta.VariadicVectorConstruct.class));
 		
-		getRootPane().setOpaque (false);
-		getContentPane().setBackground (new Color (0, 0, 0, 0));
-		setBackground(new Color (0, 0, 0, 0));
-		
-		getRootPane().setOpaque(true);
-		setAlwaysOnTop(true);
-		setFocusable(false);
-		setResizable(true);
-		setUndecorated(true);
-		setFocusable(true);
-		setFocusableWindowState(false);
+		try {
+			setUndecorated(true);			
+			
+			getRootPane().setOpaque (true);
+			getContentPane().setBackground (new Color (0, 0, 0));
+			setBackground(new Color (0, 0, 0));
+			getRootPane().setOpaque(true);
+			setAlwaysOnTop(true);
+			setFocusable(false);
+			setResizable(true);
+			setFocusable(true);
+			setFocusableWindowState(false);
+		} catch(Exception ex) { 
+			System.out.println("");
+			
+			ex.printStackTrace();
+		}
 
 		mPanel = new AutoCompletePanel(); 
 		mPanel.setSize(300, 200);
