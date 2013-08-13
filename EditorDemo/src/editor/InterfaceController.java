@@ -282,7 +282,7 @@ public class InterfaceController implements KeyListener, IInterfaceActionListene
 			return ;
 		}
 		
-		Hotkey emulatedHotkey = new Hotkey(event.getKeyCode(), event.isMetaDown(), event.isAltDown(), event.isShiftDown());
+		Hotkey emulatedHotkey = new Hotkey(event.getKeyCode(), event.isControlDown(), event.isAltDown(), event.isShiftDown());
 		if(mHotkeySequenceCandidates == null) {
 			// There is no current sequence, so find all candidates
 			// that start with the current hotkey instance
