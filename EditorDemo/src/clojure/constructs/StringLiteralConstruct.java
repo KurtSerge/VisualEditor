@@ -28,12 +28,6 @@ public class StringLiteralConstruct extends ClojureConstruct {
 	
 	public ConstructAction onReceivedKeyEvent(KeyEvent keyEvent, boolean isTyping) {
 		if(isTyping) {
-			if((int)keyEvent.getKeyChar() == 34) { 
-				// Quotes are not allowed
-				System.out.println("TODO: Allow quotes, but automatically escape them");
-				return ConstructAction.ConsumeEvent;
-			}
-
 			if((int)keyEvent.getKeyChar() == 8 && this.literal.length() == 0) {
 				keyEvent.consume();
 				return ConstructAction.DeleteThis;
