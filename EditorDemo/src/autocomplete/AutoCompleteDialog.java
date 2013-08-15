@@ -107,6 +107,7 @@ public class AutoCompleteDialog extends JDialog {
 		addEntry(new SimpleAutoCompleteEntry("keyword pair", clojure.constructs.meta.KeywordExpressionPairConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("let", clojure.constructs.meta.LetConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("loop", clojure.constructs.meta.LoopConstruct.class));
+		addEntry(new SimpleAutoCompleteEntry("recur", clojure.constructs.meta.RecurConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("function", clojure.constructs.meta.SymbolList.class));
 		addEntry(new SimpleAutoCompleteEntry("variadic vector", clojure.constructs.meta.VariadicVectorConstruct.class));
 		
