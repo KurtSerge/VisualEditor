@@ -6,6 +6,7 @@ import clojure.constructs.StringConstruct;
 import clojure.constructs.containers.ListConstruct;
 import construct.Construct;
 import construct.Placeholder;
+import construct.Construct.SelectionCause;
 import editor.document.ConstructDocument;
 
 /**
@@ -36,4 +37,13 @@ public class DefineFunctionConstruct extends ListConstruct {
 		return newCopy;
 	}
 	
+	@Override
+	public Construct getConstructForSelection(SelectionCause type) { 
+		if(type == SelectionCause.SelectedAfterInsert) {
+			// Select the child, not this
+			return this.children.get(0);
+		}
+		
+		return super.getConstructForSelection(type);
+	}		
 }
