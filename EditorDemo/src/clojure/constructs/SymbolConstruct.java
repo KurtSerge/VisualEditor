@@ -99,14 +99,6 @@ public class SymbolConstruct extends ClojureConstruct {
 			if(this.literal.length() == 0) { 
 				return true;
 			}
-			
-//			if(this.literal.length() == 1) { 
-//				ClojureConstruct parentForm = (ClojureConstruct) this.parent;
-//				if(parentForm != null && 
-//						parentForm.getPlaceholders() != null) { 
-//					return true;
-//				}
-//			}
 		}
 		
 		return false;
