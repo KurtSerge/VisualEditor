@@ -84,22 +84,27 @@ public class AutoCompleteDialog extends JDialog {
 		mAllEntries = new LinkedList<SimpleAutoCompleteEntry>();
 		mFilteredEntries = new LinkedList<SimpleAutoCompleteEntry>();
 		
+		// Basic types
 		addEntry(new SimpleAutoCompleteEntry("integer", clojure.constructs.IntegerConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("string", clojure.constructs.StringConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("symbol", clojure.constructs.SymbolConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("double", clojure.constructs.DoubleConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("boolean", clojure.constructs.BooleanConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("keyword", clojure.constructs.KeywordConstruct.class));
+		
+		// Containers
 		addEntry(new SimpleAutoCompleteEntry("list", clojure.constructs.containers.ListConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("map", clojure.constructs.containers.MapConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("vector", clojure.constructs.containers.VectorConstruct.class));
-		addEntry(new SimpleAutoCompleteEntry("defn call", clojure.constructs.meta.DefineFunctionConstruct.class));
-		addEntry(new SimpleAutoCompleteEntry("case call", clojure.constructs.meta.CaseConstruct.class));
-		addEntry(new SimpleAutoCompleteEntry("fn call", clojure.constructs.meta.FunctionConstruct.class));
-		addEntry(new SimpleAutoCompleteEntry("if then else call", clojure.constructs.meta.IfThenElseConstruct.class));
+		
+		// Placeholder types
+		addEntry(new SimpleAutoCompleteEntry("defn", clojure.constructs.meta.DefineFunctionConstruct.class));
+		addEntry(new SimpleAutoCompleteEntry("case", clojure.constructs.meta.CaseConstruct.class));
+		addEntry(new SimpleAutoCompleteEntry("fn", clojure.constructs.meta.FunctionConstruct.class));
+		addEntry(new SimpleAutoCompleteEntry("if then else", clojure.constructs.meta.IfThenElseConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("keyword pair", clojure.constructs.meta.KeywordExpressionPairConstruct.class));
-		addEntry(new SimpleAutoCompleteEntry("let call", clojure.constructs.meta.LetConstruct.class));
-		addEntry(new SimpleAutoCompleteEntry("function call", clojure.constructs.meta.SymbolList.class));
+		addEntry(new SimpleAutoCompleteEntry("let", clojure.constructs.meta.LetConstruct.class));
+		addEntry(new SimpleAutoCompleteEntry("function", clojure.constructs.meta.SymbolList.class));
 		addEntry(new SimpleAutoCompleteEntry("variadic vector", clojure.constructs.meta.VariadicVectorConstruct.class));
 		
 		try {
