@@ -63,7 +63,11 @@ public class DoubleConstruct extends ClojureConstruct {
 	public ConstructAction onReceivedKeyEvent(KeyEvent e, boolean isTyping) {
 		if(isTyping) {
 			// Parse this as a long
-			String pendingLiteral = this.literal + e.getKeyChar();
+			String pendingLiteral = (this.literal + e.getKeyChar()).toLowerCase();
+			if(pendingLiteral.contains("d") || pendingLiteral.contains("f")) { 
+				return ConstructAction.ConsumeEvent;
+			}
+			
 			try { 
 				// Attempt parsing this number as an integer
 				Double integer = Double.parseDouble(pendingLiteral);
