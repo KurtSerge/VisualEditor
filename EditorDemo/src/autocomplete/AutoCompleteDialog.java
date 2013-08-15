@@ -47,6 +47,10 @@ public class AutoCompleteDialog extends JDialog {
 			return mTitle.startsWith(filter);
 		}
 		
+		public boolean isExactForFilterString(String filter) { 
+			return mTitle.equalsIgnoreCase(filter);
+		}
+		
 		public String getTitle() { 
 			return mTitle;
 		}
@@ -130,8 +134,6 @@ public class AutoCompleteDialog extends JDialog {
 		mPanel.setSize(300, 200);
 		add(mPanel);
 		
-		
-
 		mList = new JList(mModel);
 		mList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		mList.setLayoutOrientation(JList.VERTICAL);
@@ -213,8 +215,15 @@ public class AutoCompleteDialog extends JDialog {
 		
 		for(SimpleAutoCompleteEntry entry : mAllEntries) { 
 			if(entry.isUsableForFilterString(filterText)) { 
-				mModel.addElement(entry.getTitle());				
-				mFilteredEntries.add(entry);
+				if(entry.isExactForFilterString(filterText)) { 
+					// Add to the beginning of the filtered list
+					mModel.add(0, entry.getTitle());
+					mFilteredEntries.add(0, entry);
+				} else { 
+					// Add to the end of the filtered list
+					mModel.addElement(entry.getTitle());				
+					mFilteredEntries.add(entry);
+				}
 			}
 		}
 		
