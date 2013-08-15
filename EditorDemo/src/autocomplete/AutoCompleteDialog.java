@@ -62,7 +62,7 @@ public class AutoCompleteDialog extends JDialog {
 				Constructor<?> constructor = mClass.getConstructor(ConstructDocument.class, Construct.class);
 				return (Construct) constructor.newInstance(document, parent);
 			} catch (Exception ex) { 
-			}			
+			}
 			
 			return new UnknownConstruct(document, parent);
 		}
@@ -123,8 +123,6 @@ public class AutoCompleteDialog extends JDialog {
 			setFocusable(true);
 			setFocusableWindowState(false);
 		} catch(Exception ex) { 
-			System.out.println("");
-			
 			ex.printStackTrace();
 		}
 
