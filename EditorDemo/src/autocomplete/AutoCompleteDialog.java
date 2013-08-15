@@ -100,6 +100,7 @@ public class AutoCompleteDialog extends JDialog {
 		// Placeholder types
 		addEntry(new SimpleAutoCompleteEntry("def", clojure.constructs.meta.DefConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("defn", clojure.constructs.meta.DefineFunctionConstruct.class));
+		addEntry(new SimpleAutoCompleteEntry("do", clojure.constructs.meta.DoConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("case", clojure.constructs.meta.CaseConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("fn", clojure.constructs.meta.FunctionConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("if then else", clojure.constructs.meta.IfThenElseConstruct.class));
