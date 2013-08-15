@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.lang.reflect.Constructor;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class AutoCompleteDialog extends JDialog {
 	private DefaultListModel mModel = new DefaultListModel();
 	private String mFilterString = "";
 	
-	public static class SimpleAutoCompleteEntry { 
+	public static class SimpleAutoCompleteEntry implements Comparable<SimpleAutoCompleteEntry> { 
 		public SimpleAutoCompleteEntry(String title, Class<?> instance) { 
 			mTitle = title;
 			mClass = instance;			
@@ -76,7 +77,12 @@ public class AutoCompleteDialog extends JDialog {
 		}
 		
 		private String mTitle;
-		private Class<?> mClass;		
+		private Class<?> mClass;
+		
+		@Override
+		public int compareTo(SimpleAutoCompleteEntry arg0) {
+			return mTitle.compareTo(arg0.getTitle());
+		}		
 	}
 	
 	public AutoCompleteDialog(InterfaceController controller, ConstructEditor editor, IAutoCompleteListener listener) {
@@ -113,6 +119,8 @@ public class AutoCompleteDialog extends JDialog {
 		addEntry(new SimpleAutoCompleteEntry("loop", clojure.constructs.meta.LoopConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("recur", clojure.constructs.meta.RecurConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("function", clojure.constructs.meta.SymbolList.class));
+		
+		Collections.sort(mAllEntries);
 		
 		try {
 			setUndecorated(true);			
