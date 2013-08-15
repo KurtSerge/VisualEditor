@@ -26,8 +26,12 @@ public class ListConstruct extends ClojureConstruct {
 		StringBuilder builder = new StringBuilder();
 		builder.append(PREFIX);
 		
-		if(mCall != null)
-			builder.append(mCall + " ");
+		if(mCall != null) { 
+			builder.append(mCall);
+			if(getChildren().size() != 0) { 
+				builder.append(" ");
+			}
+		}
 
 		for(int i = 0; i < children.size(); ++i) {
 			if(i != 0 && i < children.size()) { 
