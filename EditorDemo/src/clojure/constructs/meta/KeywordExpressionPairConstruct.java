@@ -10,6 +10,10 @@ import editor.document.ConstructDocument;
 
 public class KeywordExpressionPairConstruct extends ClojureConstruct {
 
+	private KeywordExpressionPairConstruct(ConstructDocument document, Construct parent) { 
+		super(document, "keywordexpressionpair", parent);
+	}
+	
 	public KeywordExpressionPairConstruct(ConstructDocument document, Construct parent, String literal) {
 		super(document, "keywordexpressionpair", parent);
 		
@@ -33,7 +37,7 @@ public class KeywordExpressionPairConstruct extends ClojureConstruct {
 	
 	@Override
 	public Construct deepCopy(Construct parent) {
-		KeywordExpressionPairConstruct newCopy = new KeywordExpressionPairConstruct(mDocument, parent, null);
+		KeywordExpressionPairConstruct newCopy = new KeywordExpressionPairConstruct(mDocument, parent);
 		super.deepCopy(newCopy);
 		return newCopy;
 	}
