@@ -83,5 +83,9 @@ public class ListConstruct extends ClojureConstruct {
 		return newCopy;
 	}
 	
+	public void deepCopyChildrenTo(Construct parent) { 
+		super.deepCopy(parent);
+	}
+	
 	private String mCall;
 }

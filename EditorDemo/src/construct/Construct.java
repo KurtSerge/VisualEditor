@@ -217,8 +217,11 @@ public abstract class Construct
 
 	// Each subclass must implement this.  
 	public Construct deepCopy(Construct parent) {
-		for( Construct child : this.children) {
-			parent.children.add(child.deepCopy(parent));
+		for(Construct child : this.children) {
+			if(child != null) { 
+				System.out.println("deepCopy: copying child " + child.type);
+				parent.children.add(child.deepCopy(parent));
+			}
 		}
 
 		return null;
@@ -239,7 +242,7 @@ public abstract class Construct
 			top = top.parent;
 		}
 		// TODO: What to do if we add a change, but thetreechangeindex is not at the end? handle this
-		treeChanges.add(top.deepCopy(null));
+//		treeChanges.add(top.deepCopy(null));
 		treeChangeIndex = treeChanges.size()-1;
 	}
 	
@@ -376,5 +379,9 @@ public abstract class Construct
 	
 	public AutoCompleteStyle getAutoCompleteStyle() { 
 		return AutoCompleteStyle.None;
+	}
+	
+	public boolean canPasteOver() { 
+		return false;
 	}
 }

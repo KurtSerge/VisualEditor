@@ -28,7 +28,7 @@ public class CaseConstruct extends ListConstruct {
 	@Override
 	public Construct deepCopy(Construct parent) {
 		CaseConstruct newCopy = new CaseConstruct(mDocument, parent);
-		super.deepCopy(newCopy);
+		super.deepCopyChildrenTo(newCopy);
 		return newCopy;
 	}	
 	

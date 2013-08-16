@@ -3,6 +3,12 @@ package construct;
 import clojure.ClojureConstruct;
 import editor.document.ConstructDocument;
 
+/**
+ * This descriptor may or may not be shared! Do not use the Placeholder
+ * instance to store state information for a construct.
+ * 
+ * @author Christopher Lord
+ */
 public class Placeholder {
 	public static Placeholder createVariadicPlaceholder(String hint) {
 		return new Placeholder(hint, true, true, null);
@@ -33,6 +39,7 @@ public class Placeholder {
 	}
 	
 	protected Placeholder(ClojureConstruct permanentInstance) { 
+		this.mClassRestriction = null;
 		this.mPermanentConstruct = permanentInstance;
 		this.mIsPermanent = true;
 		this.mIsOptional = false;	
@@ -45,6 +52,7 @@ public class Placeholder {
 	}
 	
 	protected Placeholder(String hint, boolean optional, boolean variadic, Class<?> restriction) {
+		this.mPermanentConstruct = null;
 		this.mIsPermanent = false;
 		this.mClassRestriction = restriction;
 		this.mIsOptional = optional;
@@ -52,23 +60,23 @@ public class Placeholder {
 		this.mHint = hint;			
 	}
 	
-	public boolean isPermanent() { 
+	public final boolean isPermanent() { 
 		return mIsPermanent;
 	}
 	
-	public ClojureConstruct getPermanentConstruct() { 
+	public final ClojureConstruct getPermanentConstruct() { 
 		return mPermanentConstruct;
 	}
 	
-	public String getHint() { 
+	public final String getHint() { 
 		return mHint;
 	}
 	
-	public boolean isOptional() { 
+	public final boolean isOptional() { 
 		return mIsOptional;
 	}
 	
-	public boolean isVariadic() { 
+	public final boolean isVariadic() { 
 		return mIsVariadic;
 	}
 	
@@ -79,15 +87,7 @@ public class Placeholder {
 		return obj.equals(mClassRestriction);
 	}
 	
-	public void setPopulated(boolean isPopulated) { 
-		mIsPopulated = isPopulated;
-	}
-	
-	public boolean getIsPopulated() { 
-		return mIsPopulated;
-	}
-	
-	public Class<?> getClassRestriction() { 
+	public final Class<?> getClassRestriction() { 
 		return mClassRestriction;
 	}
 	
@@ -95,11 +95,10 @@ public class Placeholder {
 		return new PlaceholderConstruct(document, parent, this);
 	}
 	
-	private Class<?> mClassRestriction;
-	private ClojureConstruct mPermanentConstruct;
-	private boolean mIsPermanent;
-	private boolean mIsOptional;
-	private boolean mIsVariadic;
-	private boolean mIsPopulated;
-	private String mHint;
+	private final Class<?> mClassRestriction;
+	private final ClojureConstruct mPermanentConstruct;
+	private final boolean mIsPermanent;
+	private final boolean mIsOptional;
+	private final boolean mIsVariadic;
+	private final String mHint;
 }

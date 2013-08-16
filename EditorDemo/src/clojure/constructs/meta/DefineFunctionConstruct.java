@@ -18,6 +18,10 @@ import editor.document.ConstructDocument;
  */
 public class DefineFunctionConstruct extends ListConstruct {
 
+	public DefineFunctionConstruct(DefineFunctionConstruct defn, Construct parent) {
+		super(defn.getDocument(), "defn", parent);
+	}	
+	
 	public DefineFunctionConstruct(ConstructDocument document, Construct parent) {
 		super(document, "defn", parent);
 
@@ -32,8 +36,8 @@ public class DefineFunctionConstruct extends ListConstruct {
 	
 	@Override
 	public Construct deepCopy(Construct parent) {
-		DefineFunctionConstruct newCopy = new DefineFunctionConstruct(mDocument, parent);
-		super.deepCopy(newCopy);
+		DefineFunctionConstruct newCopy = new DefineFunctionConstruct(this, parent);
+		super.deepCopyChildrenTo(newCopy);
 		return newCopy;
 	}
 	

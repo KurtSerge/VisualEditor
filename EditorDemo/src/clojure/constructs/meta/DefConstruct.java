@@ -15,6 +15,10 @@ import editor.document.ConstructDocument;
  * @author Christopher Lord
  */
 public class DefConstruct extends ListConstruct {
+	
+	public DefConstruct(DefConstruct construct, Construct parent) {
+		super(construct.getDocument(), construct.type, parent);
+	}
 
 	public DefConstruct(ConstructDocument document, Construct parent) {
 		super(document, "def", parent);
@@ -27,15 +31,16 @@ public class DefConstruct extends ListConstruct {
 	}
 	
 	@Override
-	public Construct deepCopy(Construct parent) {
-		DefConstruct newCopy = new DefConstruct(mDocument, parent);
-		super.deepCopy(newCopy);
+	public Construct deepCopy(Construct parent) {	
+		DefConstruct newCopy = new DefConstruct(this, parent);
+		super.deepCopyChildrenTo(newCopy);
 		return newCopy;
 	}
 	
 	@Override
 	public Construct getConstructForSelection(SelectionCause type) { 
-		if(type == SelectionCause.SelectedAfterInsert) {
+		if(type == SelectionCause.SelectedAfterInsert && 
+				this.children.size() != 0) {
 			// Select the child, not this
 			return this.children.get(0);
 		}

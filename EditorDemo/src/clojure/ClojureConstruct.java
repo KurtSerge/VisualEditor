@@ -25,7 +25,7 @@ public abstract class ClojureConstruct extends PlaceholdingConstruct
 	
 	/**
 	 * By default, no ClojureConstruct can have insert children.
-	 * This needs to be overriden by container constructs such
+	 * This needs to be overridden by container constructs such
 	 * as Vector, Map and List.
 	 * 
 	 * @return If a child can be inserted or not.

@@ -1,5 +1,7 @@
 package construct;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -12,17 +14,73 @@ import editor.document.ConstructDocument;
 
 public abstract class PlaceholdingConstruct extends Construct {
 	
-	private HashMap<Construct, Placeholder> mConstructsToPlaceholders;	
-	private List<Placeholder> mPlaceholders;	
-	private boolean mPlaceholdersAdded;				// Indicates all placeholders are added
-	private boolean mPlaceholdersAddedOnce;			// Indicates perment placeholders are added
-	private boolean mPlaceholdersAddedOptionals;
+	public static class PlaceholdingConstructState { 
+		private HashMap<Construct, Placeholder> mConstructsToPlaceholders;	
+		private List<Placeholder> mPlaceholders;	
+		private boolean mPlaceholdersAdded;				// Indicates all placeholders are added
+		private boolean mPlaceholdersAddedOnce;			// Indicates perment placeholders are added
+		private boolean mPlaceholdersAddedOptionals;
+		private HashMap<Placeholder, Boolean> mPopulationStates;
+		
+		public PlaceholdingConstructState() {
+			mConstructsToPlaceholders = new HashMap<Construct, Placeholder>();			
+			mPopulationStates = new HashMap<Placeholder, Boolean>();
+			
+			mPlaceholders = null;
+			mPlaceholdersAdded = false;
+			mPlaceholdersAddedOnce = false;
+			mPlaceholdersAddedOptionals = false;
+		}
+		
+		@SuppressWarnings("unchecked")
+		public PlaceholdingConstructState(PlaceholdingConstructState state) { 
+			mPlaceholders = new ArrayList<Placeholder>();
+			if(state.mPlaceholders != null) { 
+				mPlaceholders.addAll(state.mPlaceholders);
+			}
+			
+			mPopulationStates = (HashMap<Placeholder, Boolean>) state.mPopulationStates.clone();
+			mPlaceholdersAdded = state.mPlaceholdersAdded;
+			mPlaceholdersAddedOnce = state.mPlaceholdersAddedOnce;
+			mPlaceholdersAddedOptionals = state.mPlaceholdersAddedOptionals;
+			mConstructsToPlaceholders = state.mConstructsToPlaceholders;
+		}
+		
+		public PlaceholdingConstructState deepCopy() { 
+			return new PlaceholdingConstructState(this);
+		}
+		
+		@Override
+		public String toString() { 
+			return "Added: " + mPlaceholdersAdded + "\n" +
+					"Added Once: " + mPlaceholdersAddedOnce + "\n" + 
+					"Added Optionals: " + mPlaceholdersAddedOptionals;
+		}
+		
+		public boolean getIsPopulated(Placeholder placeholder) { 
+			Boolean booleanObj = mPopulationStates.get(placeholder);
+			if(booleanObj == null) { 
+				booleanObj = false;
+			}
+			
+			return booleanObj;
+		}
+		
+		public void setIsPopulated(Placeholder placeholder, boolean value) { 
+			mPopulationStates.put(placeholder, value);
+		}
+	}
+	
+	private PlaceholdingConstructState mState;
 
 	public PlaceholdingConstruct(ConstructDocument document, String type, Construct parent) {
 		super(document, type, parent);
 		
-		mPlaceholders = null;
-		mConstructsToPlaceholders = new HashMap<Construct, Placeholder>();
+//		setState(new PlaceholdingConstructState());
+	}
+	
+	private void setState(PlaceholdingConstructState state) { 
+		mState = state;
 	}
 	
 	/**
@@ -34,22 +92,22 @@ public abstract class PlaceholdingConstruct extends Construct {
 	@Override
 	public boolean replaceChild(Construct replaceMe, Construct newCon)
 	{
-		if(mPlaceholders != null) { 
+		if(mState != null && mState.mPlaceholders != null) { 
 			int indexOfOldConstruct = this.children.indexOf(replaceMe);
 			Placeholder descriptor = null;
 			
 			// If the index of the old construct is bigger than our placeholders
 			// size, then we are likely dealing with a variadic placeholder at the
 			// end of the placeholders list. Verify this, and assume this case.
-			if(indexOfOldConstruct >= this.mPlaceholders.size()) { 
+			if(indexOfOldConstruct >= this.mState.mPlaceholders.size()) { 
 				// Fetch the last descriptor and verify that it is variadic
-				descriptor = mPlaceholders.get(mPlaceholders.size() - 1);
+				descriptor = mState.mPlaceholders.get(mState.mPlaceholders.size() - 1);
 				if(!descriptor.isVariadic()) {
 					System.err.println("<ClojureConstruct> Index of replaceChild exceeds mPlaceholders.size() but last placeholder is NOT variadic.");
 					return false;
 				}
 			} else { 
-				descriptor = this.mPlaceholders.get(indexOfOldConstruct);
+				descriptor = this.mState.mPlaceholders.get(indexOfOldConstruct);
 			}
 			
 			if(!descriptor.isAllowed(newCon.getClass())) { 
@@ -69,8 +127,8 @@ public abstract class PlaceholdingConstruct extends Construct {
 				return true;
 			}
 
-			descriptor.setPopulated(true);
-			mConstructsToPlaceholders.put(newCon, descriptor);			
+			mState.setIsPopulated(descriptor, true);
+			mState.mConstructsToPlaceholders.put(newCon, descriptor);			
 		}
 				
 		return super.replaceChild(replaceMe, newCon);
@@ -81,7 +139,7 @@ public abstract class PlaceholdingConstruct extends Construct {
 	 */
 	@Override
 	protected boolean canDeleteChild(int index, Construct child, boolean isUser) { 
-		if(mPlaceholders == null) {
+		if(mState == null || mState.mPlaceholders == null) {
 			return super.canDeleteChild(index, child, isUser);
 		}
 
@@ -113,52 +171,55 @@ public abstract class PlaceholdingConstruct extends Construct {
 			Placeholder descriptor = getPlaceholderForIndex(index);
 			if(!descriptor.isVariadic()) { 
 				PlaceholderConstruct construct = new PlaceholderConstruct(mDocument, this, descriptor);
-				descriptor.setPopulated(false);
+				mState.setIsPopulated(descriptor, false);
 
-			    Iterator<Entry<Construct, Placeholder>> it = mConstructsToPlaceholders.entrySet().iterator();
+			    Iterator<Entry<Construct, Placeholder>> it = mState.mConstructsToPlaceholders.entrySet().iterator();
 			    while (it.hasNext()) {
 			    	Map.Entry<Construct, Placeholder> pairs = (Map.Entry<Construct, Placeholder>)it.next();
 			        if(pairs.getValue().equals(descriptor)) { 
 			        	it.remove();
 			        }
 			    }
+			    
+			    mState.mConstructsToPlaceholders.put(construct, descriptor);
 				
 				this.addChild(index, construct);
 			}
 		}		
 	}
 	
-
-	
-	protected List<Placeholder> getPlaceholders() { 
-		return mPlaceholders;
+	protected List<Placeholder> getPlaceholders() { 		
+		return (mState == null) ? null : mState.mPlaceholders;
 	}	
 	
 	protected void setPlaceholders(List<Placeholder> placeholders) {
-		mPlaceholders = placeholders;
-		
-		insertPlaceholders();
-		removePlaceholders(false);
+		if(mState == null) { 
+			setState(new PlaceholdingConstructState());
+			mState.mPlaceholders = placeholders;
+			
+			insertPlaceholders();
+			removePlaceholders(false);
+		}
 	}
 	
 	protected Placeholder getPlaceholderForIndex(int indexOfObject) {
 		Placeholder descriptor = null;
-		if(indexOfObject >= mPlaceholders.size()) { 
-			descriptor = mPlaceholders.get(mPlaceholders.size() - 1);
+		if(indexOfObject >= mState.mPlaceholders.size()) { 
+			descriptor = mState.mPlaceholders.get(mState.mPlaceholders.size() - 1);
 			if(!descriptor.isVariadic()) {
 				return null;
 			}
 		} else { 
-			descriptor = mPlaceholders.get(indexOfObject);
+			descriptor = mState.mPlaceholders.get(indexOfObject);
 		}
 		
 		return descriptor;
 	}
 	
 	protected Placeholder getPlaceholderForConstruct(Construct object) {
-		Placeholder descriptor = mConstructsToPlaceholders.get(object);
-		if(descriptor == null && mPlaceholders.get(mPlaceholders.size() - 1).isVariadic()) {
-			return mPlaceholders.get(mPlaceholders.size() - 1);
+		Placeholder descriptor = mState.mConstructsToPlaceholders.get(object);
+		if(descriptor == null && mState.mPlaceholders.get(mState.mPlaceholders.size() - 1).isVariadic()) {
+			return mState.mPlaceholders.get(mState.mPlaceholders.size() - 1);
 		}
 		
 		return descriptor;
@@ -185,9 +246,12 @@ public abstract class PlaceholdingConstruct extends Construct {
 			deleted.delete();
 		}
 		
-		mPlaceholdersAdded = false;
-		if(mPlaceholdersAddedOptionals && removeNonOptional) 
-			mPlaceholdersAddedOptionals = false;
+		if(mState != null) { 
+			mState.mPlaceholdersAdded = false;
+		
+			if(mState.mPlaceholdersAddedOptionals && removeNonOptional) 
+				mState.mPlaceholdersAddedOptionals = false;
+		}
 	}
 	
 	/**
@@ -195,17 +259,17 @@ public abstract class PlaceholdingConstruct extends Construct {
 	 * permanent, optional and regular placeholders.
 	 */
 	protected void insertPlaceholders() { 
-		if(mPlaceholders != null && !mPlaceholdersAdded) { 
+		if(mState != null && mState.mPlaceholders != null && !mState.mPlaceholdersAdded) { 
 			// Add placeholders as children to this node
-			for(int i = 0; i < mPlaceholders.size(); i++) { 
-				Placeholder placeholder = mPlaceholders.get(i);
-				if(placeholder.getIsPopulated() == true) {
+			for(int i = 0; i < mState.mPlaceholders.size(); i++) { 
+				Placeholder placeholder = mState.mPlaceholders.get(i);
+				if(mState.getIsPopulated(placeholder) == true) {
 					// The slot where this placeholder was going to sit
 					// is currently occupied by a construct, do not refill
 					continue;
 				}
 				
-				if(mPlaceholdersAddedOptionals == true && 
+				if(mState.mPlaceholdersAddedOptionals == true && 
 						placeholder.isOptional() == false) {
 					// Skip adding any optional placeholders if the
 					// optional placeholders already exist
@@ -215,10 +279,10 @@ public abstract class PlaceholdingConstruct extends Construct {
 				if(placeholder.isPermanent()) {
 					// Only add permanent placeholders once, ignore
 					// them every other time we pass through
-					if(mPlaceholdersAddedOnce == false) { 
-						mConstructsToPlaceholders.put(placeholder.getPermanentConstruct(), placeholder);
+					if(mState.mPlaceholdersAddedOnce == false) { 
+						mState.mConstructsToPlaceholders.put(placeholder.getPermanentConstruct(), placeholder);
 						addChild(children.size(), placeholder.getPermanentConstruct());
-						mPlaceholdersAddedOnce = true;
+						mState.mPlaceholdersAddedOnce = true;
 					}
 				} else { 
 					// This placeholder needs to be filled, add it in now
@@ -228,14 +292,42 @@ public abstract class PlaceholdingConstruct extends Construct {
 						// of the specified form, treat them like so..
 						addChild(children.size(), construct);
 					} else { 
-						mConstructsToPlaceholders.put(construct, placeholder);						
+						mState.mConstructsToPlaceholders.put(construct, placeholder);						
 						addChild(i, construct);
 					}
 				}
 			}
 			
-			mPlaceholdersAdded = true;
-			mPlaceholdersAddedOptionals = true;
+			mState.mPlaceholdersAdded = true;
+			mState.mPlaceholdersAddedOptionals = true;
 		}
 	}	
+  
+	public Construct deepCopy(Construct parent) {
+		PlaceholdingConstruct placeholdingConstruct = (PlaceholdingConstruct) parent;
+		if(mState != null) { 
+			placeholdingConstruct.setState(mState.deepCopy());
+		}
+
+		for(Construct child : this.children) {
+			Placeholder originalPlaceholder = mState.mConstructsToPlaceholders.get(child);
+			int indexOfOriginalPlaceholder = mState.mPlaceholders.indexOf(originalPlaceholder);	
+			if(indexOfOriginalPlaceholder >= 0) { 
+				Construct newConstruct = child.deepCopy(parent);
+				parent.children.add(newConstruct);
+				
+				Placeholder newPlaceholder = placeholdingConstruct.mState.mPlaceholders.get(indexOfOriginalPlaceholder);
+				placeholdingConstruct.mState.mConstructsToPlaceholders.put(newConstruct, newPlaceholder);
+			}
+		}
+	
+		
+		return placeholdingConstruct;
+	}
+	
+	public void debugPrintPlaceholders() { 
+		for(Construct node : this.children) { 
+			System.out.println(node.type + " bound: " + mState.mConstructsToPlaceholders.get(node));
+		}
+	}
 }
