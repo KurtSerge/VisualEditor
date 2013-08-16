@@ -24,7 +24,7 @@ public class KeywordConstruct extends ClojureConstruct {
 	
 	@Override
 	public Construct deepCopy(Construct parent) {
-		KeywordConstruct newCopy = new KeywordConstruct(mDocument, parent, this.literal);
+		KeywordConstruct newCopy = new KeywordConstruct(mDocument, parent, children.get(0).literal);
 		super.deepCopy(newCopy);
 		return newCopy;
 	}
