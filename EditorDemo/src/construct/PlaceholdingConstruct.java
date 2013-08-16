@@ -310,14 +310,22 @@ public abstract class PlaceholdingConstruct extends Construct {
 		}
 
 		for(Construct child : this.children) {
-			Placeholder originalPlaceholder = mState.mConstructsToPlaceholders.get(child);
-			int indexOfOriginalPlaceholder = mState.mPlaceholders.indexOf(originalPlaceholder);	
-			if(indexOfOriginalPlaceholder >= 0) { 
+			
+			System.out.println("DeepCopy: " + child.type + " (child of " + this.type + ")");
+			
+			if(mState != null) { 
+				Placeholder originalPlaceholder = mState.mConstructsToPlaceholders.get(child);
+				int indexOfOriginalPlaceholder = mState.mPlaceholders.indexOf(originalPlaceholder);	
+				if(indexOfOriginalPlaceholder >= 0) { 
+					Construct newConstruct = child.deepCopy(parent);
+					parent.children.add(newConstruct);
+					
+					Placeholder newPlaceholder = placeholdingConstruct.mState.mPlaceholders.get(indexOfOriginalPlaceholder);
+					placeholdingConstruct.mState.mConstructsToPlaceholders.put(newConstruct, newPlaceholder);
+				}
+			} else { 
 				Construct newConstruct = child.deepCopy(parent);
 				parent.children.add(newConstruct);
-				
-				Placeholder newPlaceholder = placeholdingConstruct.mState.mPlaceholders.get(indexOfOriginalPlaceholder);
-				placeholdingConstruct.mState.mConstructsToPlaceholders.put(newConstruct, newPlaceholder);
 			}
 		}
 	
