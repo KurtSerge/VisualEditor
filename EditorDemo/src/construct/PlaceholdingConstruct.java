@@ -324,6 +324,10 @@ public abstract class PlaceholdingConstruct extends Construct {
 					// Now that we've established the reference, save it
 					Placeholder newPlaceholder = placeholdingConstruct.mState.mPlaceholders.get(indexOfOriginalPlaceholder);
 					placeholdingConstruct.mState.mConstructsToPlaceholders.put(newConstruct, newPlaceholder);
+				} else { 
+					// Copy the child like normal
+					Construct newConstruct = child.deepCopy(parent);
+					parent.children.add(newConstruct);
 				}
 			}
 			else {
