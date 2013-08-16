@@ -43,6 +43,7 @@ public abstract class Construct
 		SelectedAfterDeletingChild,
 		SelectedRandomly,
 		SelectedAfterAutoCompletion,
+		SelectedAfterPaste,
 		Unselection,
 		
 		Selected, // Generic

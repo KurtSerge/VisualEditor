@@ -145,6 +145,8 @@ public class HotkeyListener implements IInterfaceActionListener {
 		ClojureConstruct parent = getParentForBinding(controller.getSelectedEditor(), binding);
 		Construct newConstruct = null;
 		
+		SelectionCause selectionCause = SelectionCause.SelectedAfterInsert;
+		
 		if(binding == EInterfaceAction.Bind_InsertPaste) { 
 			newConstruct = Application.getApplication().getClipboard().getCopyToPaste(parent); 
 		} else { 
@@ -185,9 +187,9 @@ public class HotkeyListener implements IInterfaceActionListener {
 			}
 			
 			case Bind_InsertPaste: {
-				
 				if(((ClojureConstruct)parent).isConstructContainer()) { 
 					parent.addChild(selIndex + 1, newConstruct);
+					selectionCause = SelectionCause.SelectedAfterPaste;
 				} else { 
 					newConstruct = null;
 				}
@@ -198,12 +200,11 @@ public class HotkeyListener implements IInterfaceActionListener {
 			default:
 				break;
 		}
-		
-		
+	
 		if(newConstruct != null) { 
 			ConstructEditor added = mDocument.editorsFromConstruct(newConstruct);
 			if(added != null)  {
-				controller.mConstructSelector.Select(SelectionCause.SelectedAfterInsert, added);
+				controller.mConstructSelector.Select(selectionCause, added);
 			}
 		}
 	}
