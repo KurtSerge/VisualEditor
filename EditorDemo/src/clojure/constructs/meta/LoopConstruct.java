@@ -16,6 +16,10 @@ import editor.document.ConstructDocument;
  * @author Christopher Lord
  */
 public class LoopConstruct extends ListConstruct {
+	
+	public LoopConstruct(LoopConstruct construct, Construct parent) {
+		super(construct.getDocument(), "loop", parent);
+	}
 
 	public LoopConstruct(ConstructDocument document, Construct parent) {
 		super(document, "loop", parent);
@@ -28,9 +32,8 @@ public class LoopConstruct extends ListConstruct {
 	
 	@Override
 	public Construct deepCopy(Construct parent) {
-		LoopConstruct newCopy = new LoopConstruct(mDocument, parent);
-		super.deepCopy(newCopy);
+		LoopConstruct newCopy = new LoopConstruct(this, parent);
+		super.deepCopyChildrenTo(newCopy);
 		return newCopy;
 	}
-	
 }

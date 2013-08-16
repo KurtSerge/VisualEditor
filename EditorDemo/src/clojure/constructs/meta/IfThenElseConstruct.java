@@ -14,6 +14,10 @@ import editor.document.ConstructDocument;
  */
 public class IfThenElseConstruct extends ListConstruct {
 
+	public IfThenElseConstruct(IfThenElseConstruct construct, Construct parent) {
+		super(construct.getDocument(), "if", parent);
+	}	
+	
 	public IfThenElseConstruct(ConstructDocument document, Construct parent) {
 		super(document, "if", parent);
 
@@ -26,8 +30,8 @@ public class IfThenElseConstruct extends ListConstruct {
 	
 	@Override
 	public Construct deepCopy(Construct parent) {
-		IfThenElseConstruct newCopy = new IfThenElseConstruct(mDocument, parent);
-		super.deepCopy(newCopy);
+		IfThenElseConstruct newCopy = new IfThenElseConstruct(this, parent);
+		super.deepCopyChildrenTo(newCopy);
 		return newCopy;
 	}
 	

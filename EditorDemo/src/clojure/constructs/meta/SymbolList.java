@@ -10,6 +10,10 @@ import editor.document.ConstructDocument;
 
 public class SymbolList extends ListConstruct {
 
+	public SymbolList(SymbolList construct, Construct parent, String literal) {
+		super(construct.getDocument(), parent, literal);
+	}
+	
 	public SymbolList(ConstructDocument document, Construct parent, String literal) {
 		super(document, parent, literal);
 
@@ -31,8 +35,8 @@ public class SymbolList extends ListConstruct {
 	
 	@Override
 	public Construct deepCopy(Construct parent) {
-		SymbolList newCopy = new SymbolList(mDocument, parent, this.literal);
-		super.deepCopy(newCopy);
+		SymbolList newCopy = new SymbolList(this, parent, this.literal);
+		super.deepCopyChildrenTo(newCopy);
 		return newCopy;
 	}	
 }

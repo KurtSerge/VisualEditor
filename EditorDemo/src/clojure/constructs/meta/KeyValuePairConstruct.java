@@ -20,7 +20,11 @@ import editor.document.ConstructDocument;
  * @author Christopher Lord
  */
 public class KeyValuePairConstruct extends ClojureConstruct {
-
+	
+	public KeyValuePairConstruct(KeyValuePairConstruct construct, Construct parent, String literal) {
+		super(construct.getDocument(), "keyvaluepair", parent);
+	}
+	
 	public KeyValuePairConstruct(ConstructDocument document, Construct parent, String literal) {
 		super(document, "keyvaluepair", parent);
 		
@@ -44,7 +48,7 @@ public class KeyValuePairConstruct extends ClojureConstruct {
 	
 	@Override
 	public Construct deepCopy(Construct parent) {
-		KeyValuePairConstruct newCopy = new KeyValuePairConstruct(mDocument, parent, null);
+		KeyValuePairConstruct newCopy = new KeyValuePairConstruct(this, parent, null);
 		super.deepCopy(newCopy);
 		return newCopy;
 	}

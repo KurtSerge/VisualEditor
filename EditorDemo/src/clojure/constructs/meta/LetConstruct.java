@@ -13,6 +13,10 @@ import editor.document.ConstructDocument;
  * @author Christopher Lord
  */
 public class LetConstruct extends ListConstruct {
+	
+	public LetConstruct(LetConstruct construct, Construct parent) {
+		super(construct.getDocument(), "let", parent);
+	}
 
 	public LetConstruct(ConstructDocument document, Construct parent) {
 		super(document, "let", parent);
@@ -25,9 +29,8 @@ public class LetConstruct extends ListConstruct {
 
 	@Override
 	public Construct deepCopy(Construct parent) {
-		LetConstruct newCopy = new LetConstruct(mDocument, parent);
-		super.deepCopy(newCopy);
+		LetConstruct newCopy = new LetConstruct(this, parent);
+		super.deepCopyChildrenTo(newCopy);
 		return newCopy;
 	}
-	
 }

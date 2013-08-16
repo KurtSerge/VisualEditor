@@ -14,6 +14,10 @@ import editor.document.ConstructDocument;
  * @author Christopher Lord
  */
 public class RecurConstruct extends ListConstruct {
+	
+	public RecurConstruct(RecurConstruct construct, Construct parent) {
+		super(construct.getDocument(), "recur", parent);
+	}	
 
 	public RecurConstruct(ConstructDocument document, Construct parent) {
 		super(document, "recur", parent);
@@ -25,8 +29,8 @@ public class RecurConstruct extends ListConstruct {
 	
 	@Override
 	public Construct deepCopy(Construct parent) {
-		RecurConstruct newCopy = new RecurConstruct(mDocument, parent);
-		super.deepCopy(newCopy);
+		RecurConstruct newCopy = new RecurConstruct(this, parent);
+		super.deepCopyChildrenTo(newCopy);
 		return newCopy;
 	}
 }

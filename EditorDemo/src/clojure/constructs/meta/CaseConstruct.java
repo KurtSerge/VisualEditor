@@ -16,6 +16,10 @@ import editor.document.ConstructDocument;
  */
 public class CaseConstruct extends ListConstruct {
 
+	public CaseConstruct(CaseConstruct construct, Construct parent) {
+		super(construct.getDocument(), "case", parent);
+	}	
+
 	public CaseConstruct(ConstructDocument document, Construct parent) {
 		super(document, "case", parent);
 
@@ -27,9 +31,8 @@ public class CaseConstruct extends ListConstruct {
 	
 	@Override
 	public Construct deepCopy(Construct parent) {
-		CaseConstruct newCopy = new CaseConstruct(mDocument, parent);
+		CaseConstruct newCopy = new CaseConstruct(this, parent);
 		super.deepCopyChildrenTo(newCopy);
 		return newCopy;
 	}	
-	
 }

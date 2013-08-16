@@ -14,7 +14,11 @@ import editor.document.ConstructDocument;
  * @author Christopher Lord
  */
 public class DoConstruct extends ListConstruct {
-
+	
+	public DoConstruct(DoConstruct construct, Construct parent) {
+		super(construct.getDocument(), "do", parent);
+	}
+	
 	public DoConstruct(ConstructDocument document, Construct parent) {
 		super(document, "do", parent);
 
@@ -25,8 +29,8 @@ public class DoConstruct extends ListConstruct {
 	
 	@Override
 	public Construct deepCopy(Construct parent) {
-		DoConstruct newCopy = new DoConstruct(mDocument, parent);
-		super.deepCopy(newCopy);
+		DoConstruct newCopy = new DoConstruct(this, parent);
+		super.deepCopyChildrenTo(parent);
 		return newCopy;
 	}
 }
