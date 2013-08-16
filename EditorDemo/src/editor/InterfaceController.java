@@ -478,9 +478,6 @@ public class InterfaceController implements KeyListener, IInterfaceActionListene
 				Application.getApplication().getClipboard().copy(getSelectedEditor().construct);
 				break;
 				
-			case Bind_InsertPaste:
-				break;
-				
 			case Bind_Find:
 				Find();
 				break;
