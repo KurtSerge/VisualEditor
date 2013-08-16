@@ -304,31 +304,34 @@ public abstract class PlaceholdingConstruct extends Construct {
 	}	
   
 	public Construct deepCopy(Construct parent) {
+		// Copy the placeholding state
 		PlaceholdingConstruct placeholdingConstruct = (PlaceholdingConstruct) parent;
 		if(mState != null) { 
 			placeholdingConstruct.setState(mState.deepCopy());
 		}
 
 		for(Construct child : this.children) {
-			
-			System.out.println("DeepCopy: " + child.type + " (child of " + this.type + ")");
-			
-			if(mState != null) { 
+			if(mState != null) {
+				// We need to copy the state of this placeholder
 				Placeholder originalPlaceholder = mState.mConstructsToPlaceholders.get(child);
 				int indexOfOriginalPlaceholder = mState.mPlaceholders.indexOf(originalPlaceholder);	
-				if(indexOfOriginalPlaceholder >= 0) { 
+				if(indexOfOriginalPlaceholder >= 0)
+				{
+					// Copy the child like normal
 					Construct newConstruct = child.deepCopy(parent);
 					parent.children.add(newConstruct);
 					
+					// Now that we've established the reference, save it
 					Placeholder newPlaceholder = placeholdingConstruct.mState.mPlaceholders.get(indexOfOriginalPlaceholder);
 					placeholdingConstruct.mState.mConstructsToPlaceholders.put(newConstruct, newPlaceholder);
 				}
-			} else { 
+			}
+			else {
+				// Copy the child like normal
 				Construct newConstruct = child.deepCopy(parent);
 				parent.children.add(newConstruct);
 			}
 		}
-	
 		
 		return placeholdingConstruct;
 	}
