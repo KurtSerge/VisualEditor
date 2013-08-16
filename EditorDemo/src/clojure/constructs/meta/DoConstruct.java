@@ -30,7 +30,7 @@ public class DoConstruct extends ListConstruct {
 	@Override
 	public Construct deepCopy(Construct parent) {
 		DoConstruct newCopy = new DoConstruct(this, parent);
-		super.deepCopyChildrenTo(parent);
+		super.deepCopyChildrenTo(newCopy);
 		return newCopy;
 	}
 }
