@@ -188,9 +188,9 @@ public class HotkeyListener implements IInterfaceActionListener {
 				
 				if(((ClojureConstruct)parent).isConstructContainer()) { 
 					parent.addChild(selIndex + 1, newConstruct);
+				} else { 
+					newConstruct = null;
 				}
-				
-				newConstruct = null;
 				
 				break;
 			}
