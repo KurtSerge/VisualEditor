@@ -17,6 +17,7 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import editor.InterfaceController.EInterfaceAction;
@@ -50,6 +51,10 @@ public class VisualEditorFrame extends JFrame {
 		mModalPresentationPanel.setBackground(new Color(230, 230, 230));
 		mModalPresentationPanel.setPreferredSize(new Dimension(100, 30));
 		
+		JScrollPane mpp = new JScrollPane(mDocumentPresentationPanel);
+		mpp.setBorder(null);
+//		mpp.add(mModalPresentationPanel);
+		
 		mModalTextArea = new JTextArea();
 		mModalTextArea.setForeground(Color.DARK_GRAY);
 		mModalTextArea.setBackground(new Color(230, 230, 230));
@@ -79,7 +84,7 @@ public class VisualEditorFrame extends JFrame {
 	    messageConstraints.insets = new Insets(10,0,0,0);
 	    messageConstraints.gridwidth = 3;
 	    messageConstraints.gridy = 2;
-	    add(mDocumentPresentationPanel, documentConstraints);
+	    add(mpp, documentConstraints);
 	    add(mModalPresentationPanel, messageConstraints);
 	    
 	    mModalPresentationPanel.add(mModalTextArea);
