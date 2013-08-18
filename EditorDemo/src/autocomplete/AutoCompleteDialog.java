@@ -166,8 +166,12 @@ public class AutoCompleteDialog extends JDialog {
 	
 	protected void addEntry(SimpleAutoCompleteEntry entry) { 
 		if(mClassRestrictions != null) { 
-			if(mClassRestrictions.contains(entry.getInstanceClass())) {
-				mAllEntries.add(entry);
+			Class<?> thisEntryClass = entry.getInstanceClass();
+			for(Class<?> restriction : mClassRestrictions) {
+				if(restriction.isAssignableFrom(thisEntryClass)) { 
+					mAllEntries.add(entry);
+					break;
+				}
 			}
 		} else { 
 			mAllEntries.add(entry);	
