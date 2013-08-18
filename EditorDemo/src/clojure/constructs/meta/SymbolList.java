@@ -8,20 +8,22 @@ import construct.Construct;
 import construct.Placeholder;
 import editor.document.ConstructDocument;
 
-public class SymbolList extends ListConstruct {
+public class SymbolList extends MetaConstruct {
 
-	public SymbolList(SymbolList construct, Construct parent, String literal) {
-		super(construct.getDocument(), parent, literal);
-	}
-	
-	public SymbolList(ConstructDocument document, Construct parent, String literal) {
-		super(document, parent, literal);
+	public SymbolList(SymbolList construct, Construct parent) {
+		super(construct.getDocument(), null, parent);
+		
+		this.literal = construct.literal;
+	}		
 
-		LinkedList<Placeholder> paramsPlaceholders = new LinkedList<Placeholder>();
-		paramsPlaceholders.add(Placeholder.createPermanentPlaceholder(new SymbolConstruct(mDocument, this, "symbol")));
-		paramsPlaceholders.add(Placeholder.createVariadicPlaceholder("exprs"));
-		setPlaceholders(paramsPlaceholders);
-	}
+	public SymbolList(ConstructDocument document, Construct parent) {
+		super(document, null, parent);
+
+		LinkedList<Placeholder> placeholders = new LinkedList<Placeholder>();
+		placeholders.add(Placeholder.createPermanentPlaceholder(new SymbolConstruct(mDocument, this, "function-name")));
+		placeholders.add(Placeholder.createVariadicPlaceholder("args", KeyValuePairConstruct.class));
+		setPlaceholders(placeholders);
+	}	
 	
 	@Override
 	public Construct getConstructForSelection(SelectionCause type) { 
@@ -35,7 +37,7 @@ public class SymbolList extends ListConstruct {
 	
 	@Override
 	public Construct deepCopy(Construct parent) {
-		SymbolList newCopy = new SymbolList(this, parent, this.literal);
+		SymbolList newCopy = new SymbolList(this, parent);
 		super.deepCopyChildrenTo(newCopy);
 		return newCopy;
 	}	
