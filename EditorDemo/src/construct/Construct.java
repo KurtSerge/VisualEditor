@@ -376,7 +376,7 @@ public abstract class Construct
 		return null;
 	}
 	
-	public boolean canPresentAutoComplete(EInterfaceAction binding) {		
+	public boolean canPerformBinding(EInterfaceAction binding) {		
 		switch(binding) { 
 			case Bind_InsertAfter:
 			case Bind_InsertBefore:

@@ -11,7 +11,7 @@ import clojure.constructs.SymbolConstruct;
 import clojure.constructs.containers.ListConstruct;
 import clojure.constructs.containers.MapConstruct;
 import clojure.constructs.containers.VectorConstruct;
-import clojure.constructs.meta.KeywordExpressionPairConstruct;
+import clojure.constructs.special.KeywordExpressionPairConstruct;
 import construct.Construct;
 import construct.Construct.SelectionCause;
 import editor.Application;

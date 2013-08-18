@@ -12,7 +12,7 @@ import editor.document.ConstructDocument;
  * 
  * @author Christopher Lord
  */
-public class IfThenElseConstruct extends ListConstruct {
+public class IfThenElseConstruct extends MetaConstruct {
 
 	public IfThenElseConstruct(IfThenElseConstruct construct, Construct parent) {
 		super(construct.getDocument(), "if", parent);

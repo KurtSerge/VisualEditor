@@ -14,7 +14,7 @@ import editor.document.ConstructDocument;
  * 
  * @author Christopher Lord
  */
-public class CaseConstruct extends ListConstruct {
+public class CaseConstruct extends MetaConstruct {
 
 	public CaseConstruct(CaseConstruct construct, Construct parent) {
 		super(construct.getDocument(), "case", parent);

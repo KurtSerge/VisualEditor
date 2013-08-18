@@ -14,7 +14,7 @@ import clojure.constructs.SymbolConstruct;
 import clojure.constructs.containers.ListConstruct;
 import clojure.constructs.containers.MapConstruct;
 import clojure.constructs.containers.VectorConstruct;
-import clojure.constructs.meta.KeywordExpressionPairConstruct;
+import clojure.constructs.special.KeywordExpressionPairConstruct;
 import editor.document.ConstructDocument;
 
 public class ClojureConstructFactory {

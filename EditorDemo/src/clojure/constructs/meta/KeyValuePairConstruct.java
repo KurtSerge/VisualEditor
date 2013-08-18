@@ -19,7 +19,7 @@ import editor.document.ConstructDocument;
  * 
  * @author Christopher Lord
  */
-public class KeyValuePairConstruct extends ClojureConstruct {
+public class KeyValuePairConstruct extends MetaConstruct {
 	
 	public KeyValuePairConstruct(KeyValuePairConstruct construct, Construct parent, String literal) {
 		super(construct.getDocument(), "keyvaluepair", parent);

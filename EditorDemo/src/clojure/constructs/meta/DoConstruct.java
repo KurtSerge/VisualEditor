@@ -13,7 +13,7 @@ import editor.document.ConstructDocument;
  * 
  * @author Christopher Lord
  */
-public class DoConstruct extends ListConstruct {
+public class DoConstruct extends MetaConstruct {
 	
 	public DoConstruct(DoConstruct construct, Construct parent) {
 		super(construct.getDocument(), "do", parent);

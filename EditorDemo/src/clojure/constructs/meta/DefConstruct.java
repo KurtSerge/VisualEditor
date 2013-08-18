@@ -14,7 +14,7 @@ import editor.document.ConstructDocument;
  * 
  * @author Christopher Lord
  */
-public class DefConstruct extends ListConstruct {
+public class DefConstruct extends MetaConstruct {
 	
 	public DefConstruct(DefConstruct construct, Construct parent) {
 		super(construct.getDocument(), construct.type, parent);

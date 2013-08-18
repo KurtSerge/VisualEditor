@@ -15,7 +15,7 @@ import editor.document.ConstructDocument;
  * 
  * @author Christopher Lord
  */
-public class FunctionConstruct extends ListConstruct {
+public class FunctionConstruct extends MetaConstruct {
 
 	public FunctionConstruct(FunctionConstruct construct, Construct parent) {
 		super(construct.getDocument(), "fn", parent);

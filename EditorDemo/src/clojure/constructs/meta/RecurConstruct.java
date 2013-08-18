@@ -13,7 +13,7 @@ import editor.document.ConstructDocument;
  * 
  * @author Christopher Lord
  */
-public class RecurConstruct extends ListConstruct {
+public class RecurConstruct extends MetaConstruct {
 	
 	public RecurConstruct(RecurConstruct construct, Construct parent) {
 		super(construct.getDocument(), "recur", parent);

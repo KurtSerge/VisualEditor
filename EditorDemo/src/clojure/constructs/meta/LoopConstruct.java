@@ -15,7 +15,7 @@ import editor.document.ConstructDocument;
  * 
  * @author Christopher Lord
  */
-public class LoopConstruct extends ListConstruct {
+public class LoopConstruct extends MetaConstruct {
 	
 	public LoopConstruct(LoopConstruct construct, Construct parent) {
 		super(construct.getDocument(), "loop", parent);

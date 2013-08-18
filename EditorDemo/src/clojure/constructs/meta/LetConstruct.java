@@ -12,7 +12,7 @@ import editor.document.ConstructDocument;
  * 
  * @author Christopher Lord
  */
-public class LetConstruct extends ListConstruct {
+public class LetConstruct extends MetaConstruct {
 	
 	public LetConstruct(LetConstruct construct, Construct parent) {
 		super(construct.getDocument(), "let", parent);

@@ -97,7 +97,7 @@ public class MapConstruct extends ClojureConstruct {
 	
 	@Override
 	public boolean canAddChild(int index, Construct child) {
-		return child.getClass().equals(clojure.constructs.meta.KeywordExpressionPairConstruct.class);
+		return child.getClass().equals(clojure.constructs.special.KeywordExpressionPairConstruct.class);
 	}
 	
 	protected boolean canReplaceChild(int index, Construct oldConstruct, Construct newConstruct) {
@@ -110,7 +110,7 @@ public class MapConstruct extends ClojureConstruct {
 	@Override
 	public Collection<Class<?>> getAutoCompleteClasses() { 
 		ArrayList<Class<?>> classRestriction = new ArrayList<Class<?>>(1);
-		classRestriction.add(clojure.constructs.meta.KeywordExpressionPairConstruct.class);
+		classRestriction.add(clojure.constructs.special.KeywordExpressionPairConstruct.class);
 		return classRestriction;
 	}
 }

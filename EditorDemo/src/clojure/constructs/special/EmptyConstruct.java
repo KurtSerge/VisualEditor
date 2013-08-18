@@ -1,4 +1,4 @@
-package clojure.constructs.meta;
+package clojure.constructs.special;
 
 import clojure.ClojureConstruct;
 import construct.Construct;

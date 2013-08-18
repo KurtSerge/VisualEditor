@@ -9,6 +9,7 @@ import clojure.ClojureConstruct;
 import clojure.constructs.IntegerConstruct;
 import clojure.constructs.StringConstruct;
 import clojure.constructs.SymbolConstruct;
+import editor.InterfaceController.EInterfaceAction;
 import editor.document.ConstructDocument;
 
 public class PlaceholderConstruct extends ClojureConstruct {
@@ -171,4 +172,19 @@ public class PlaceholderConstruct extends ClojureConstruct {
 	}
 
 	private Placeholder mDescriptor;
+	
+	public boolean canPerformBinding(EInterfaceAction binding) {		
+		switch(binding) { 
+			case Bind_InsertPaste:
+			case Bind_InsertReplace:
+			case Bind_InsertAfter:
+			case Bind_InsertBefore:
+				return true;
+				
+			default:
+				break;
+		}
+		
+		return false;
+	}		
 }

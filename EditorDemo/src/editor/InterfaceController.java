@@ -226,7 +226,7 @@ public class InterfaceController implements KeyListener, IInterfaceActionListene
 		if(event.getKeyCode() == KeyEvent.VK_ESCAPE)  {
 			// Escape should cancel the hotkey sequence
 			Application.getApplication().hideAutoComplete(true);
-			Application.getApplication().resetError();
+			Application.resetError();
 			mHotkeySequenceCandidates = null;
 			return ;
 		}
@@ -304,10 +304,12 @@ public class InterfaceController implements KeyListener, IInterfaceActionListene
 					
 					Construct autoComplete = getSelectedEditor().getConstruct().getParentForBinding(binding);
 					if(autoComplete != null) { 
-						if(autoComplete.canPresentAutoComplete(binding)) { 
+						if(autoComplete.canPerformBinding(binding)) { 
 							mAutoCompletePublishBinding = binding;
 							Application.getApplication().showAutoComplete(this, getSelectedEditor(), this);
 							Application.resetError();
+						} else { 
+							Application.showErrorMessage("Cannot perform this action right now");
 						}
 					}
 				} else {
@@ -500,7 +502,7 @@ public class InterfaceController implements KeyListener, IInterfaceActionListene
 				break;
 				
 			case Bind_PresentAutoComplete:
-				if(mConstructSelector.getSelected().construct.canPresentAutoComplete(EInterfaceAction.Bind_InsertReplace)) { 
+				if(mConstructSelector.getSelected().construct.canPerformBinding(EInterfaceAction.Bind_InsertReplace)) { 
 					Application.presentAutoComplete(controller, mConstructSelector.getSelected(), mConstructSelector.getSelected());
 				}
 				break;
