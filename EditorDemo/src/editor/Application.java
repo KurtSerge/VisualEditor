@@ -55,7 +55,6 @@ public class Application extends VisualEditorFrame implements ComponentListener
 		controller.addHotkey(EInterfaceAction.Bind_Undo, KeyEvent.VK_Z, true);
 		controller.addHotkey(EInterfaceAction.Bind_Redo, KeyEvent.VK_Y, true);
 		controller.addHotkey(EInterfaceAction.Bind_Copy, KeyEvent.VK_C, true);
-		controller.addHotkey(EInterfaceAction.Bind_PresentAutoComplete, KeyEvent.VK_ENTER);
 		controller.addHotkey(EInterfaceAction.Bind_InsertPaste, KeyEvent.VK_V, true);
 		controller.addHotkey(EInterfaceAction.Bind_InsertAfter, KeyEvent.VK_I, true).setNext(new Hotkey(KeyEvent.VK_A, true)).setFollowsWithAutoComplete(true);
 		controller.addHotkey(EInterfaceAction.Bind_InsertBefore, KeyEvent.VK_I, true).setNext(new Hotkey(KeyEvent.VK_B, true)).setFollowsWithAutoComplete(true);
