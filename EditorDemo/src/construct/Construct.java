@@ -116,8 +116,6 @@ public abstract class Construct
 			debugPrintNode(child, depth+1);
 		}
 	}
-	
-	
 
 	public boolean delete(boolean shouldValidate, boolean isUser) { 
 		if(parent != null)  {

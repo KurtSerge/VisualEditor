@@ -306,7 +306,7 @@ public class InterfaceController implements KeyListener, IInterfaceActionListene
 					if(autoComplete != null) { 
 						if(autoComplete.canPerformBinding(binding)) { 
 							mAutoCompletePublishBinding = binding;
-							Application.getApplication().showAutoComplete(this, getSelectedEditor(), this);
+							Application.getApplication().showAutoComplete(this, getSelectedEditor(), this, binding);
 							Application.resetError();
 						} else { 
 							Application.showErrorMessage("Cannot perform this action right now");
@@ -501,11 +501,11 @@ public class InterfaceController implements KeyListener, IInterfaceActionListene
 				FindNext();
 				break;
 				
-			case Bind_PresentAutoComplete:
-				if(mConstructSelector.getSelected().construct.canPerformBinding(EInterfaceAction.Bind_InsertReplace)) { 
-					Application.presentAutoComplete(controller, mConstructSelector.getSelected(), mConstructSelector.getSelected());
-				}
-				break;
+//			case Bind_PresentAutoComplete:
+//				if(mConstructSelector.getSelected().construct.canPerformBinding(EInterfaceAction.Bind_InsertReplace)) { 
+//					Application.presentAutoComplete(controller, mConstructSelector.getSelected(), mConstructSelector.getSelected());
+//				}
+//				break;
 				
 			default: 
 				return false;

@@ -19,6 +19,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
+import editor.InterfaceController.EInterfaceAction;
+
 import autocomplete.AutoCompleteDialog;
 import autocomplete.IAutoCompleteListener;
 
@@ -145,7 +147,7 @@ public class VisualEditorFrame extends JFrame {
 	 * 
 	 * @param editor Editor to auto-complete into.
 	 */
-	public void showAutoComplete(InterfaceController controller, ConstructEditor editor, IAutoCompleteListener listener)
+	public void showAutoComplete(InterfaceController controller, ConstructEditor editor, IAutoCompleteListener listener, EInterfaceAction binding)
 	{ 
 		if(mAutoCompleteDialog != null &&
 				mAutoCompleteEditor != editor) {
@@ -161,7 +163,7 @@ public class VisualEditorFrame extends JFrame {
 		// Instantiate a new dialog for this editor
 		if(mAutoCompleteEditor == null || mAutoCompleteEditor != editor) { 
 			mAutoCompleteEditor = editor;
-			mAutoCompleteDialog = new AutoCompleteDialog(controller, editor, listener);		
+			mAutoCompleteDialog = new AutoCompleteDialog(controller, editor, listener, binding);		
 		}
 		
 		// Update the location of the component

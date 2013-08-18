@@ -20,6 +20,7 @@ import clojure.constructs.meta.UnknownConstruct;
 import construct.Construct;
 import editor.ConstructEditor;
 import editor.InterfaceController;
+import editor.InterfaceController.EInterfaceAction;
 import editor.document.ConstructDocument;
 
 public class AutoCompleteDialog extends JDialog {
@@ -85,12 +86,12 @@ public class AutoCompleteDialog extends JDialog {
 		}		
 	}
 	
-	public AutoCompleteDialog(InterfaceController controller, ConstructEditor editor, IAutoCompleteListener listener) {
+	public AutoCompleteDialog(InterfaceController controller, ConstructEditor editor, IAutoCompleteListener listener, EInterfaceAction binding) {
 		mListener = listener;
 		mEditor = editor;
 		mController = controller;
 		
-		mClassRestrictions = editor.construct.getAutoCompleteClasses();
+		mClassRestrictions = editor.construct.getParentForBinding(binding).getAutoCompleteClasses();
 		mAllEntries = new LinkedList<SimpleAutoCompleteEntry>();
 		mFilteredEntries = new LinkedList<SimpleAutoCompleteEntry>();
 		

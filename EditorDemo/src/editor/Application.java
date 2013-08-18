@@ -210,9 +210,9 @@ public class Application extends VisualEditorFrame implements ComponentListener
 			sApplication.presentDebugMessage(message);
 	}
 	
-	public static void presentAutoComplete(InterfaceController controller, ConstructEditor editor, IAutoCompleteListener listener) { 
+	public static void presentAutoComplete(InterfaceController controller, ConstructEditor editor, IAutoCompleteListener listener, EInterfaceAction binding) { 
 		if(sApplication != null) 
-			sApplication.showAutoComplete(controller, editor, listener);
+			sApplication.showAutoComplete(controller, editor, listener, binding);
 	}
 	
 	/**
