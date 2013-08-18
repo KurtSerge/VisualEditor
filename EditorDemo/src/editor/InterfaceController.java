@@ -501,12 +501,6 @@ public class InterfaceController implements KeyListener, IInterfaceActionListene
 				FindNext();
 				break;
 				
-//			case Bind_PresentAutoComplete:
-//				if(mConstructSelector.getSelected().construct.canPerformBinding(EInterfaceAction.Bind_InsertReplace)) { 
-//					Application.presentAutoComplete(controller, mConstructSelector.getSelected(), mConstructSelector.getSelected());
-//				}
-//				break;
-				
 			default: 
 				return false;
 		}
