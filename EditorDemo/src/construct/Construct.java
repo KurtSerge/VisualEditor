@@ -11,7 +11,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import clojure.ClojureConstruct;
+
+import editor.ConstructEditor;
 import editor.ConstructPublisher;
+import editor.InterfaceController.EInterfaceAction;
 import editor.document.ConstructDocument;
 
 
@@ -367,15 +371,29 @@ public abstract class Construct
 	public final boolean isSoleDependantConstruct() { 
 		return mIsSoleDependantConstruct;
 	}
-	
-	
-	public boolean canPresentAutoComplete() {
-		return getAutoCompleteStyle() != AutoCompleteStyle.None;
-	}	
-	
+
 	public Collection<Class<?>> getAutoCompleteClasses() { 
 		return null;
 	}
+	
+	public boolean canPresentAutoComplete(EInterfaceAction binding) {		
+		switch(binding) { 
+			case Bind_InsertAfter:
+			case Bind_InsertBefore:
+			case Bind_InsertPaste:
+			case Bind_InsertReplace:
+			case Bind_InsertChild:
+			case Bind_InsertWrap:
+			case Bind_Insert:
+			case Bind_InsertUsurp:
+				return true;
+				
+			default:
+				break;
+		}
+		
+		return false;
+	}	
 	
 	public AutoCompleteStyle getAutoCompleteStyle() { 
 		return AutoCompleteStyle.None;
@@ -383,5 +401,24 @@ public abstract class Construct
 	
 	public boolean canPasteOver() { 
 		return false;
+	}
+	
+	public Construct getParentForBinding(EInterfaceAction binding) {	
+		switch(binding) {
+			case Bind_InsertAfter:  
+			case Bind_InsertBefore:
+			case Bind_InsertReplace:
+			case Bind_DuplicateToAdjacent:
+			case Bind_InsertPaste:
+				return parent;
+				
+			case Bind_InsertChild:
+				return this;
+				
+			default: 
+				break;
+		}
+
+		return this;
 	}
 }

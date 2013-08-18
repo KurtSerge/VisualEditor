@@ -226,6 +226,7 @@ public class InterfaceController implements KeyListener, IInterfaceActionListene
 		if(event.getKeyCode() == KeyEvent.VK_ESCAPE)  {
 			// Escape should cancel the hotkey sequence
 			Application.getApplication().hideAutoComplete(true);
+			Application.getApplication().resetError();
 			mHotkeySequenceCandidates = null;
 			return ;
 		}
@@ -299,9 +300,18 @@ public class InterfaceController implements KeyListener, IInterfaceActionListene
 				
 				// Does this key have AutoComplete capture?
 				if(mHotkeySequenceCandidates.get(0).getFirst().followsWithAutoComplete()) {
-					mAutoCompletePublishBinding = binding;
-					Application.getApplication().showAutoComplete(this, getSelectedEditor(), this);
+					
+					
+					Construct autoComplete = getSelectedEditor().getConstruct().getParentForBinding(binding);
+					if(autoComplete != null) { 
+						if(autoComplete.canPresentAutoComplete(binding)) { 
+							mAutoCompletePublishBinding = binding;
+							Application.getApplication().showAutoComplete(this, getSelectedEditor(), this);
+							Application.resetError();
+						}
+					}
 				} else {
+					Application.resetError();
 					publishAction(binding, null);
 				}
 				
@@ -312,8 +322,11 @@ public class InterfaceController implements KeyListener, IInterfaceActionListene
 			
 			if(mHotkeySequenceCandidates.size() == 0) { 
 				mHotkeySequenceCandidates = null;
+				Application.resetError();
 				return ;
-			}			
+			}	
+			
+			Application.showInfoMessage("Waiting for next hotkey.. (ESC to cancel)");
 		}
 	}
 	
@@ -487,7 +500,7 @@ public class InterfaceController implements KeyListener, IInterfaceActionListene
 				break;
 				
 			case Bind_PresentAutoComplete:
-				if(mConstructSelector.getSelected().construct.canPresentAutoComplete()) { 
+				if(mConstructSelector.getSelected().construct.canPresentAutoComplete(EInterfaceAction.Bind_InsertReplace)) { 
 					Application.presentAutoComplete(controller, mConstructSelector.getSelected(), mConstructSelector.getSelected());
 				}
 				break;

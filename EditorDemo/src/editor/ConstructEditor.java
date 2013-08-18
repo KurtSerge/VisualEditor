@@ -22,6 +22,11 @@ public abstract class ConstructEditor implements IAutoCompleteListener
 		mBoundEditorStore.register(this);
 	}
 	
+	
+	public Construct getConstruct() { 
+		return construct;
+	}
+	
 	@Override
 	protected void finalize()
 	{
