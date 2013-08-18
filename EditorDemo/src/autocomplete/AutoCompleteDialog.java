@@ -266,9 +266,11 @@ public class AutoCompleteDialog extends JDialog {
 				break;
 				
 			default:
-				mFilterString = mFilterString + event.getKeyChar();
-				mTextArea.setText(mFilterString);
-				updateFilter(mFilterString);
+				if(event.getKeyChar() != KeyEvent.CHAR_UNDEFINED) { 
+					mFilterString = mFilterString + event.getKeyChar();
+					mTextArea.setText(mFilterString);
+					updateFilter(mFilterString);	
+				}
 				break;
 		}
 	}
