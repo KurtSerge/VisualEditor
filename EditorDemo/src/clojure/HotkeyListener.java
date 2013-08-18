@@ -48,7 +48,7 @@ public class HotkeyListener implements IInterfaceActionListener {
 			// Duplicate this construct
 			Construct parent = getParentForBinding(controller.getSelectedEditor(), binding);
 			Construct selected = controller.getSelectedEditor().construct;
-			Construct created = duplicate(selected, parent);
+			Construct created = ClojureConstructFactory.duplicate(selected.getClass(), selected.getDocument(), parent);
 			
 			if(created != null) { 
 				// If the construct duplicated (certain forms only), create an editor
@@ -67,36 +67,6 @@ public class HotkeyListener implements IInterfaceActionListener {
 		
 		return true;
 	}
-	
-	private ClojureConstruct duplicate(Construct toBeCloned, Construct parent) {
-		ClojureConstruct newConstruct = null;
-		
-		if(toBeCloned.getClass().equals(SymbolConstruct.class)) { 
-			newConstruct = new SymbolConstruct(mDocument, parent, "symbol");
-		} else if(toBeCloned.getClass().equals(VectorConstruct.class)) { 
-			newConstruct = new VectorConstruct(mDocument, parent, null);
-		} else if(toBeCloned.getClass().equals(ListConstruct.class)) { 
-			newConstruct = new ListConstruct(mDocument, parent, null);
-		} else if(toBeCloned.getClass().equals(MapConstruct.class)) { 
-			newConstruct = new MapConstruct(mDocument, parent, null);
-		} else if(toBeCloned.getClass().equals(KeywordExpressionPairConstruct.class)) { 
-			newConstruct = new KeywordExpressionPairConstruct(mDocument, parent, null);
-		} else if(toBeCloned.getClass().equals(BooleanConstruct.class)) { 
-			newConstruct = new BooleanConstruct(mDocument, parent, "true");
-		} else if(toBeCloned.getClass().equals(IntegerConstruct.class)) {
-			newConstruct = new IntegerConstruct(mDocument, parent, "0");
-		} else if(toBeCloned.getClass().equals(KeywordConstruct.class)) { 
-			newConstruct = new KeywordConstruct(mDocument, parent, "keyword");
-		} else if(toBeCloned.getClass().equals(DoubleConstruct.class)) { 
-			newConstruct = new DoubleConstruct(mDocument, parent, "0.0");
-		} else if(toBeCloned.getClass().equals(CharacterConstruct.class)) { 
-			newConstruct = new CharacterConstruct(mDocument, parent, "c");
-		} else if(toBeCloned.getClass().equals(StringConstruct.class)) { 
-			newConstruct = new StringConstruct(mDocument, parent, "string");
-		}
-		
-		return newConstruct;
-	}	
 	
 	private ClojureConstruct getParentForBinding(ConstructEditor selectedEditor, EInterfaceAction binding) {	
 		ClojureConstruct parent = null;
