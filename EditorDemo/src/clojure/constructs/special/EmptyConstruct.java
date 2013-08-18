@@ -1,5 +1,8 @@
 package clojure.constructs.special;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import clojure.ClojureConstruct;
 import construct.Construct;
 import editor.document.ConstructDocument;
@@ -43,5 +46,12 @@ public class EmptyConstruct extends ClojureConstruct {
 		EmptyConstruct newCopy = new EmptyConstruct(mDocument);
 		super.deepCopy(newCopy);
 		return newCopy;
+	}
+	
+	@Override
+	public Collection<Class<?>> getAutoCompleteClasses() { 
+		ArrayList<Class<?>> classRestriction = new ArrayList<Class<?>>();
+		classRestriction.add(clojure.constructs.containers.ListConstruct.class);
+		return classRestriction;
 	}
 }
