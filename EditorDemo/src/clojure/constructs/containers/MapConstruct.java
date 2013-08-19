@@ -1,11 +1,13 @@
 package clojure.constructs.containers;
 
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 
 import clojure.ClojureConstruct;
 import construct.Construct;
 import construct.Placeholder;
+import construct.Construct.ConstructAction;
 import editor.document.ConstructDocument;
 
 public class MapConstruct extends ClojureConstruct {
@@ -20,6 +22,9 @@ public class MapConstruct extends ClojureConstruct {
 	@Override
 	public String screen_text() {
 		StringBuilder builder = new StringBuilder();
+		if(mPrefix != null) { 
+			builder.append(mPrefix);
+		}
 		builder.append(PREFIX);
 		
 		for(int i = 0; i < children.size(); ++i) {
@@ -113,4 +118,26 @@ public class MapConstruct extends ClojureConstruct {
 		classRestriction.add(clojure.constructs.special.KeywordExpressionPairConstruct.class);
 		return classRestriction;
 	}
+	
+	
+	/**
+	 * @param e The KeyEvent causing the trigger
+	 * @param isTyping True if editing this.literal
+	 * @return True to consume the event ( can also call e.consume() )
+	 */
+	public ConstructAction onReceivedKeyEvent(KeyEvent keyEvent, boolean isTyping) {
+		if(keyEvent.getKeyChar() == '^') {
+			if(mPrefix == null) { 
+				mPrefix = "^";
+			} else { 
+				mPrefix = mPrefix.contains("^") ? null : "^";
+			}
+			
+			return ConstructAction.Refresh;
+		}
+
+		return super.onReceivedKeyEvent(keyEvent, isTyping);
+	}	
+	
+	private String mPrefix;
 }
