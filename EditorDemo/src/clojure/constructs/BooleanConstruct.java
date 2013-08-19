@@ -1,20 +1,29 @@
 package clojure.constructs;
 
+import java.awt.event.KeyEvent;
+
 import clojure.ClojureConstruct;
 import construct.Construct;
+import construct.Construct.ConstructAction;
 import editor.document.ConstructDocument;
 
 public class BooleanConstruct extends ClojureConstruct {
 	public BooleanConstruct(ConstructDocument document, Construct parent, String literal) { 
 		super(document, "boolean", parent);
-		this.literal = literal;
-		if(this.literal == null) 
-			this.literal = "false";		
+		if(literal != null) { 
+			mValue = Boolean.parseBoolean(literal);	
+		} else { 
+			mValue = false;
+		}
 	}
 
 	@Override
 	public String screen_text() {
-		return null;
+		if(mValue == true) { 
+			return "true";
+		} else { 
+			return "false";
+		}
 	}
 
 	@Override
@@ -33,4 +42,29 @@ public class BooleanConstruct extends ClojureConstruct {
 		super.deepCopy(newCopy);
 		return newCopy;
 	}
+	
+	/**
+	 * Allow only a-z, A-Z, 0-9
+	 * 
+	 * Disallow starting with 0-9
+	 * 
+	 * @param e The KeyEvent causing the trigger
+	 * @param isTyping True if editing this.literal
+	 * @return True to consume the event ( can also call e.consume() )
+	 */
+	public ConstructAction onReceivedKeyEvent(KeyEvent keyEvent, boolean isTyping) {
+		if(keyEvent.getKeyCode() == KeyEvent.VK_T) {
+			mValue = true;
+			return ConstructAction.Refresh;
+		}
+		
+		if(keyEvent.getKeyCode() == KeyEvent.VK_F) { 
+			mValue = false;
+			return ConstructAction.Refresh;
+		}
+			
+		return ConstructAction.None;
+	}	
+	
+	boolean mValue = false;
 }
