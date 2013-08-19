@@ -114,6 +114,9 @@ public class SymbolConstruct extends ClojureConstruct {
 	 * @return True to consume the event ( can also call e.consume() )
 	 */
 	public ConstructAction onReceivedKeyEvent(KeyEvent keyEvent, boolean isTyping) {
+		System.out.println((int) keyEvent.getKeyChar());
+		
+		
 		if(isTyping) {
 			if(((int) keyEvent.getKeyChar() >= 48 && (int) keyEvent.getKeyChar() <= 57)) {
 				if(this.literal.length() == 0) {

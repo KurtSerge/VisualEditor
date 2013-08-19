@@ -94,15 +94,13 @@ public class ListConstruct extends ClojureConstruct {
 	}
 	
 	/**
-	 * Allow only a-z, A-Z, 0-9
-	 * 
-	 * Disallow starting with 0-9
-	 * 
 	 * @param e The KeyEvent causing the trigger
 	 * @param isTyping True if editing this.literal
 	 * @return True to consume the event ( can also call e.consume() )
 	 */
 	public ConstructAction onReceivedKeyEvent(KeyEvent keyEvent, boolean isTyping) {
+		System.out.println((int) keyEvent.getKeyCode());
+		
 		if(keyEvent.getKeyCode() == KeyEvent.VK_QUOTE) {
 			if(mPrefix == null) { 
 				mPrefix = "'";
