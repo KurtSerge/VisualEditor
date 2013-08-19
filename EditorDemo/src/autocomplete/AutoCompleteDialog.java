@@ -135,7 +135,7 @@ public class AutoCompleteDialog extends JDialog {
 		addEntry(new SimpleAutoCompleteEntry("fn", "(fn name [param*] exprs*)", clojure.constructs.meta.FunctionConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("if then else", "(if test then else?)", clojure.constructs.meta.IfThenElseConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("keyword pair", ":key expr", clojure.constructs.special.KeywordExpressionPairConstruct.class));
-		addEntry(new SimpleAutoCompleteEntry("key value pair", "test-constant result-expr", clojure.constructs.meta.KeyValuePairConstruct.class));
+		addEntry(new SimpleAutoCompleteEntry("key value pair", "test-constant result-expr", clojure.constructs.special.KeyValuePairConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("let", "(let [bindings] exprs*)", clojure.constructs.meta.LetConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("loop", "(loop [bindings*] exprs*)", clojure.constructs.meta.LoopConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("recur", "(recur exprs*)", clojure.constructs.meta.RecurConstruct.class));

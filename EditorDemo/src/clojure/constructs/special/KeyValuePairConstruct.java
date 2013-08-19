@@ -1,10 +1,11 @@
-package clojure.constructs.meta;
+package clojure.constructs.special;
 
 import java.util.LinkedList;
 
 import clojure.ClojureConstruct;
 import construct.Construct;
 import construct.Placeholder;
+import construct.PlaceholdingConstruct;
 import editor.document.ConstructDocument;
 
 /**
@@ -19,7 +20,7 @@ import editor.document.ConstructDocument;
  * 
  * @author Christopher Lord
  */
-public class KeyValuePairConstruct extends MetaConstruct {
+public class KeyValuePairConstruct extends ClojureConstruct {
 	
 	public KeyValuePairConstruct(KeyValuePairConstruct construct, Construct parent, String literal) {
 		super(construct.getDocument(), "keyvaluepair", parent);
