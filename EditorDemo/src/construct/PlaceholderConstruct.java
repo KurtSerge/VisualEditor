@@ -187,4 +187,14 @@ public class PlaceholderConstruct extends ClojureConstruct {
 		
 		return false;
 	}		
+	
+	public Construct getParentForBinding(EInterfaceAction binding) {	
+		switch(binding) {
+			case Bind_InsertReplace:
+				return this;
+				
+			default:
+				return super.getParentForBinding(binding);
+		}
+	}
 }
