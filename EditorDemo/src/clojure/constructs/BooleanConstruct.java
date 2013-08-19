@@ -1,5 +1,6 @@
 package clojure.constructs;
 
+import java.awt.Color;
 import java.awt.event.KeyEvent;
 
 import clojure.ClojureConstruct;
@@ -38,9 +39,14 @@ public class BooleanConstruct extends ClojureConstruct {
 	
 	@Override
 	public Construct deepCopy(Construct parent) {
-		BigDecimalConstruct newCopy = new BigDecimalConstruct(mDocument, parent, this.literal);
+		BooleanConstruct newCopy = new BooleanConstruct(mDocument, parent, mValue.toString());
 		super.deepCopy(newCopy);
 		return newCopy;
+	}
+	
+	@Override
+	public Color debug_getForegroundColor() {
+		return new Color(255, 20, 147);
 	}
 	
 	/**
@@ -66,5 +72,5 @@ public class BooleanConstruct extends ClojureConstruct {
 		return ConstructAction.None;
 	}	
 	
-	boolean mValue = false;
+	Boolean mValue = false;
 }
