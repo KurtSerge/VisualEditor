@@ -4,7 +4,8 @@ import clojure.ClojureConstruct;
 import construct.Construct;
 import editor.document.ConstructDocument;
 
-public class VectorConstruct extends ClojureConstruct {
+public class VectorConstruct extends CollectionConstruct
+{
 	public VectorConstruct(ConstructDocument document, Construct parent, String literal) {
 		super(document, "vector", parent);
 	}

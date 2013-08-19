@@ -10,7 +10,7 @@ import construct.Placeholder;
 import construct.Construct.ConstructAction;
 import editor.document.ConstructDocument;
 
-public class MapConstruct extends ClojureConstruct {
+public class MapConstruct extends CollectionConstruct {
 	
 	private static final String PREFIX = "{";
 	private static final String AFFIX = "}";

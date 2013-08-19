@@ -8,7 +8,7 @@ import construct.Construct;
 import construct.Construct.ConstructAction;
 import editor.document.ConstructDocument;
 
-public class ListConstruct extends ClojureConstruct {
+public class ListConstruct extends CollectionConstruct {
 	
 	public static String AFFIX = ")";
 	public static String PREFIX = "(";
