@@ -137,6 +137,8 @@ public class AutoCompleteDialog extends JDialog {
 		addEntry(new SimpleAutoCompleteEntry("let", "(let [bindings] exprs*)", clojure.constructs.meta.LetConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("loop", "(loop [bindings*] exprs*)", clojure.constructs.meta.LoopConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("recur", "(recur exprs*)", clojure.constructs.meta.RecurConstruct.class));
+		addEntry(new SimpleAutoCompleteEntry("rand", "(rand n?)", clojure.constructs.meta.randConstruct.class));
+		addEntry(new SimpleAutoCompleteEntry("rand-nth", "(rand-nth collection)", clojure.constructs.meta.rand_nthConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("function", "(symbol exprs*)", clojure.constructs.meta.SymbolList.class));
 		
 		Collections.sort(mAllEntries);
