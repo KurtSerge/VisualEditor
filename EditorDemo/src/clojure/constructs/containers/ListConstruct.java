@@ -1,9 +1,11 @@
 package clojure.constructs.containers;
 
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 
 import clojure.ClojureConstruct;
 import construct.Construct;
+import construct.Construct.ConstructAction;
 import editor.document.ConstructDocument;
 
 public class ListConstruct extends ClojureConstruct {
@@ -24,6 +26,10 @@ public class ListConstruct extends ClojureConstruct {
 	@Override
 	public String screen_text() {
 		StringBuilder builder = new StringBuilder();
+		if(mPrefix != null) { 
+			builder.append(mPrefix);
+		}
+		
 		builder.append(PREFIX);
 		
 		if(mCall != null) { 
@@ -87,5 +93,29 @@ public class ListConstruct extends ClojureConstruct {
 		super.deepCopy(parent);
 	}
 	
+	/**
+	 * Allow only a-z, A-Z, 0-9
+	 * 
+	 * Disallow starting with 0-9
+	 * 
+	 * @param e The KeyEvent causing the trigger
+	 * @param isTyping True if editing this.literal
+	 * @return True to consume the event ( can also call e.consume() )
+	 */
+	public ConstructAction onReceivedKeyEvent(KeyEvent keyEvent, boolean isTyping) {
+		if(keyEvent.getKeyCode() == KeyEvent.VK_QUOTE) {
+			if(mPrefix == null) { 
+				mPrefix = "'";
+			} else { 
+				mPrefix = mPrefix.equalsIgnoreCase("'") ? null : "'";
+			}
+			
+			return ConstructAction.Refresh;
+		}
+
+		return super.onReceivedKeyEvent(keyEvent, isTyping);
+	}	
+	
+	private String mPrefix;
 	private String mCall;
 }
