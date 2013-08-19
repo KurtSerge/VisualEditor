@@ -133,13 +133,15 @@ public class AutoCompleteDialog extends JDialog {
 		addEntry(new SimpleAutoCompleteEntry("case", "(case test conditions*)", clojure.constructs.meta.CaseConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("fn", "(fn name [param*] exprs*)", clojure.constructs.meta.FunctionConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("if then else", "(if test then else?)", clojure.constructs.meta.IfThenElseConstruct.class));
-		addEntry(new SimpleAutoCompleteEntry("keyword pair", "(test-constant result-expr)", clojure.constructs.special.KeywordExpressionPairConstruct.class));
+		addEntry(new SimpleAutoCompleteEntry("keyword pair", ":key expr", clojure.constructs.special.KeywordExpressionPairConstruct.class));
+		addEntry(new SimpleAutoCompleteEntry("key value pair", "test-constant result-expr", clojure.constructs.meta.KeyValuePairConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("let", "(let [bindings] exprs*)", clojure.constructs.meta.LetConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("loop", "(loop [bindings*] exprs*)", clojure.constructs.meta.LoopConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("recur", "(recur exprs*)", clojure.constructs.meta.RecurConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("rand", "(rand n?)", clojure.constructs.meta.randConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("rand-nth", "(rand-nth collection)", clojure.constructs.meta.rand_nthConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("function", "(symbol exprs*)", clojure.constructs.meta.SymbolList.class));
+		
 		
 		Collections.sort(mAllEntries);
 		
@@ -179,7 +181,7 @@ public class AutoCompleteDialog extends JDialog {
 
 	            //text
 	            final JTextArea ta = new JTextArea();
-	            ta.setText(text.title);
+	            ta.setText(" " + text.title);
 	            p.add(ta, BorderLayout.WEST);
 	            
 	            final JTextArea syntax = new JTextArea();
