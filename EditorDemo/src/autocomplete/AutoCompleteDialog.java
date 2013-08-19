@@ -129,6 +129,7 @@ public class AutoCompleteDialog extends JDialog {
 		// Placeholder types
 		addEntry(new SimpleAutoCompleteEntry("def", "(def symbol doc-string? init?)", clojure.constructs.meta.DefConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("defn", "(defn name doc-string? attr-map? [params*] exprs*)", clojure.constructs.meta.DefineFunctionConstruct.class));
+		addEntry(new SimpleAutoCompleteEntry("defmacro", "(defn name doc-string? attr-map? [params*] exprs*)", clojure.constructs.meta.defmacro.class));
 		addEntry(new SimpleAutoCompleteEntry("do", "(do exprs*)", clojure.constructs.meta.DoConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("case", "(case test conditions*)", clojure.constructs.meta.CaseConstruct.class));
 		addEntry(new SimpleAutoCompleteEntry("fn", "(fn name [param*] exprs*)", clojure.constructs.meta.FunctionConstruct.class));
