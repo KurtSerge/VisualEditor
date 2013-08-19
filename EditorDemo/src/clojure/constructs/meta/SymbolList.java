@@ -21,7 +21,7 @@ public class SymbolList extends MetaConstruct {
 
 		LinkedList<Placeholder> placeholders = new LinkedList<Placeholder>();
 		placeholders.add(Placeholder.createPermanentPlaceholder(new SymbolConstruct(mDocument, this, "function-name")));
-		placeholders.add(Placeholder.createVariadicPlaceholder("args", KeyValuePairConstruct.class));
+		placeholders.add(Placeholder.createVariadicPlaceholder("args"));
 		setPlaceholders(placeholders);
 	}	
 	
