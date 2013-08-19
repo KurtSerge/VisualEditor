@@ -119,6 +119,10 @@ public class MonospaceConstructEditor extends ConstructEditor implements LayoutM
 					case DeleteThis:
 						mController.deleteSelected();
 						break;
+						
+					case Refresh:
+						update();
+						break;
 				
 					case ConsumeEvent:
 						e.consume();

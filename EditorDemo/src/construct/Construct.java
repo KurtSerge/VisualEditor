@@ -60,6 +60,7 @@ public abstract class Construct
 	
 	public static enum ConstructAction { 
 		DeleteThis,
+		Refresh,
 		ConsumeEvent,
 		None,
 	}

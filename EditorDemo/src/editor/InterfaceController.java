@@ -16,6 +16,7 @@ import autocomplete.AutoCompleteDialog.SimpleAutoCompleteEntry;
 import autocomplete.IAutoCompleteListener;
 
 import construct.Construct;
+import construct.Construct.ConstructAction;
 import construct.Construct.SelectionCause;
 import editor.document.ConstructDocument;
 
@@ -276,13 +277,23 @@ public class InterfaceController implements KeyListener, IInterfaceActionListene
 		// this KeyEvent to the currently selected candidate
 		Construct parent = mConstructSelector.getSelected().construct.parent;
 		int indexOfSelectedConstruct = getIndexOfSelectedConstruct();
-		mConstructSelector.getSelected().construct.onReceivedKeyEvent(event, false);
+		
+		ConstructAction action = mConstructSelector.getSelected().construct.onReceivedKeyEvent(event, false);
 		
 		if(getIndexOfSelectedConstruct() == -1) { 
 			Construct newChild = parent.getChildren().get(indexOfSelectedConstruct);
 			ConstructEditor editor = mDocument.editorsFromConstruct(newChild);
 			mConstructSelector.Select(SelectionCause.SelectedReplacementDiscoveredDuringKeyEvent, editor);
-		}		
+		} else { 
+			switch(action) {
+				case Refresh:
+					getSelectedEditor().update();
+					break;
+					
+				default:
+					break;
+			}
+		}
 	}
 
 	/**
