@@ -136,6 +136,16 @@ public class MapConstruct extends ClojureConstruct {
 			return ConstructAction.Refresh;
 		}
 
+		if(keyEvent.getKeyChar() == '#') {
+			if(mPrefix == null) { 
+				mPrefix = "#";
+			} else { 
+				mPrefix = mPrefix.equalsIgnoreCase("#") ? null : "#";
+			}
+			
+			return ConstructAction.Refresh;
+		}		
+
 		return super.onReceivedKeyEvent(keyEvent, isTyping);
 	}	
 	
