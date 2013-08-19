@@ -84,7 +84,7 @@ public class Placeholder {
 		if(mClassRestriction == null) 
 			return true;
 		
-		return obj.equals(mClassRestriction);
+		return mClassRestriction.isAssignableFrom(obj);
 	}
 	
 	public final Class<?> getClassRestriction() { 
