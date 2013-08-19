@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 import clojure.constructs.StringConstruct;
+import clojure.constructs.SymbolConstruct;
 import clojure.constructs.containers.ListConstruct;
 import clojure.constructs.containers.MapConstruct;
 import construct.Construct;
@@ -29,7 +30,7 @@ public class DefineFunctionConstruct extends MetaConstruct {
 		super(document, "defn", parent);
 
 		LinkedList<Placeholder> placeholders = new LinkedList<Placeholder>();
-		placeholders.add(Placeholder.createPlaceholder("name"));
+		placeholders.add(Placeholder.createPlaceholder("name", SymbolConstruct.class));
 		placeholders.add(Placeholder.createOptionalPlaceholder("doc-string", StringConstruct.class));
 		placeholders.add(Placeholder.createOptionalPlaceholder("attr-map", MapConstruct.class));
 		placeholders.add(Placeholder.createPermanentPlaceholder(new VariadicVectorConstruct(mDocument, this, "params")));
