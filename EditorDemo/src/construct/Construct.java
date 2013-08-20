@@ -149,7 +149,11 @@ public abstract class Construct
 	}
 
 	final public boolean addChild(Construct child) { 
-		return addChild(this.children.size(), child);
+		return addChild(this.children.size(), child, true);
+	}
+	
+	final public boolean addChild(int index, Construct child) { 
+		return addChild(index, child, true);
 	}
 	
 	/**
@@ -158,8 +162,8 @@ public abstract class Construct
 	 *
 	 * @return True if child was sucessfully added
 	 */
-	final public boolean addChild(int index, Construct child) {
-		if(canAddChild(index, child) == true)  {
+	final public boolean addChild(int index, Construct child, boolean validate) {
+		if(validate == false || canAddChild(index, child) == true) {
 			List<Construct> previousChildren = new ArrayList<Construct>(this.children);
 			Collections.copy(previousChildren, this.children);
 
@@ -309,6 +313,7 @@ public abstract class Construct
 
 	// Check that child being added at the specified index is valid
 	protected boolean canAddChild(int index, Construct child) { return true; }
+	
 	protected boolean canReplaceChild(int index, Construct oldConstruct, Construct newConstruct) { return true; }
 
 	/* ----- NOTIFICATIONS ----- */
@@ -375,7 +380,7 @@ public abstract class Construct
 		return null;
 	}
 	
-	public boolean canPerformBinding(EInterfaceAction binding) {		
+	public boolean canPerformAction(EInterfaceAction binding, Construct selected) {		
 		switch(binding) { 
 			case Bind_InsertAfter:
 			case Bind_InsertBefore:

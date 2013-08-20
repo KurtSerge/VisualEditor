@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 
 import clojure.ClojureConstruct;
+import clojure.ClojureConstruct.ConstructType;
 import construct.Construct;
 import construct.Construct.ConstructAction;
 import editor.document.ConstructDocument;
@@ -67,10 +68,18 @@ public class ListConstruct extends CollectionConstruct {
 	public boolean validate() {
 		return false;
 	}
-	
-	@Override 
-	public boolean isConstructContainer() { 
-		return mCall == null;
+
+	/**
+	 * If mCall is null, then 'UserCollection' that
+	 * is freely manipulatable. Otherwise, this is a
+	 * 'StrictCollection'.
+	 */
+	@Override
+	public ConstructType getConstructType() { 
+		if(mCall == null) 
+			return ConstructType.UserCollection;
+		
+		return ConstructType.StrictCollection;
 	}
 	
 	@Override

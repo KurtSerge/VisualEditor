@@ -36,9 +36,13 @@ public class EmptyConstruct extends ClojureConstruct {
 		return false;
 	}
 	
+	/**
+	 * The document is a 'UserCollection' construct;
+	 * freely allow all actions that manpulate children.
+	 */
 	@Override
-	public boolean isConstructContainer() { 
-		return true;
+	public ConstructType getConstructType() { 
+		return ConstructType.UserCollection;
 	}
 
 	@Override

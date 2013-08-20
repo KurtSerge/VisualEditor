@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import editor.Application;
+import editor.InterfaceController.EInterfaceAction;
 import editor.document.ConstructDocument;
 
 public abstract class PlaceholdingConstruct extends Construct {
@@ -123,7 +124,7 @@ public abstract class PlaceholdingConstruct extends Construct {
 			if(descriptor.isVariadic() && 
 					replaceMe.getClass().equals(PlaceholderConstruct.class))
 			{ 
-				this.addChild(indexOfOldConstruct, newCon);
+				this.addChild(indexOfOldConstruct, newCon, false);
 				return true;
 			}
 
@@ -183,7 +184,7 @@ public abstract class PlaceholdingConstruct extends Construct {
 			    
 			    mState.mConstructsToPlaceholders.put(construct, descriptor);
 				
-				this.addChild(index, construct);
+				this.addChild(index, construct, false);
 			}
 		}		
 	}
@@ -290,10 +291,10 @@ public abstract class PlaceholdingConstruct extends Construct {
 					if(placeholder.isVariadic()) { 
 						// Variadic placeholders always reside at the end
 						// of the specified form, treat them like so..
-						addChild(children.size(), construct);
+						addChild(children.size(), construct, false);
 					} else { 
 						mState.mConstructsToPlaceholders.put(construct, placeholder);						
-						addChild(i, construct);
+						addChild(i, construct, false);
 					}
 				}
 			}
@@ -340,9 +341,59 @@ public abstract class PlaceholdingConstruct extends Construct {
 		return placeholdingConstruct;
 	}
 	
-	public void debugPrintPlaceholders() { 
-		for(Construct node : this.children) { 
-			System.out.println(node.type + " bound: " + mState.mConstructsToPlaceholders.get(node));
+	
+	/**
+	 * In the following form:
+	 * 		(symbol variadicObject1 variadicObject2 variadicPlaceholder*)
+	 *
+	 * Allows the following operations:
+	 * 		variadicObject1: InsertBefore, InsertAfter, InsertReplace
+	 * 		variadicObject2: InsertBefore, InsertAfter, InsertReplace
+	 * 		variadicPlaceholder: InsertBefore, InsertReplace
+	 */
+	@Override
+	public boolean canPerformAction(EInterfaceAction binding, Construct selected) {	
+		if(getPlaceholders() != null) {
+			// Determine the placeholder for the selected construct
+			Placeholder placeholder = getPlaceholderForConstruct(selected);
+			if(placeholder != null) { 
+				// If we have selected a placeholder construct, if it is variadic,
+				// then we can insert *before* it, but not after it..
+				if(selected.getClass().equals(construct.PlaceholderConstruct.class)) {
+					PlaceholderConstruct construct = (PlaceholderConstruct) selected;
+					if(construct.getDescriptor().isVariadic()) { 
+						switch(binding) { 
+						case Bind_InsertBefore:
+						case Bind_InsertReplace:
+							return true;
+							
+						default:
+							return false;
+						}
+					}
+				}
+
+				// If the selected construct is part of a variadic
+				// placeholder, we can insert before and after freely
+				if(placeholder.isVariadic()) {
+					switch(binding) { 
+					case Bind_InsertAfter:
+					case Bind_InsertBefore:
+					case Bind_InsertChild:
+					case Bind_InsertReplace:
+					case Bind_DuplicateToAdjacent:
+						return true;
+						
+					default:
+						return false;
+					}
+				}
+			}
+			
+			return false;
 		}
-	}
+
+		// With no placeholders, allow all bindings
+		return true;
+	}	
 }

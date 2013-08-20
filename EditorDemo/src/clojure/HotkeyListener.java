@@ -1,6 +1,7 @@
 package clojure;
 
 import autocomplete.AutoCompleteDialog.SimpleAutoCompleteEntry;
+import clojure.ClojureConstruct.ConstructType;
 import clojure.constructs.BooleanConstruct;
 import clojure.constructs.CharacterConstruct;
 import clojure.constructs.DoubleConstruct;
@@ -45,8 +46,14 @@ public class HotkeyListener implements IInterfaceActionListener {
 		}
 		
 		if(binding == EInterfaceAction.Bind_DuplicateToAdjacent) {
-			// Duplicate this construct
-			Construct parent = getParentForBinding(controller.getSelectedEditor(), binding);
+			ConstructEditor selectedEditor = controller.getSelectedEditor();
+			ClojureConstruct parent = (ClojureConstruct) selectedEditor.construct.getParentForBinding(binding);
+			if(parent == null || parent.canPerformAction(binding, selectedEditor.construct) == false) {
+				// Consume event: no parent / action cannot be performed
+				System.err.println("Cannot duplicate adjacent with " + selectedEditor.construct.type + " (parent " + parent.type + ")");
+				return true;
+			}
+			
 			Construct selected = controller.getSelectedEditor().construct;
 			Construct created = ClojureConstructFactory.duplicate(selected.getClass(), selected.getDocument(), parent);
 			
@@ -62,108 +69,74 @@ public class HotkeyListener implements IInterfaceActionListener {
 				}
 			}
 		} else { 
-			handleInsert(controller, binding, entry);
+			String error = handleInsert(controller, binding, entry);
+			if(error != null) 
+				System.err.println("Clojure HotKeyListener error: " + error);
 		}
 		
 		return true;
 	}
-	
-	private ClojureConstruct getParentForBinding(ConstructEditor selectedEditor, EInterfaceAction binding) {	
-		ClojureConstruct parent = null;
-		switch(binding) {
-			case Bind_InsertAfter:  
-			case Bind_InsertBefore:
-			case Bind_InsertReplace:
-				parent = (ClojureConstruct) selectedEditor.construct.parent;
-				break;
-				
-			case Bind_InsertChild:
-				// Check to see if this node can be used to insert children
-				parent = (ClojureConstruct) selectedEditor.construct;
-				break;
-				
-			case Bind_DuplicateToAdjacent:
-				parent = (ClojureConstruct) selectedEditor.construct.parent;
-				break;
-				
-			case Bind_InsertPaste:
-				parent = (ClojureConstruct) selectedEditor.construct.parent;
-				break;
-				
-			default:
-				System.out.println(binding.toString());
-		}
-		
-		if(parent == null) { 
-			return null;
-		}
-		
-		if(parent.isConstructContainer() == false && 
-				(binding == EInterfaceAction.Bind_InsertAfter || 
-				binding == EInterfaceAction.Bind_InsertBefore || 
-				binding == EInterfaceAction.Bind_InsertChild))
-		{ 
-			return null;
-		}			
-		
-		return parent;
-	}
 
-	private void handleInsert(InterfaceController controller, EInterfaceAction binding, SimpleAutoCompleteEntry entry) {
-		// Determine the parent for the new construct, this is 
-		// based on the initial input (IA, IA, IC)
-		ClojureConstruct parent = getParentForBinding(controller.getSelectedEditor(), binding);
-		Construct newConstruct = null;
-		
+	private String handleInsert(InterfaceController controller, EInterfaceAction binding, SimpleAutoCompleteEntry entry) {
+		// Select a valid parent to select
+		ConstructEditor selectedEditor = controller.getSelectedEditor();
+		ClojureConstruct parent = (ClojureConstruct) selectedEditor.construct.getParentForBinding(binding);
+		if(parent == null || parent.canPerformAction(binding, selectedEditor.construct) == false) {
+			// Consume event: no parent / action cannot be performed			
+			return "Action cannot be performed at this time";
+		}
+
+		// Initialize
 		SelectionCause selectionCause = SelectionCause.SelectedAfterInsert;
+		int indexOfCurrentSelectionInParent = parent.getChildren().indexOf(controller.getSelectedEditor().construct);
+		Construct constructForSelecting = null;
 		
 		if(binding == EInterfaceAction.Bind_InsertPaste) { 
-			newConstruct = Application.getApplication().getClipboard().getCopyToPaste(parent); 
+			// We are going to be taking from the clipboard
+			// TODO: Validate Clipboard contents
+			constructForSelecting = Application.getApplication().getClipboard().getCopyToPaste(parent); 
+		} else if(entry != null) {
+			// Allow the AutoCompleteEntry to create the construct
+			// that we require for this EInterfaceAction
+			constructForSelecting = entry.create(mDocument, parent);
 		} else { 
-			newConstruct = entry.create(mDocument, parent);
+			return "Failed to create new construct for inserting";
 		}
-		
-		if(parent == null) {
-			Application.showErrorMessage("Cannot " + binding.toString() + " with selected construct");			
-			return ;
-		}
-		
-		// Determine location of insertion
-		int selIndex = parent.getChildren().indexOf(controller.getSelectedEditor().construct);
+
 		switch(binding) {
-			case Bind_InsertAfter: {
-				parent.addChild(selIndex + 1, newConstruct);
+			case Bind_InsertAfter:
+				int indexForInsert = indexOfCurrentSelectionInParent + 1;
+				parent.addChild(indexForInsert, constructForSelecting);
 				break;
-			}
 			
-			case Bind_InsertBefore:  {
-				parent.addChild(selIndex,  newConstruct);
+			case Bind_InsertBefore:
+				parent.addChild(indexOfCurrentSelectionInParent, constructForSelecting);
 				break;
-			}
 			
-			case Bind_InsertReplace:  {
-				if(parent.replaceChild(controller.getSelectedEditor().construct, newConstruct)) {
+			case Bind_InsertReplace:
+				if(parent.replaceChild(controller.getSelectedEditor().construct, constructForSelecting)) {
 					mDocument.getConstructEditorStore().unregister(controller.getSelectedEditor());
 				} else { 
-					return ;
+					// Construct failed to replace
+					constructForSelecting = null;
 				}
 				break;
-			}
 			
-			case Bind_InsertChild: {
+			case Bind_InsertChild:
 				int lastIndex = controller.getSelectedEditor().construct.getChildren().size();
-				controller.getSelectedEditor().construct.addChild(lastIndex, newConstruct);
+				controller.getSelectedEditor().construct.addChild(lastIndex, constructForSelecting);
 				break;
-			}
 			
 			case Bind_InsertPaste: {
-				if(((ClojureConstruct)parent).isConstructContainer()) { 
-					parent.addChild(selIndex + 1, newConstruct);
+				ClojureConstruct parentAsForm = (ClojureConstruct) parent;
+				if(parentAsForm.getConstructType() == ConstructType.UserCollection) { 
+					parent.addChild(indexOfCurrentSelectionInParent + 1, constructForSelecting);
 					selectionCause = SelectionCause.SelectedAfterPaste;
 				} else { 
-					newConstruct = null;
+					// Cannot paste in this construct
+					// TODO: Pasting in different construct types
+					constructForSelecting = null;
 				}
-				
 				break;
 			}
 			
@@ -171,11 +144,14 @@ public class HotkeyListener implements IInterfaceActionListener {
 				break;
 		}
 	
-		if(newConstruct != null) { 
-			ConstructEditor added = mDocument.editorsFromConstruct(newConstruct);
+		if(constructForSelecting != null) {
+			// Acquire the new constructs editor, then make this the selection
+			ConstructEditor added = mDocument.editorsFromConstruct(constructForSelecting);
 			if(added != null)  {
 				controller.mConstructSelector.Select(selectionCause, added);
 			}
 		}
+		
+		return null;
 	}
 }

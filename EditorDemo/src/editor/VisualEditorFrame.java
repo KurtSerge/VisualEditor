@@ -19,6 +19,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
 
 import editor.InterfaceController.EInterfaceAction;
 
@@ -52,6 +53,7 @@ public class VisualEditorFrame extends JFrame {
 		mModalPresentationPanel.setPreferredSize(new Dimension(100, 30));
 		
 		JScrollPane mpp = new JScrollPane(mDocumentPresentationPanel);
+		mpp.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		mpp.setBorder(null);
 //		mpp.add(mModalPresentationPanel);
 		

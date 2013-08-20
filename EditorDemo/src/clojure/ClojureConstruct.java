@@ -10,7 +10,13 @@ import editor.document.ConstructDocument;
  * @author Christopher Lord
  */
 public abstract class ClojureConstruct extends PlaceholdingConstruct
-{
+{	
+	public static enum ConstructType {
+		Primitive,			// No children
+		UserCollection,		// Multiple user-addable children
+		StrictCollection,	// Strict formatting		
+	}
+
 	public ClojureConstruct(ConstructDocument document, String type, Construct parent) {
 		super(document, type, parent);
 	}
@@ -30,8 +36,8 @@ public abstract class ClojureConstruct extends PlaceholdingConstruct
 	 * 
 	 * @return If a child can be inserted or not.
 	 */
-	public boolean isConstructContainer() { 
-		return false;
+	public ConstructType getConstructType() { 
+		return ConstructType.Primitive;
 	}	
 	
 	@Override

@@ -1,6 +1,7 @@
 package clojure.constructs.containers;
 
 import clojure.ClojureConstruct;
+import clojure.ClojureConstruct.ConstructType;
 import construct.Construct;
 import editor.document.ConstructDocument;
 
@@ -41,9 +42,13 @@ public class VectorConstruct extends CollectionConstruct
 		return false;
 	}
 	
-	@Override 
-	public boolean isConstructContainer() { 
-		return true;
+	/**
+	 * This construct is a 'UserCollection' construct;
+	 * freely allow all actions that manpulate children.
+	 */
+	@Override
+	public ConstructType getConstructType() { 
+		return ConstructType.UserCollection;
 	}
 
 	@Override

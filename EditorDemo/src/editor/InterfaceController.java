@@ -315,7 +315,7 @@ public class InterfaceController implements KeyListener, IInterfaceActionListene
 					
 					Construct autoComplete = getSelectedEditor().getConstruct().getParentForBinding(binding);
 					if(autoComplete != null) { 
-						if(autoComplete.canPerformBinding(binding)) { 
+						if(autoComplete.canPerformAction(binding, getSelectedEditor().construct)) { 
 							mAutoCompletePublishBinding = binding;
 							Application.getApplication().showAutoComplete(this, getSelectedEditor(), this, binding);
 							Application.resetError();

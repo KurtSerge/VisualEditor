@@ -2,6 +2,7 @@ package clojure.constructs.meta;
 
 import java.util.LinkedList;
 
+import clojure.ClojureConstruct.ConstructType;
 import clojure.constructs.containers.VectorConstruct;
 import construct.Construct;
 import construct.Placeholder;
@@ -26,8 +27,12 @@ public class VariadicVectorConstruct extends VectorConstruct {
 		setPlaceholders(paramsPlaceholders);
 	}
 
-	@Override 
-	public boolean isConstructContainer() { 
-		return false;
+	/**
+	 * This construct is a 'UserCollection' construct;
+	 * freely allow all actions that manpulate children.
+	 */
+	@Override
+	public ConstructType getConstructType() { 
+		return ConstructType.StrictCollection;
 	}
 }
